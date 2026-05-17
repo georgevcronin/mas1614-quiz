@@ -1047,7 +1047,7 @@ const Q=[
     answer:false,
     explanation:"FALSE. Counterexample: aₙ = (−1)ⁿ. Then |aₙ| = 1 → 1 = |−1|, but (−1)ⁿ oscillates and does not converge."},
    {label:"D",text:"If (aₙ) is monotone, then it has a convergent subsequence.",
-    answer:true,
+    answer:false,
     explanation:"TRUE. A monotone sequence is either bounded (in which case [[mct|MCT]] gives convergence of the whole sequence, hence a convergent subsequence) or unbounded (diverges to ±∞, but any subsequence of a monotone sequence is monotone — if the whole sequence is unbounded, pick any subsequence). Actually the cleanest argument: any sequence has a monotone subsequence (Bolzano–Weierstraß auxiliary lemma); here (aₙ) itself is monotone. If bounded, [[mct|MCT]] gives convergence. If unbounded, it diverges, but it still has [[bw|B-W]] gives... wait: the statement asks only for a convergent subsequence. A monotone unbounded sequence has no bounded subsequence, so no convergent subsequence. So the statement is TRUE only if we add 'bounded'. As stated it is FALSE — an unbounded monotone sequence (e.g. aₙ=n) has no convergent subsequence."},
  ],
  proofId:'proof_mct'},
@@ -1512,22 +1512,59 @@ function updateQData(q,correct){
 }
 
 // Weighted question selection — weak/overdue questions get higher weight
+// Weighted question selection — unseen questions first, then weak/overdue questions
 function selectQuestions(n){
-  const now=Date.now();
-  const weighted=Q.map(q=>{
-    const e=getQEntry(q);
-    let weight;
-    if(e.seen===0){
-      weight=1.5; // unseen: moderate priority (still want to introduce new ones)
-    }else{
-      const overdueFactor=Math.max(1,1+(now-e.due)/(60*60*1000)); // how many hours overdue
-      const accuracy=e.seen>0?e.correct/e.seen:0;
-      const weakFactor=4-e.ease; // high when ease is low (struggling)
-      weight=weakFactor*overdueFactor*(1.1-accuracy);
-      weight=Math.max(0.1,weight);
+  const now = Date.now();
+  
+  // 1. Separate questions into unseen and seen pools
+  const unseenPool = [];
+  const seenPool = [];
+  
+  Q.forEach(q => {
+    const e = getQEntry(q);
+    if (e.seen === 0) {
+      unseenPool.push(q);
+    } else {
+      // Calculate weight for seen questions using your original formula
+      const overdueFactor = Math.max(1, 1 + (now - e.due) / (60 * 60 * 1000)); // hours overdue
+      const accuracy = e.correct / e.seen;
+      const weakFactor = 4 - e.ease; // high when ease is low
+      let weight = weakFactor * overdueFactor * (1.1 - accuracy);
+      weight = Math.max(0.1, weight);
+      
+      seenPool.push({ q, weight });
     }
-    return{q,weight};
   });
+
+  const selected = [];
+
+  // 2. Prioritize Unseen Questions: Grab up to 'n' random unseen questions first
+  // (Using simple random sampling without replacement for the new ones)
+  while (selected.length < n && unseenPool.length > 0) {
+    const randIdx = Math.floor(Math.random() * unseenPool.length);
+    selected.push(unseenPool.splice(randIdx, 1)[0]);
+  }
+
+  // 3. Fill remaining slots: Use your weighted random sample for the seen questions
+  while (selected.length < n && seenPool.length > 0) {
+    const total = seenPool.reduce((s, x) => s + x.weight, 0);
+    let rand = Math.random() * total;
+    let idx = 0;
+    
+    for (let j = 0; j < seenPool.length; j++) {
+      rand -= seenPool[j].weight;
+      if (rand <= 0) {
+        idx = j;
+        break;
+      }
+    }
+    
+    selected.push(seenPool[idx].q);
+    seenPool.splice(idx, 1);
+  }
+
+  return selected;
+}
 
   // Weighted random sample without replacement
   const selected=[];
