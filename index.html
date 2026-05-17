@@ -160,10 +160,11 @@ button{font-family:inherit;-webkit-appearance:none;appearance:none}
 .sync-status.ok{color:#34D399}
 .sync-status.err{color:#EF4444}
 .sync-status.loading{color:#6B9FE4}
-.sync-btn{background:none;border:1px solid #334155;border-radius:8px;padding:5px 12px;font-size:11px;font-weight:600;color:#94A3B8;cursor:pointer;white-space:nowrap;transition:border-color .12s,color .12s}
+.sync-input{flex:1;background:#1E293B;border:1px solid #334155;border-radius:8px;padding:6px 10px;color:#F1F5F9;font-size:12px;font-family:inherit;outline:none;min-width:0}
+.sync-input::placeholder{color:#475569}
+.sync-input:focus{border-color:#6B9FE4}
+.sync-btn{background:none;border:1px solid #334155;border-radius:8px;padding:5px 12px;font-size:11px;font-weight:600;color:#94A3B8;cursor:pointer;white-space:nowrap;transition:border-color .12s,color .12s;flex-shrink:0}
 .sync-btn:hover{border-color:#6B9FE4;color:#6B9FE4}
-.sync-btn.google{border-color:#4285F4;color:#4285F4}
-.sync-btn.google:hover{background:rgba(66,133,244,.1)}
 /* Mastery panel */
 .mastery-panel{width:100%;max-width:340px;margin-top:.85rem;background:#1E293B;border:1px solid #334155;border-radius:14px;padding:.85rem 1rem}
 .mastery-hdr{display:flex;align-items:center;justify-content:space-between;margin-bottom:.6rem}
@@ -204,10 +205,14 @@ button{font-family:inherit;-webkit-appearance:none;appearance:none}
   <button class="start-btn" onclick="startQuiz()">Start Quiz →</button>
   <div class="home-note" id="home-note">10 questions · 32 theorems &amp; results available</div>
   <button class="start-btn" style="margin-top:.85rem;background:linear-gradient(135deg,#4F7DBF,#3B5FA0);box-shadow:0 8px 24px rgba(79,125,191,.3)" onclick="openWiki('s-home')">📖 Open Wiki</button>
-  <div class="sync-row">
+  <div class="sync-row" id="sync-row-login">
+    <input class="sync-input" id="sync-username-input" placeholder="Enter a username to sync…" maxlength="30" onkeydown="if(event.key==='Enter')syncLogin()">
+    <button class="sync-btn" onclick="syncLogin()">Save</button>
+  </div>
+  <div class="sync-row" id="sync-row-status" style="display:none">
     <span class="sync-status" id="sync-status">☁ Connecting…</span>
-    <button class="sync-btn google" id="sync-google-btn" onclick="signInGoogle()" style="display:none">Sign in with Google</button>
-    <button class="sync-btn" id="sync-reset-btn" onclick="confirmReset()" style="display:none">Reset stats</button>
+    <button class="sync-btn" onclick="syncLogout()" style="font-size:10px">Switch user</button>
+    <button class="sync-btn" onclick="confirmReset()" style="font-size:10px">Reset</button>
   </div>
   <div class="mastery-panel" id="mastery-panel" style="display:none">
     <div class="mastery-hdr">
@@ -292,12 +297,12 @@ button{font-family:inherit;-webkit-appearance:none;appearance:none}
 
 <script type="module">
 // ═══════════════════════════════════════════════════════════════
-// FIREBASE SYNC
-// Replace the firebaseConfig below with your own project config
-// from: console.firebase.google.com → Project settings → Your apps
+// FIREBASE SYNC — username based, no authentication required
+// Stats stored at Firestore path: /users/{username}
+// Pick a unique username (e.g. emma_mas1614). Anyone who knows
+// your username could read your stats, so keep it non-sensitive.
 // ═══════════════════════════════════════════════════════════════
 import{initializeApp}from'https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js';
-import{getAuth,signInAnonymously,GoogleAuthProvider,linkWithRedirect,getRedirectResult,onAuthStateChanged}from'https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js';
 import{getFirestore,doc,getDoc,setDoc,serverTimestamp}from'https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js';
 
 const firebaseConfig={
@@ -310,7 +315,8 @@ const firebaseConfig={
   measurementId:"G-T0DLWT33MV"
 };
 
-let db,auth,fbUser=null;
+let db=null;
+let currentUsername=null;
 let syncEnabled=false;
 
 function setSyncStatus(msg,cls=''){
@@ -319,53 +325,48 @@ function setSyncStatus(msg,cls=''){
   el.textContent=msg;el.className='sync-status'+(cls?' '+cls:'');
 }
 
-async function initFirebase(){
-  try{
-    const app=initializeApp(firebaseConfig);
-    auth=getAuth(app);
-    db=getFirestore(app);
-
-    // Handle redirect result first (fires after Google redirects back)
-    try{
-      const result=await getRedirectResult(auth);
-      if(result&&result.user){
-        setSyncStatus('☁ Signed in with Google!','ok');
-      }
-    }catch(e){
-      if(e.code!=='auth/no-current-user'){
-        setSyncStatus('☁ Sign-in failed — try again.','err');
-      }
-    }
-
-    onAuthStateChanged(auth,async user=>{
-      fbUser=user;
-      if(!user){
-        await signInAnonymously(auth);
-        return;
-      }
-      const isGoogle=user.providerData.some(p=>p.providerId==='google.com');
-      const googleBtn=document.getElementById('sync-google-btn');
-      const resetBtn=document.getElementById('sync-reset-btn');
-      if(googleBtn)googleBtn.style.display=isGoogle?'none':'block';
-      if(resetBtn)resetBtn.style.display='block';
-      setSyncStatus(isGoogle?`☁ Synced (${user.email})`:'☁ Synced (anonymous)','ok');
-      syncEnabled=true;
-      await pullStats();
-    });
-  }catch(e){
-    console.warn('Firebase init failed:',e);
-    setSyncStatus('☁ Offline — stats saved locally','err');
-  }
+function sanitiseUsername(raw){
+  return raw.trim().toLowerCase().replace(/[^a-z0-9_]/g,'').slice(0,30);
 }
 
-async function pullStats(){
-  if(!fbUser||!db)return;
+function showLoginRow(){
+  const lr=document.getElementById('sync-row-login');
+  const sr=document.getElementById('sync-row-status');
+  if(lr)lr.style.display='flex';
+  if(sr)sr.style.display='none';
+}
+function showStatusRow(){
+  const lr=document.getElementById('sync-row-login');
+  const sr=document.getElementById('sync-row-status');
+  if(lr)lr.style.display='none';
+  if(sr)sr.style.display='flex';
+}
+
+async function pushData(){
+  if(!db||!currentUsername||!syncEnabled)return;
   try{
-    const ref=doc(db,'users',fbUser.uid);
+    const p=+localStorage.getItem('mas_p')||0;
+    const b=+localStorage.getItem('mas_b')||0;
+    const c=+localStorage.getItem('mas_c')||0;
+    const t=+localStorage.getItem('mas_t')||0;
+    let qd={};
+    try{const raw=localStorage.getItem('mas_qdata');if(raw)qd=JSON.parse(raw);}catch(e){}
+    await setDoc(doc(db,'users',currentUsername),{p,b,c,t,qdata:qd,updated:serverTimestamp()},{merge:true});
+  }catch(e){console.warn('Push failed:',e);}
+}
+
+async function connectUser(username){
+  if(!db)return;
+  currentUsername=username;
+  syncEnabled=true;
+  localStorage.setItem('mas_username',username);
+  showStatusRow();
+  setSyncStatus('\u2601 Syncing\u2026','loading');
+  try{
+    const ref=doc(db,'users',username);
     const snap=await getDoc(ref);
     if(snap.exists()){
       const d=snap.data();
-      // Merge aggregate stats: take the max
       const lp=+localStorage.getItem('mas_p')||0;
       const lb=+localStorage.getItem('mas_b')||0;
       const lc=+localStorage.getItem('mas_c')||0;
@@ -378,8 +379,6 @@ async function pullStats(){
       localStorage.setItem('mas_b',mb);
       localStorage.setItem('mas_c',mc);
       localStorage.setItem('mas_t',mt);
-
-      // Merge per-question data: combine seen/correct/wrong, take max ease
       if(d.qdata){
         let localQD={};
         try{const raw=localStorage.getItem('mas_qdata');if(raw)localQD=JSON.parse(raw);}catch(e){}
@@ -390,57 +389,68 @@ async function pullStats(){
             merged[k].correct=Math.max(merged[k].correct||0,localQD[k].correct||0);
             merged[k].wrong=Math.max(merged[k].wrong||0,localQD[k].wrong||0);
             merged[k].ease=Math.max(merged[k].ease||1.3,localQD[k].ease||1.3);
-            merged[k].due=Math.min(merged[k].due||0,localQD[k].due||0); // earlier due = more urgent
+            merged[k].due=Math.min(merged[k].due||Infinity,localQD[k].due||Infinity);
           }else{merged[k]=localQD[k];}
         });
         localStorage.setItem('mas_qdata',JSON.stringify(merged));
         if(typeof loadQData==='function')loadQData();
       }
-
-      if(mp!==lp||mb!==lb||mc!==lc||mt!==lt){
-        await pushStats(mp,mb,mc,mt);
-      }
+      setSyncStatus('\u2601 Synced \u00b7 @'+username,'ok');
+      await pushData();
+    }else{
+      setSyncStatus('\u2601 New user \u00b7 @'+username,'ok');
+      await pushData();
     }
     if(typeof loadStats==='function')loadStats();
-  }catch(e){console.warn('Pull failed:',e);}
+  }catch(e){
+    console.warn('Sync failed:',e);
+    setSyncStatus('\u2601 Sync error \u2014 working offline','err');
+  }
 }
 
-async function pushStats(p,b,c,t){
-  if(!fbUser||!db||!syncEnabled)return;
+async function initFirebase(){
   try{
-    let qd={};
-    try{const raw=localStorage.getItem('mas_qdata');if(raw)qd=JSON.parse(raw);}catch(e){}
-    await setDoc(doc(db,'users',fbUser.uid),{p,b,c,t,qdata:qd,updated:serverTimestamp()},{merge:true});
-  }catch(e){console.warn('Push failed:',e);}
+    const app=initializeApp(firebaseConfig);
+    db=getFirestore(app);
+    const saved=localStorage.getItem('mas_username');
+    if(saved){
+      await connectUser(saved);
+    }else{
+      showLoginRow();
+    }
+  }catch(e){
+    console.warn('Firebase init failed:',e);
+    showLoginRow();
+  }
 }
 
-// Called after every quiz round from saveStats()
-window.firebasePush=async function(){
-  if(!syncEnabled)return;
-  const p=+localStorage.getItem('mas_p')||0;
-  const b=+localStorage.getItem('mas_b')||0;
-  const c=+localStorage.getItem('mas_c')||0;
-  const t=+localStorage.getItem('mas_t')||0;
-  await pushStats(p,b,c,t);
-  setSyncStatus('☁ Synced just now','ok');
+window.syncLogin=async function(){
+  const input=document.getElementById('sync-username-input');
+  if(!input||!db)return;
+  const username=sanitiseUsername(input.value);
+  if(username.length<3){
+    input.style.borderColor='#EF4444';
+    input.placeholder='Min 3 chars: letters, numbers, _';
+    setTimeout(()=>{input.style.borderColor='';input.placeholder='Enter a username to sync\u2026';},2500);
+    return;
+  }
+  input.value='';
+  await connectUser(username);
 };
 
-window.signInGoogle=async function(){
-  if(!auth)return;
-  try{
-    setSyncStatus('☁ Redirecting to Google…','loading');
-    const provider=new GoogleAuthProvider();
-    // Use redirect instead of popup — works inside iframes (Google Sites)
-    await linkWithRedirect(auth,provider);
-    // Page will redirect to Google then come back — result handled in initFirebase
-  }catch(e){
-    if(e.code==='auth/credential-already-in-use'){
-      setSyncStatus('☁ That Google account already has stats — refresh to merge.','err');
-    }else{
-      console.error('Sign-in error:',e);
-      setSyncStatus('☁ Sign-in failed ('+e.code+')','err');
-    }
-  }
+window.syncLogout=function(){
+  currentUsername=null;
+  syncEnabled=false;
+  localStorage.removeItem('mas_username');
+  showLoginRow();
+  const input=document.getElementById('sync-username-input');
+  if(input){input.value='';input.focus();}
+};
+
+window.firebasePush=async function(){
+  if(!syncEnabled)return;
+  await pushData();
+  setSyncStatus('\u2601 Synced \u00b7 @'+currentUsername,'ok');
 };
 
 window.confirmReset=function(){
@@ -448,7 +458,7 @@ window.confirmReset=function(){
     localStorage.setItem('mas_p',0);localStorage.setItem('mas_b',0);
     localStorage.setItem('mas_c',0);localStorage.setItem('mas_t',0);
     localStorage.removeItem('mas_qdata');
-    qData={};
+    if(typeof loadQData==='function'){window.qData={};loadQData();}
     if(typeof loadStats==='function')loadStats();
     if(typeof window.firebasePush==='function')window.firebasePush();
   }
