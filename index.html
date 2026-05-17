@@ -401,6 +401,7 @@ const firebaseConfig={
 let db=null;
 let currentUsername=null;
 let syncEnabled=false;
+let matchHistory = []; // Tracks 1 for correct, 0 for incorrect
 
 function setSyncStatus(msg,cls=''){
   const el=document.getElementById('sync-status');
@@ -2104,6 +2105,11 @@ function matchTap(card,side){
     rCard.classList.add('matched-ok');
     matchCorrect++;stk++;if(stk>bstk)bstk=stk;
     document.getElementById('match-stk').textContent=stk;
+
+    // --- CHANGE HERE: Log correct attempt to history ---
+    if(!window.matchHistory) window.matchHistory = [];
+    window.matchHistory.push(1); 
+
   }else{
     // Wrong — flash red briefly, then let them try again (no hearts lost, no lock)
     lCard.classList.add('matched-err');
@@ -2114,9 +2120,17 @@ function matchTap(card,side){
     },700);
     // Count the wrong attempt but don't penalise hearts or lock cards
     stk=0;document.getElementById('match-stk').textContent=stk;
+
+    // --- CHANGE HERE: Log incorrect attempt to history ---
+    if(!window.matchHistory) window.matchHistory = [];
+    window.matchHistory.push(0);
   }
 
-  matchTotal++;
+  // --- CHANGE HERE: Keep array capped at last 10 entries ---
+  if (window.matchHistory.length > 10) window.matchHistory.shift();
+
+  matchTotal++; 
+}
 
   // Check if round is complete (all left cards matched correctly)
   const allMatched=[...document.querySelectorAll('#match-grid .match-card.left-col')]
@@ -2126,19 +2140,26 @@ function matchTap(card,side){
     matchRoundsDone++;
     const gb=document.getElementById('match-go-btn');
     const fb=document.getElementById('match-fb');
-    const accuracy=matchTotal>0?Math.round(matchCorrect/matchTotal*100):0;
+    
+    // --- CHANGE HERE: Calculate accuracy from only the last 10 elements ---
+    const last10 = matchHistory.slice(-10); 
+    const last10Total = last10.length;
+    const last10Correct = last10.reduce((sum, val) => sum + val, 0);
+    const accuracy = last10Total > 0 ? Math.round(last10Correct / last10Total * 100) : 0;
+    // ----------------------------------------------------------------------
+
     if(matchRoundsDone>=4){
       gb.textContent='See results';gb.className='go-btn ok';
       fb.className='fb ok';
       document.getElementById('match-fbt').textContent='All rounds done!';
       document.getElementById('match-fbb').textContent=
-        matchCorrect+' correct of '+matchTotal+' attempts ('+accuracy+'% accuracy).';
+        last10Correct+' correct of '+last10Total+' attempts ('+accuracy+'% accuracy over last 10).';
     }else{
       gb.textContent='Next round →';gb.className='go-btn ok';
       fb.className='fb ok';
       document.getElementById('match-fbt').textContent='Round '+(matchRoundsDone)+' complete!';
       document.getElementById('match-fbb').textContent=
-        accuracy+'% accuracy — '+(4-matchRoundsDone)+' round(s) left.';
+        accuracy+'% accuracy (last 10) — '+(4-matchRoundsDone)+' round(s) left.';
     }
   }
 }
