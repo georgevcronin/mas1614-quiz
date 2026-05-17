@@ -1,0 +1,1245 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover, user-scalable=no">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="theme-color" content="#0F172A">
+<title>MAS1614 Real Analysis</title>
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
+html{height:100%;overflow:hidden}
+body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;background:#0F172A;color:#F1F5F9;height:100%;overflow:hidden;display:flex;flex-direction:column;max-width:520px;margin:0 auto}
+button{font-family:inherit;-webkit-appearance:none;appearance:none}
+.scr{display:none;flex-direction:column;height:100%;overflow:hidden}
+.scr.on{display:flex}
+#s-home{align-items:center;justify-content:center;padding:2rem 1.5rem;background:radial-gradient(ellipse at 50% 10%,#1E3A5F 0%,#0F172A 60%);gap:0;text-align:center;overflow-y:auto}
+@keyframes float{0%,100%{transform:translateY(0)}50%{transform:translateY(-8px)}}
+.home-icon{font-size:72px;margin-bottom:1.25rem;animation:float 3s ease-in-out infinite;display:block}
+.home-title{font-family:Georgia,'Times New Roman',serif;font-size:28px;font-weight:700;line-height:1.2;margin-bottom:.3rem}
+.home-sub{font-size:13px;color:#94A3B8;margin-bottom:1.75rem;letter-spacing:.04em}
+.stat-row{display:flex;gap:10px;margin-bottom:1.5rem;width:100%;max-width:340px}
+.stat-box{flex:1;background:#1E293B;border:1px solid #334155;border-radius:12px;padding:.85rem .5rem;text-align:center}
+.stat-v{font-size:22px;font-weight:700;color:#6B9FE4;display:block}
+.stat-l{font-size:10px;color:#64748B;font-weight:600;text-transform:uppercase;letter-spacing:.06em}
+.mode-row{display:flex;gap:8px;width:100%;max-width:340px;margin-bottom:1.1rem}
+.mode-pill{flex:1;padding:.6rem .4rem;border-radius:99px;border:1.5px solid #475569;background:#1E293B;color:#94A3B8;font-size:12px;font-weight:600;cursor:pointer;text-align:center;transition:all .15s}
+.mode-pill.on{border-color:#6B9FE4;background:rgba(107,159,228,.15);color:#BAD4F8}
+.diff-row{display:flex;gap:8px;width:100%;max-width:340px;margin-bottom:1.1rem}
+.diff-pill{flex:1;padding:.55rem .4rem;border-radius:99px;border:1.5px solid #475569;background:#1E293B;color:#94A3B8;font-size:12px;font-weight:600;cursor:pointer;text-align:center;transition:all .15s}
+.diff-pill.on{border-color:#A78BFA;background:rgba(167,139,250,.15);color:#C4B5FD}
+.start-btn{width:100%;max-width:340px;padding:1rem;border-radius:99px;border:none;background:linear-gradient(135deg,#6B9FE4,#3B82F6);color:#fff;font-size:16px;font-weight:700;cursor:pointer;box-shadow:0 8px 24px rgba(107,159,228,.3);transition:transform .1s}
+.start-btn:active{transform:scale(.97)}
+.home-note{font-size:12px;color:#475569;margin-top:.85rem}
+.diff-badge{display:inline-block;padding:2px 8px;border-radius:99px;font-size:10px;font-weight:700;margin-left:4px;vertical-align:middle;background:rgba(239,68,68,.2);color:#FCA5A5}
+#s-quiz{padding-top:max(env(safe-area-inset-top,0px),12px)}
+.hard-banner{background:rgba(239,68,68,.12);border-bottom:1px solid rgba(239,68,68,.3);text-align:center;font-size:10px;font-weight:700;letter-spacing:.1em;color:#FCA5A5;padding:4px;flex-shrink:0;display:none;text-transform:uppercase}
+.hard-banner.on{display:block}
+.q-hdr{display:flex;align-items:center;gap:10px;padding:.75rem 1rem .6rem;flex-shrink:0}
+.back-btn{background:none;border:none;color:#64748B;font-size:22px;cursor:pointer;line-height:1;padding:4px;flex-shrink:0}
+.prog-bg{flex:1;height:8px;background:#1E293B;border-radius:99px;overflow:hidden}
+.prog-fill{height:100%;background:linear-gradient(90deg,#6B9FE4,#34D399);border-radius:99px;transition:width .5s cubic-bezier(.4,0,.2,1)}
+.prog-fill.hard-prog{background:linear-gradient(90deg,#EF4444,#F59E0B)}
+.hdr-r{display:flex;align-items:center;gap:8px}
+.hearts{font-size:15px;display:flex;gap:1px}
+.streak-pill{display:flex;align-items:center;gap:4px;background:rgba(245,158,11,.12);border:1px solid rgba(245,158,11,.4);border-radius:99px;padding:3px 10px;font-size:13px;font-weight:700;color:#FCD34D}
+.q-body{flex:1;overflow-y:auto;overflow-x:hidden;padding:0 1rem;-webkit-overflow-scrolling:touch}
+.q-body::-webkit-scrollbar{display:none}
+.thm-card{background:#1E293B;border:1px solid #334155;border-radius:14px;padding:1rem 1.25rem;margin-bottom:.75rem}
+.thm-card.hard-card{border-color:rgba(239,68,68,.4)}
+.thm-lbl{font-size:10px;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:#64748B;margin-bottom:.4rem}
+.thm-name{font-family:Georgia,serif;font-size:18px;color:#F1F5F9;margin-bottom:.55rem;line-height:1.3}
+.thm-stmt{font-size:13px;color:#94A3B8;line-height:1.85}
+.hint-btn{background:none;border:none;font-size:12px;font-weight:600;color:#64748B;cursor:pointer;text-decoration:underline;padding:0;margin-bottom:.65rem;display:block}
+.hint-box{background:rgba(245,158,11,.08);border:1px solid rgba(245,158,11,.25);border-radius:8px;padding:.55rem .85rem;font-size:13px;color:#FCD34D;margin-bottom:.75rem;line-height:1.6;display:none}
+.hint-box.on{display:block}
+.instr{font-size:13px;font-weight:600;color:#94A3B8;margin-bottom:.7rem}
+.opts{display:flex;flex-direction:column;gap:8px;margin-bottom:.75rem}
+.opt{background:#1E293B;border:1.5px solid #334155;border-radius:12px;padding:.85rem .95rem;text-align:left;cursor:pointer;font-size:13px;color:#F1F5F9;line-height:1.75;display:flex;align-items:flex-start;gap:10px;width:100%;transition:border-color .12s,background .12s}
+.opt:active:not([disabled]){transform:scale(.99)}
+.opt[disabled]{cursor:default}
+.opt.sel{border-color:rgba(96,165,250,.5);background:rgba(96,165,250,.12)}
+.opt.wrong{border-color:rgba(239,68,68,.5);background:rgba(239,68,68,.12)}
+.opt.dim{opacity:.28}
+.opt.c0{border-color:rgba(107,159,228,.5);background:rgba(107,159,228,.15)}
+.opt.c1{border-color:rgba(245,158,11,.5);background:rgba(245,158,11,.13)}
+.opt.c2{border-color:rgba(52,211,153,.5);background:rgba(52,211,153,.13)}
+.badge{flex-shrink:0;width:26px;height:26px;border-radius:7px;border:1.5px solid #475569;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:700;color:#64748B;font-family:monospace;margin-top:2px;transition:background .12s,border-color .12s,color .12s}
+.opt.sel .badge{background:#60A5FA;border-color:#60A5FA;color:#fff}
+.opt.wrong .badge{background:#EF4444;border-color:#EF4444;color:#fff}
+.opt.c0 .badge{background:#6B9FE4;border-color:#6B9FE4;color:#fff}
+.opt.c1 .badge{background:#F59E0B;border-color:#F59E0B;color:#fff}
+.opt.c2 .badge{background:#34D399;border-color:#34D399;color:#fff}
+.opt-body{flex:1}
+.why-txt{display:none;font-size:12px;margin-top:.45rem;padding-top:.45rem;border-top:1px solid;line-height:1.6;font-style:italic}
+.opt.c0 .why-txt{display:block;color:#BAD4F8;border-color:rgba(107,159,228,.3)}
+.opt.c1 .why-txt{display:block;color:#FCD34D;border-color:rgba(245,158,11,.3)}
+.opt.c2 .why-txt{display:block;color:#6EE7B7;border-color:rgba(52,211,153,.3)}
+.why-txt a.wlink,.exp-why a.wlink,.fb-body a.wlink{color:inherit;border-bottom:1px dotted currentColor;cursor:pointer;text-decoration:none;font-style:normal;opacity:.9}
+.drag-handle{color:#475569;font-size:18px;cursor:grab;flex-shrink:0;margin-top:1px;user-select:none}
+.order-num{flex-shrink:0;width:26px;height:26px;border-radius:7px;background:#273449;display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:700;color:#64748B;font-family:monospace;margin-top:2px;transition:background .2s,color .2s}
+.opt.dragging{opacity:.4}
+.opt.drag-over{border-color:rgba(96,165,250,.5);background:rgba(96,165,250,.12)}
+.check-btn{width:100%;padding:.85rem;border-radius:99px;border:1.5px solid #475569;background:#1E293B;color:#F1F5F9;font-size:15px;font-weight:700;cursor:pointer;margin-top:4px}
+.exp-panel{background:#1E293B;border:1px solid #334155;border-radius:14px;padding:1rem 1.1rem;margin-bottom:.75rem;display:none}
+.exp-panel.on{display:block}
+.exp-title{font-size:10px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:#64748B;margin-bottom:.75rem}
+.exp-step{display:flex;gap:10px;margin-bottom:.6rem;align-items:flex-start}
+.exp-step:last-child{margin-bottom:0}
+.exp-num{flex-shrink:0;width:22px;height:22px;border-radius:6px;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:700;color:#fff;margin-top:1px;font-family:monospace}
+.exp-lbl{font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.06em;margin-bottom:2px}
+.exp-why{font-size:13px;color:#94A3B8;line-height:1.6}
+.fb{border-radius:10px;padding:.8rem 1rem;margin-bottom:.75rem;border:1px solid transparent;display:none}
+.fb.ok{display:block;background:rgba(16,185,129,.1);border-color:rgba(16,185,129,.5)}
+.fb.bad{display:block;background:rgba(239,68,68,.1);border-color:rgba(239,68,68,.5)}
+.fb-title{font-size:14px;font-weight:700;margin-bottom:3px}
+.fb.ok .fb-title{color:#6EE7B7}
+.fb.bad .fb-title{color:#FCA5A5}
+.fb-body{font-size:13px;line-height:1.55;color:#94A3B8}
+.go-btn{width:100%;padding:1rem;border-radius:99px;border:none;font-size:16px;font-weight:700;cursor:pointer;display:none;transition:transform .1s;margin-top:4px;margin-bottom:max(env(safe-area-inset-bottom,0px),20px)}
+.go-btn:active{transform:scale(.97)}
+.go-btn.ok{display:block;background:linear-gradient(135deg,#10B981,#059669);color:#fff;box-shadow:0 6px 20px rgba(16,185,129,.3)}
+.go-btn.bad{display:block;background:linear-gradient(135deg,#EF4444,#DC2626);color:#fff;box-shadow:0 6px 20px rgba(239,68,68,.25)}
+#s-result{align-items:center;justify-content:center;padding:2rem 1.5rem;padding-top:max(env(safe-area-inset-top,0px),2rem);padding-bottom:max(env(safe-area-inset-bottom,0px),2rem);background:radial-gradient(ellipse at 50% 10%,#1E3A5F 0%,#0F172A 60%);text-align:center}
+.res-icon{font-size:68px;display:block;margin-bottom:1rem}
+.res-title{font-family:Georgia,serif;font-size:28px;font-weight:700;margin-bottom:.4rem}
+.res-sub{font-size:14px;color:#94A3B8;margin-bottom:1.75rem;line-height:1.65;max-width:280px}
+.res-stats{display:flex;gap:10px;margin-bottom:1.75rem;width:100%;max-width:320px}
+.res-stat{flex:1;background:#1E293B;border:1px solid #334155;border-radius:12px;padding:.85rem .5rem;text-align:center}
+.res-stat-v{font-size:26px;font-weight:700;display:block;color:#6B9FE4}
+.res-stat-l{font-size:10px;color:#64748B;font-weight:600;text-transform:uppercase;letter-spacing:.05em}
+.res-btns{display:flex;flex-direction:column;gap:10px;width:100%;max-width:320px}
+.res-btn-p{padding:1rem;border-radius:99px;border:none;background:linear-gradient(135deg,#6B9FE4,#3B82F6);color:#fff;font-size:16px;font-weight:700;cursor:pointer;box-shadow:0 6px 20px rgba(107,159,228,.3);transition:transform .1s}
+.res-btn-p:active{transform:scale(.97)}
+.res-btn-s{padding:1rem;border-radius:99px;border:1.5px solid #334155;background:#1E293B;color:#94A3B8;font-size:15px;font-weight:600;cursor:pointer;transition:transform .1s}
+.res-btn-s:active{transform:scale(.97)}
+.diag-wrap{margin-bottom:.75rem;border-radius:10px;overflow:hidden}
+.diag-toggle{background:none;border:none;font-size:12px;font-weight:600;color:#64748B;cursor:pointer;text-decoration:underline;padding:0;margin-bottom:.5rem;display:block;font-family:inherit}
+.diag-box{display:none}
+.diag-box.on{display:block}
+#s-wiki{padding-top:max(env(safe-area-inset-top,0px),0px)}
+.wiki-hdr{display:flex;align-items:center;gap:10px;padding:1rem 1rem .75rem;flex-shrink:0;background:#0F172A;position:sticky;top:0;z-index:10}
+.wiki-title{font-family:Georgia,serif;font-size:18px;font-weight:700;color:#F1F5F9;flex:1}
+.wiki-search{flex:1;background:#1E293B;border:1px solid #334155;border-radius:8px;padding:.5rem .85rem;color:#F1F5F9;font-size:14px;font-family:inherit;outline:none}
+.wiki-search::placeholder{color:#475569}
+.wiki-search:focus{border-color:#6B9FE4}
+.wiki-body{flex:1;overflow-y:auto;-webkit-overflow-scrolling:touch;padding:0 1rem 2rem}
+.wiki-body::-webkit-scrollbar{display:none}
+.cat-section{margin-bottom:1.25rem}
+.cat-label{font-size:10px;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:#64748B;margin-bottom:.5rem;padding-top:.5rem}
+.wiki-card{background:#1E293B;border:1px solid #334155;border-radius:12px;padding:.75rem 1rem;margin-bottom:6px;display:flex;align-items:center;gap:10px;cursor:pointer;transition:border-color .12s,background .12s}
+.wiki-card:hover{border-color:#475569;background:#273449}
+.wiki-cat-dot{width:8px;height:8px;border-radius:50%;flex-shrink:0}
+.wiki-card-info{flex:1;min-width:0}
+.wiki-card-title{font-size:14px;font-weight:600;color:#F1F5F9;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.wiki-card-sym{font-size:11px;color:#64748B;font-family:Georgia,serif;margin-top:1px}
+.wiki-card-arrow{color:#475569;font-size:14px}
+#s-wiki-detail{padding-top:max(env(safe-area-inset-top,0px),0px)}
+.wd-hdr{display:flex;align-items:center;gap:10px;padding:1rem 1rem .75rem;flex-shrink:0;background:#0F172A;position:sticky;top:0;z-index:10;border-bottom:1px solid #1E293B}
+.wd-back{background:none;border:none;color:#6B9FE4;font-size:14px;font-weight:600;cursor:pointer;font-family:inherit;padding:0;display:flex;align-items:center;gap:4px;flex-shrink:0}
+.wd-body{flex:1;overflow-y:auto;-webkit-overflow-scrolling:touch;padding:1rem 1rem 3rem}
+.wd-body::-webkit-scrollbar{display:none}
+.wd-cat-badge{display:inline-block;padding:2px 10px;border-radius:99px;font-size:11px;font-weight:700;letter-spacing:.04em;margin-bottom:.75rem}
+.wd-title{font-family:Georgia,serif;font-size:22px;font-weight:700;color:#F1F5F9;margin-bottom:.2rem;line-height:1.25}
+.wd-symbol{font-family:Georgia,serif;font-size:15px;color:#94A3B8;margin-bottom:1rem}
+.wd-content{font-size:14px;color:#CBD5E1;line-height:1.95;margin-bottom:1.25rem}
+.wd-content strong{color:#F1F5F9}
+.wd-content em{color:#94A3B8;font-style:italic}
+.wd-content a.wlink{color:#6B9FE4;text-decoration:none;border-bottom:1px dotted rgba(107,159,228,.5);cursor:pointer;font-style:normal}
+.wd-content a.wlink:hover{border-bottom-style:solid}
+.wd-section-title{font-size:10px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:#475569;margin-bottom:.5rem}
+.wd-links{display:flex;flex-wrap:wrap;gap:6px;margin-bottom:1rem}
+.wd-link{background:#0F172A;border:1px solid #334155;border-radius:8px;padding:5px 10px;font-size:12px;font-weight:600;color:#6B9FE4;cursor:pointer;transition:border-color .12s,background .12s;font-family:inherit}
+.wd-link:hover{border-color:#6B9FE4;background:#1E293B}
+.wd-link.green{color:#34D399;border-color:#1E3B2F}
+.wd-divider{height:1px;background:#1E293B;margin:1rem 0}
+/* Firebase sync UI */
+.sync-row{display:flex;align-items:center;gap:8px;width:100%;max-width:340px;margin-top:.6rem}
+.sync-status{flex:1;font-size:11px;color:#475569;text-align:left}
+.sync-status.ok{color:#34D399}
+.sync-status.err{color:#EF4444}
+.sync-status.loading{color:#6B9FE4}
+.sync-btn{background:none;border:1px solid #334155;border-radius:8px;padding:5px 12px;font-size:11px;font-weight:600;color:#94A3B8;cursor:pointer;white-space:nowrap;transition:border-color .12s,color .12s}
+.sync-btn:hover{border-color:#6B9FE4;color:#6B9FE4}
+.sync-btn.google{border-color:#4285F4;color:#4285F4}
+.sync-btn.google:hover{background:rgba(66,133,244,.1)}
+</style>
+</head>
+<body>
+
+<div id="s-home" class="scr on">
+  <span class="home-icon">∀</span>
+  <div class="home-title">Real Analysis<br>Theorem Quiz</div>
+  <div class="home-sub">MAS1614 · Specimen paper trainer</div>
+  <div class="stat-row">
+    <div class="stat-box"><span class="stat-v" id="hs-p">0</span><span class="stat-l">played</span></div>
+    <div class="stat-box"><span class="stat-v" id="hs-b">—</span><span class="stat-l">best streak</span></div>
+    <div class="stat-box"><span class="stat-v" id="hs-a">—</span><span class="stat-l">accuracy</span></div>
+  </div>
+  <div class="mode-row">
+    <button class="mode-pill on" id="pill-mc" onclick="selMode('mc')">🎯 Multi-choice</button>
+    <button class="mode-pill" id="pill-ord" onclick="selMode('order')">🔢 Order steps</button>
+  </div>
+  <div class="diff-row">
+    <button class="diff-pill on" id="pill-norm" onclick="selDiff('normal')">📘 Normal</button>
+    <button class="diff-pill" id="pill-hard" onclick="selDiff('hard')">🔥 Hard <span class="diff-badge">NEW</span></button>
+  </div>
+  <button class="start-btn" onclick="startQuiz()">Start Quiz →</button>
+  <div class="home-note" id="home-note">10 questions · 32 theorems &amp; results available</div>
+  <button class="start-btn" style="margin-top:.85rem;background:linear-gradient(135deg,#4F7DBF,#3B5FA0);box-shadow:0 8px 24px rgba(79,125,191,.3)" onclick="openWiki('s-home')">📖 Open Wiki</button>
+  <div class="sync-row">
+    <span class="sync-status" id="sync-status">☁ Connecting…</span>
+    <button class="sync-btn google" id="sync-google-btn" onclick="signInGoogle()" style="display:none">Sign in with Google</button>
+    <button class="sync-btn" id="sync-reset-btn" onclick="confirmReset()" style="display:none">Reset stats</button>
+  </div>
+</div>
+
+<div id="s-quiz" class="scr">
+  <div class="hard-banner" id="hard-banner">⚠ Hard Mode — Distractors designed to deceive</div>
+  <div class="q-hdr">
+    <button class="back-btn" onclick="goHome()">←</button>
+    <div class="prog-bg"><div class="prog-fill" id="prog" style="width:0%"></div></div>
+    <div class="hdr-r">
+      <div class="hearts" id="hts"></div>
+      <div class="streak-pill">🔥<span id="stk">0</span></div>
+    </div>
+  </div>
+  <div class="q-body" id="q-body">
+    <div class="thm-card" id="thm-card">
+      <div class="thm-lbl" id="thm-lbl">Prove this theorem</div>
+      <div class="thm-name" id="tname"></div>
+      <div class="thm-stmt" id="tstmt"></div>
+    </div>
+    <div id="diag-wrap" class="diag-wrap" style="display:none">
+      <button class="diag-toggle" id="diag-toggle" onclick="toggleDiag()">📊 Show diagram</button>
+      <div class="diag-box" id="diag-box"></div>
+    </div>
+    <button class="hint-btn" id="hint-btn" onclick="toggleHint()">💡 Show hint</button>
+    <div class="hint-box" id="hint-box"></div>
+    <div class="instr" id="instr"></div>
+    <div class="opts" id="opts"></div>
+    <div class="exp-panel" id="exp-panel">
+      <div class="exp-title" id="exp-title">Why this order?</div>
+      <div id="exp-steps"></div>
+    </div>
+    <div class="fb" id="fb"><div class="fb-title" id="fbt"></div><div class="fb-body" id="fbb"></div></div>
+    <button class="go-btn" id="go-btn" onclick="advance()"></button>
+    <div style="height:8px"></div>
+  </div>
+</div>
+
+<div id="s-result" class="scr">
+  <span class="res-icon" id="r-icon"></span>
+  <div class="res-title" id="r-title"></div>
+  <div class="res-sub" id="r-sub"></div>
+  <div class="res-stats">
+    <div class="res-stat"><span class="res-stat-v" id="r-sc"></span><span class="res-stat-l">correct</span></div>
+    <div class="res-stat"><span class="res-stat-v" id="r-ss"></span><span class="res-stat-l">streak</span></div>
+    <div class="res-stat"><span class="res-stat-v" id="r-sa"></span><span class="res-stat-l">accuracy</span></div>
+  </div>
+  <div class="res-btns">
+    <button class="res-btn-p" onclick="startQuiz()">Play again</button>
+    <button class="res-btn-s" onclick="goHome()">Home</button>
+  </div>
+</div>
+
+<div id="s-wiki" class="scr">
+  <div class="wiki-hdr">
+    <button class="back-btn" onclick="goHome()">←</button>
+    <div class="wiki-title">📖 Wiki</div>
+    <input class="wiki-search" id="wiki-search" placeholder="Search terms…" oninput="filterWiki(this.value)">
+  </div>
+  <div class="wiki-body" id="wiki-body"></div>
+</div>
+
+<div id="s-wiki-detail" class="scr">
+  <div class="wd-hdr">
+    <button class="wd-back" id="wd-back-btn">← Wiki</button>
+  </div>
+  <div class="wd-body" id="wd-body"></div>
+</div>
+
+<script type="module">
+// ═══════════════════════════════════════════════════════════════
+// FIREBASE SYNC
+// Replace the firebaseConfig below with your own project config
+// from: console.firebase.google.com → Project settings → Your apps
+// ═══════════════════════════════════════════════════════════════
+import{initializeApp}from'https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js';
+import{getAuth,signInAnonymously,GoogleAuthProvider,linkWithPopup,onAuthStateChanged}from'https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js';
+import{getFirestore,doc,getDoc,setDoc,serverTimestamp}from'https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js';
+
+const firebaseConfig={
+  apiKey:"AIzaSyCE9o42ZekICLHHwFS7v6Uee7e2Xmfmtsw",
+  authDomain:"theorem-test.firebaseapp.com",
+  projectId:"theorem-test",
+  storageBucket:"theorem-test.firebasestorage.app",
+  messagingSenderId:"65472887776",
+  appId:"1:65472887776:web:3f4286da6e752731a10985",
+  measurementId:"G-T0DLWT33MV"
+};
+
+let db,auth,fbUser=null;
+let syncEnabled=false;
+
+function setSyncStatus(msg,cls=''){
+  const el=document.getElementById('sync-status');
+  if(!el)return;
+  el.textContent=msg;el.className='sync-status'+(cls?' '+cls:'');
+}
+
+async function initFirebase(){
+  try{
+    const app=initializeApp(firebaseConfig);
+    auth=getAuth(app);
+    db=getFirestore(app);
+
+    onAuthStateChanged(auth,async user=>{
+      fbUser=user;
+      if(!user){
+        // Not signed in yet — sign in anonymously
+        await signInAnonymously(auth);
+        return;
+      }
+      const isGoogle=user.providerData.some(p=>p.providerId==='google.com');
+      const googleBtn=document.getElementById('sync-google-btn');
+      const resetBtn=document.getElementById('sync-reset-btn');
+      if(googleBtn)googleBtn.style.display=isGoogle?'none':'block';
+      if(resetBtn)resetBtn.style.display='block';
+
+      setSyncStatus(isGoogle?`☁ Synced (${user.email})`:'☁ Synced (anonymous)','ok');
+      syncEnabled=true;
+
+      // Pull cloud stats and merge with local (take the highest values)
+      await pullStats();
+    });
+  }catch(e){
+    console.warn('Firebase init failed:',e);
+    setSyncStatus('☁ Offline — stats saved locally','err');
+  }
+}
+
+async function pullStats(){
+  if(!fbUser||!db)return;
+  try{
+    const ref=doc(db,'users',fbUser.uid);
+    const snap=await getDoc(ref);
+    if(snap.exists()){
+      const d=snap.data();
+      // Merge: take the max of cloud and local for each stat
+      const lp=+localStorage.getItem('mas_p')||0;
+      const lb=+localStorage.getItem('mas_b')||0;
+      const lc=+localStorage.getItem('mas_c')||0;
+      const lt=+localStorage.getItem('mas_t')||0;
+      const mp=Math.max(lp,d.p||0);
+      const mb=Math.max(lb,d.b||0);
+      const mc=Math.max(lc,d.c||0);
+      const mt=Math.max(lt,d.t||0);
+      localStorage.setItem('mas_p',mp);
+      localStorage.setItem('mas_b',mb);
+      localStorage.setItem('mas_c',mc);
+      localStorage.setItem('mas_t',mt);
+      // If cloud was ahead, push the merged values back
+      if(mp!==lp||mb!==lb||mc!==lc||mt!==lt){
+        await pushStats(mp,mb,mc,mt);
+      }
+    }
+    // Refresh the home screen display
+    if(typeof loadStats==='function')loadStats();
+  }catch(e){console.warn('Pull failed:',e);}
+}
+
+async function pushStats(p,b,c,t){
+  if(!fbUser||!db||!syncEnabled)return;
+  try{
+    await setDoc(doc(db,'users',fbUser.uid),{p,b,c,t,updated:serverTimestamp()},{merge:true});
+  }catch(e){console.warn('Push failed:',e);}
+}
+
+// Called after every quiz round from saveStats()
+window.firebasePush=async function(){
+  if(!syncEnabled)return;
+  const p=+localStorage.getItem('mas_p')||0;
+  const b=+localStorage.getItem('mas_b')||0;
+  const c=+localStorage.getItem('mas_c')||0;
+  const t=+localStorage.getItem('mas_t')||0;
+  await pushStats(p,b,c,t);
+  setSyncStatus('☁ Synced just now','ok');
+};
+
+window.signInGoogle=async function(){
+  if(!auth)return;
+  try{
+    setSyncStatus('☁ Opening Google sign-in…','loading');
+    const provider=new GoogleAuthProvider();
+    await linkWithPopup(auth,provider);
+    // onAuthStateChanged will fire and update UI
+  }catch(e){
+    if(e.code==='auth/credential-already-in-use'){
+      setSyncStatus('☁ That Google account already has stats — refresh to merge.','err');
+    }else{
+      setSyncStatus('☁ Sign-in failed. Try again.','err');
+    }
+  }
+};
+
+window.confirmReset=function(){
+  if(confirm('Reset all stats? This cannot be undone.')){
+    localStorage.setItem('mas_p',0);localStorage.setItem('mas_b',0);
+    localStorage.setItem('mas_c',0);localStorage.setItem('mas_t',0);
+    if(typeof loadStats==='function')loadStats();
+    if(typeof window.firebasePush==='function')window.firebasePush();
+  }
+};
+
+initFirebase();
+</script>
+<script>
+// ═══════════════════════════════════════════════════════════════
+// QUIZ DATA
+// ok[] = correct steps (in order for 'order' mode)
+// why[] = explanation for each ok step (wiki-linked)
+// bad[] = normal wrong answers
+// hardBad[] = subtle wrong answers for hard mode
+// ═══════════════════════════════════════════════════════════════
+const Q=[
+
+// ── CORE THEOREMS ────────────────────────────────────────────
+{name:"Monotone Convergence Theorem",
+ hint:"Completeness → sup exists → sup characterisation gives N → monotonicity closes the gap.",
+ stmt:"If (aₙ) is increasing and bounded above, then aₙ → sup{aₙ | n∈ℕ}.",
+ ok:["Apply the [[completeness|Axiom of Completeness]]: since {aₙ} is bounded above, s = sup{aₙ} exists in ℝ.",
+     "Use the [[sup_inf|characterisation of sup]]: for each ε>0 find N with a_N > s−ε.",
+     "[[monotone|Monotonicity]] gives aₙ ≥ a_N for all n≥N, so |aₙ−s| < ε, confirming aₙ→s."],
+ why:["[[completeness|Completeness of ℝ]] guarantees the supremum is a real number — it is our candidate limit.",
+      "The [[sup_inf|sup characterisation]] gives us N: it says we can get within ε of s from below.",
+      "[[monotone|Monotonicity]] traps all later terms in (s−ε, s], completing the [[epsilon_n|ε–N argument]]."],
+ bad:["Extract a convergent subsequence via [[bw|Bolzano–Weierstraß]].",
+      "Verify |aₙ−aₘ|<ε for all n,m≥N using the [[cauchy_seq|Cauchy condition]].",
+      "Apply the [[nested|Nested Interval Property]] to construct the limit."],
+ hardBad:["Find s = sup{aₙ}; since (aₙ) is increasing, aₙ→s follows immediately without an ε–N argument.",
+           "Apply the [[completeness|Axiom of Completeness]] to find inf{aₙ}; use monotonicity to show aₙ→inf.",
+           "Use the [[cauchy_crit|Cauchy Criterion]]: boundedness implies (aₙ) is Cauchy, hence convergent."]},
+
+{name:"Bolzano–Weierstraß Theorem",
+ hint:"Bisect [−M,M], always pick the half with infinitely many terms, apply Nested Interval Property.",
+ stmt:"Every bounded sequence (aₙ)ₙ ⊂ ℝ has a convergent subsequence.",
+ ok:["Bisect [−M,M] repeatedly, at each stage selecting a half containing infinitely many terms.",
+     "Apply the [[nested|Nested Interval Property]] to I₁ ⊇ I₂ ⊇ ⋯ to obtain x ∈ ⋂ₖ Iₖ.",
+     "Show |aₙₖ − x| ≤ M/2^(k−1) → 0, confirming the subsequence converges to x."],
+ why:["By always choosing the half with infinitely many terms we can always pick the next index — constructing the subsequence (aₙₖ).",
+      "The intervals are closed and nested, so the [[nested|Nested Interval Property]] gives a non-empty intersection — our limit point x.",
+      "The interval Iₖ has length M/2^(k−1); since aₙₖ ∈ Iₖ the gap |aₙₖ−x| shrinks geometrically to zero."],
+ bad:["Apply the [[mct|Monotone Convergence Theorem]] directly to (aₙ).",
+      "Verify the [[cauchy_seq|Cauchy condition]] for the whole sequence.",
+      "Use the [[completeness|Axiom of Completeness]] to find sup{aₙ} as the limit."],
+ hardBad:["Bisect [−M,M]; select the half with the largest terms; apply [[nested|Nested Interval Property]].",
+           "Since (aₙ) is [[bounded|bounded]], it satisfies the [[cauchy_seq|Cauchy condition]] for large n, giving a convergent subsequence.",
+           "Apply [[completeness|Axiom of Completeness]] to {aₙ}; its supremum is the limit of a convergent subsequence."]},
+
+{name:"Cauchy Criterion",
+ hint:"⇒ triangle inequality splits ε/2; ⇐ bounded → B-W → subsequence limit → whole sequence.",
+ stmt:"(aₙ) converges ⟺ it is Cauchy: ∀ε>0 ∃N with |aₙ−aₘ|<ε for all n,m≥N.",
+ ok:["(⇒) From aₙ→a choose N with |aₙ−a|<ε/2; the [[tri_ineq|triangle inequality]] gives |aₙ−aₘ| ≤ |aₙ−a|+|a−aₘ| < ε.",
+     "(⇐) Show Cauchy ⟹ [[bounded|bounded]], extract aₙₖ→a via [[bw|Bolzano–Weierstraß]], then use the Cauchy condition to prove aₙ→a."],
+ why:["Splitting ε in two is the standard trick: both terms are within ε/2 of the limit, so by the [[tri_ineq|triangle inequality]] their distance is less than ε.",
+      "The hard direction: Cauchy ⟹ [[bounded|bounded]] (easy lemma) ⟹ [[bw|B-W]] gives a convergent subsequence ⟹ the Cauchy condition forces the whole sequence to the same limit."],
+ bad:["Apply the [[mct|MCT]] after verifying boundedness.",
+      "Use the [[nested|Nested Interval Property]] to construct the limit.",
+      "Invoke the [[olt|Order Limit Theorem]] on pairs of terms."],
+ hardBad:["(⇒) Choose N with |aₙ−a|<ε; then |aₙ−aₘ|<2ε — replace ε by ε/2 at the start.",
+           "(⇐) Cauchy ⟹ [[monotone|monotone]] for large n, so apply [[mct|MCT]] directly.",
+           "(⇐) Apply [[bw|B-W]] to the whole sequence, then note aₙ→a since Cauchy sequences are bounded."]},
+
+{name:"Intermediate Value Theorem",
+ hint:"s = sup{x : f(x) ≤ y}; continuity pins f(s) from both sides via sequences and OLT.",
+ stmt:"If f:[a,b]→ℝ is continuous and f(a) ≤ y ≤ f(b), then ∃c∈[a,b] with f(c)=y.",
+ ok:["Define s = sup{x∈[a,b] : f(x)≤y}, which exists by the [[completeness|Axiom of Completeness]].",
+     "Use [[continuity|continuity]] of f at s: sequences xₙ↑s and yₙ↓s give f(s)≤y and f(s)≥y via the [[olt|Order Limit Theorem]].",
+     "Both inequalities hold simultaneously, so f(s)=y."],
+ why:["The set {x:f(x)≤y} is non-empty (contains a) and bounded above (by b), so its [[sup_inf|supremum]] s exists — our candidate c.",
+      "[[continuity|Continuity]] passes limits inside f. The [[olt|OLT]] then preserves the inequalities f(xₙ)≤y and f(yₙ)≥y in the limit.",
+      "Both inequalities force f(s)=y exactly."],
+ bad:["Apply [[bw|Bolzano–Weierstraß]] to extract a subsequence with the property.",
+      "Invoke the [[evt|Extreme Value Theorem]] to read off y.",
+      "Bisect [a,b] to directly locate c."],
+ hardBad:["Define s = inf{x∈[a,b]:f(x)≥y} and show f(s)=y by continuity from each side.",
+           "Since f is continuous on [a,b], apply [[evt|EVT]] to get min and max; y lies between them so is attained.",
+           "Use [[nested|Nested Interval Property]]: bisect [a,b], keep the half where f changes sign, iterate."]},
+
+{name:"Extreme Value Theorem",
+ hint:"Bounded (contradiction via B-W) → inf exists → minimising sequence → B-W → continuity attains it.",
+ stmt:"A continuous f:[a,b]→ℝ attains its minimum and maximum on [a,b].",
+ ok:["Show f is [[bounded|bounded]] by contradiction using [[bw|Bolzano–Weierstraß]], so c = inf f([a,b]) exists by [[completeness|completeness]].",
+     "Choose xₙ∈[a,b] with f(xₙ)→c; [[bw|Bolzano–Weierstraß]] yields a subsequence xₙₖ→x₀∈[a,b].",
+     "[[continuity|Continuity]] gives f(xₙₖ)→f(x₀); uniqueness of limits forces f(x₀)=c."],
+ why:["Unboundedness would give |f(xₙ)|→∞; [[bw|B-W]] gives a convergent subsequence in [a,b]; [[continuity|continuity]] forces |f| finite — contradiction.",
+      "We build a minimising sequence then use [[bw|B-W]] to find an accumulation point x₀ in the closed interval.",
+      "[[continuity|Continuity]] passes the limit inside f: f(x₀)=c. The minimum is attained."],
+ bad:["Apply the [[cauchy_crit|Cauchy Criterion]] to (f(xₙ)).",
+      "Use the [[mct|MCT]] on f directly.",
+      "Apply the [[ivt|IVT]] to guarantee attainment of the infimum."],
+ hardBad:["Show f is bounded using [[completeness|completeness]] directly; then apply [[mct|MCT]] to the minimising sequence.",
+           "Since [a,b] is closed and bounded, apply [[mct|MCT]] to get the monotone subsequence converging to x₀∈[a,b].",
+           "Apply [[bw|B-W]] directly to (f(xₙ)) to get f(xₙₖ)→c, then x₀=lim xₙₖ satisfies f(x₀)=c."]},
+
+{name:"Mean Value Theorem",
+ hint:"Subtract the chord line: g(x)=f(x)−slope·(x−a), get g(a)=g(b), apply Rolle.",
+ stmt:"If f:[a,b]→ℝ is continuous on [a,b] and differentiable on (a,b), then ∃c∈(a,b) with f′(c)=[f(b)−f(a)]/(b−a).",
+ ok:["Define g(x)=f(x)−[f(b)−f(a)]/(b−a)·(x−a) and verify g(a)=g(b), so [[rolle|Rolle's Theorem]] applies.",
+     "[[rolle|Rolle's Theorem]] yields c∈(a,b) with g′(c)=0.",
+     "Compute g′(c)=f′(c)−[f(b)−f(a)]/(b−a)=0, recovering the MVT formula."],
+ why:["g is f with the secant subtracted, making g(a)=g(b)=0. This reduces the general case to the horizontal-chord case handled by [[rolle|Rolle]].",
+      "[[rolle|Rolle's Theorem]] applies because g is continuous on [a,b], differentiable on (a,b), and has g(a)=g(b).",
+      "Differentiating g and setting g′(c)=0 algebraically recovers f′(c)=[f(b)−f(a)]/(b−a)."],
+ bad:["Apply the [[ivt|IVT]] directly to f.",
+      "Verify a Cauchy condition on the difference quotients.",
+      "Invoke the [[evt|EVT]] and differentiate at the attaining point."],
+ hardBad:["Define g(x)=f(x)−f(a)−[f(b)−f(a)]/(b−a)·x and note g(0)=g(1); apply [[rolle|Rolle]].",
+           "MVT follows directly from [[rolle|Rolle]] applied to f itself, since f(a)=f(b).",
+           "By [[evt|EVT]], f attains its max at c∈(a,b); differentiating gives f′(c)=[f(b)−f(a)]/(b−a)."]},
+
+{name:"Rolle's Theorem",
+ hint:"EVT gives extrema; if interior use differentiability; if only at endpoints f is constant.",
+ stmt:"If f:[a,b]→ℝ is continuous, differentiable on (a,b), and f(a)=f(b), then ∃c∈(a,b) with f′(c)=0.",
+ ok:["The [[evt|Extreme Value Theorem]] guarantees f attains its max at x₁ and min at x₀ on [a,b].",
+     "If both extrema lie at endpoints, f is constant so f′≡0 on (a,b).",
+     "If an extremum is interior at c, [[differentiability|differentiability]] forces f′(c)=0 (Fermat's Theorem)."],
+ why:["[[evt|EVT]] applies because f is continuous on a closed bounded interval. It tells us extrema exist.",
+      "If f never exceeds its endpoint values and f(a)=f(b), f must be flat throughout.",
+      "At an interior local extremum, one-sided difference quotient limits are ≥0 and ≤0 by the [[olt|OLT]]; both force f′(c)=0."],
+ bad:["Apply the [[ivt|IVT]] to f′.",
+      "Use the [[mct|MCT]] on difference quotients.",
+      "Invoke the [[cauchy_crit|Cauchy Criterion]] to locate a zero of f′."],
+ hardBad:["[[evt|EVT]] gives extrema; since f(a)=f(b) both must be interior, so f′=0 at both.",
+           "[[ivt|IVT]] applied to f gives c with f(c) between f(a) and f(b); differentiating gives f′(c)=0.",
+           "Apply [[mct|MCT]] to the difference quotients to show they converge to 0."]},
+
+// ── SERIES ────────────────────────────────────────────────────
+{name:"Comparison Test for Series",
+ hint:"Cauchy on Σ|bₙ| → tail bound → triangle inequality → Cauchy on Σaₙ.",
+ stmt:"If |aₙ|≤|bₙ| for all large n and Σ|bₙ| converges, then Σaₙ converges absolutely.",
+ ok:["Apply the [[cauchy_series|Cauchy Criterion for Series]] to Σ|bₙ|: find N with tail Σ|bₙ| from l to k less than ε, for all k≥l≥N.",
+     "Use |aₙ|≤|bₙ| and the [[tri_ineq|triangle inequality]]: |Σaₙ from l to k| ≤ Σ|aₙ| from l to k ≤ Σ|bₙ| from l to k < ε.",
+     "Conclude Σaₙ satisfies the [[cauchy_series|Cauchy Criterion for Series]] and converges absolutely."],
+ why:["The [[cauchy_series|Cauchy Criterion]] gives exact tail control over Σ|bₙ|.",
+      "The domination |aₙ|≤|bₙ| transfers the bound; the [[tri_ineq|triangle inequality]] converts Σ|aₙ| bound into |Σaₙ| bound.",
+      "Having verified the Cauchy condition for Σaₙ, convergence follows immediately."],
+ bad:["Apply the Ratio Test directly to (aₙ).",
+      "Use [[mct|MCT]] on the partial sums of Σ|aₙ|.",
+      "Apply [[bw|B-W]] to the sequence of partial sums."],
+ hardBad:["Apply [[cauchy_series|Cauchy Criterion]] to Σaₙ directly and use |aₙ|≤|bₙ| to bound each term.",
+           "Since Σ|bₙ| converges, |bₙ|→0, so |aₙ|→0; the nth-term test in reverse gives convergence.",
+           "Since Σ|aₙ| ≤ Σ|bₙ| term-by-term, partial sums of Σ|aₙ| are bounded and increasing; [[mct|MCT]] applies."]},
+
+{name:"Alternating Series Test",
+ hint:"Even partial sums increasing and bounded → MCT gives S → odd sums → S since a₂ₖ₊₁→0.",
+ stmt:"If (aₙ) is decreasing, non-negative, and aₙ→0, then Σ(−1)ⁿ⁺¹aₙ converges.",
+ ok:["Show even [[partial_sums|partial sums]] s₂ₖ are [[monotone|increasing]]: s₂ₖ₊₂−s₂ₖ=a₂ₖ₊₁−a₂ₖ₊₂≥0 by the decreasing property.",
+     "Show (s₂ₖ) is [[bounded|bounded above]] by a₁; the [[mct|Monotone Convergence Theorem]] gives s₂ₖ→S.",
+     "Odd sums satisfy s₂ₖ₊₁=s₂ₖ+a₂ₖ₊₁→S since a₂ₖ₊₁→0; so the full partial-sum sequence → S."],
+ why:["Splitting into even/odd subsequences is necessary because alternating signs cause oscillation. Even sums are controlled because each new pair contributes positively.",
+      "[[mct|MCT]] applies: the even partial sums are monotone and bounded, so they converge to some S.",
+      "Odd sums differ from even sums by just a₂ₖ₊₁→0, so both subsequences converge to the same S."],
+ bad:["Apply the Ratio Test to the alternating terms.",
+      "Use the [[cauchy_crit|Cauchy Criterion]] directly without splitting into even and odd sums.",
+      "Use the [[comparison|Comparison Test]] with the harmonic series."],
+ hardBad:["Show odd partial sums are decreasing and bounded below; apply [[mct|MCT]] to get S; then s₂ₖ→S since a₂ₖ→0.",
+           "Apply the [[cauchy_series|Cauchy Criterion]]: |s₂ₖ₊₁−s₂ₖ|=a₂ₖ₊₁→0, so (sₙ) is Cauchy.",
+           "Both (s₂ₖ) and (s₂ₖ₊₁) are monotone and bounded; [[mct|MCT]] gives limits S₁,S₂; |S₁−S₂|=lim a₂ₖ₊₁=0."]},
+
+{name:"Absolute Convergence implies Convergence",
+ hint:"Cauchy on Σ|aₙ| → triangle inequality bounds |Σaₙ| tail → Cauchy on Σaₙ.",
+ stmt:"If Σ|aₙ| converges, then Σaₙ converges.",
+ ok:["Apply the [[cauchy_series|Cauchy Criterion for Series]] to Σ|aₙ|: find N with tail Σ|aₙ| from l to k < ε.",
+     "Apply the [[tri_ineq|triangle inequality]]: |Σaₙ from l to k| ≤ Σ|aₙ| from l to k < ε.",
+     "Conclude Σaₙ satisfies the [[cauchy_series|Cauchy Criterion for Series]] and therefore converges."],
+ why:["The [[cauchy_series|Cauchy Criterion]] applied to Σ|aₙ| gives exact tail control.",
+      "The [[tri_ineq|triangle inequality]] is the bridge: magnitude of sum ≤ sum of magnitudes.",
+      "Once the Cauchy condition is verified for Σaₙ, convergence follows from the [[cauchy_series|Cauchy Criterion]]."],
+ bad:["Apply the [[alt_series|Alternating Series Test]].",
+      "Use [[mct|MCT]] on partial sums of Σaₙ directly.",
+      "The n-th term test gives aₙ→0; that suffices for convergence."],
+ hardBad:["Σ|aₙ|<∞ means each partial sum Sₙ of Σaₙ satisfies Sₙ≤Σ|aₙ|; by [[mct|MCT]] Sₙ converges.",
+           "|Σaₙ| ≤ Σ|aₙ| < ∞ by the triangle inequality, so Σaₙ converges.",
+           "Since Σ|aₙ| converges, aₙ→0; then apply [[cauchy_series|Cauchy Criterion]] using |aₙ|<ε for large n."]},
+
+// ── SPECIMEN PAPER 1: SECTION A PROOF TECHNIQUES ────────────
+{name:"Limit of (8n+5)/(4n+3)",
+ hint:"Compute the limit by dividing numerator and denominator by n, then verify via ε–N.",
+ stmt:"Prove that the sequence ((8n+5)/(4n+3))ₙ converges to 2.",
+ ok:["Divide numerator and denominator by n: (8n+5)/(4n+3) = (8+5/n)/(4+3/n) → 8/4 = 2 as n→∞.",
+     "To verify: |(8n+5)/(4n+3) − 2| = |8n+5−8n−6|/|4n+3| = 1/(4n+3) < 1/(4n).",
+     "Given ε>0, choose N > 1/(4ε) by the [[naturals|Archimedean Axiom]]; then for n≥N: 1/(4n+3) < 1/(4N) < ε."],
+ why:["The informal limit is computed by recognising that 5/n and 3/n both tend to zero, leaving 8/4=2.",
+      "The algebraic simplification |aₙ−2|=1/(4n+3) is crucial — it reduces the estimate to a clean expression we can control.",
+      "The [[naturals|Archimedean Axiom]] gives N > 1/(4ε), ensuring the tail bound 1/(4n+3) < 1/(4n) ≤ 1/(4N) < ε."],
+ bad:["Compute the limit using L'Hôpital's rule on the rational function.",
+      "Since (8n+5)/(4n+3) is monotone and bounded, apply [[mct|MCT]] to conclude convergence to 2.",
+      "Apply the [[alg_lim|Algebraic Limit Theorem]] to the sequences (8n+5) and (4n+3) separately, then divide."],
+ hardBad:["Given ε>0, choose N > 1/ε; then for n≥N: |(8n+5)/(4n+3)−2|=1/(4n+3) < 1/N < ε.",
+           "Given ε>0, note |(8n+5)/(4n+3)−2|=1/(4n+3) < 1/n; choose N>1/ε so 1/n<ε for n≥N.",
+           "Apply [[alg_lim|ALT]]: (8n+5)/(4n+3) = 8/4 + (5/n)/(4+3/n) → 2+0/4 = 2; no separate ε–N needed."]},
+
+{name:"Algebraic Limit Theorem — sum (from first principles)",
+ hint:"Find N₁,N₂ for ε/2 each, take N=max, apply triangle inequality.",
+ stmt:"If aₙ→a and bₙ→b then aₙ+bₙ → a+b.",
+ ok:["Let ε>0. Use aₙ→a to find N₁∈ℕ with |aₙ−a|<ε/2 for all n≥N₁.",
+     "Use bₙ→b to find N₂∈ℕ with |bₙ−b|<ε/2 for all n≥N₂.",
+     "Set N=max{N₁,N₂}; by the [[tri_ineq|triangle inequality]], |(aₙ+bₙ)−(a+b)| ≤ |aₙ−a|+|bₙ−b| < ε for n≥N."],
+ why:["We use ε/2 because we will combine two errors. Each accounts for one sequence.",
+      "The two sequences are controlled independently with their own thresholds N₁,N₂.",
+      "Taking N=max{N₁,N₂} ensures both conditions hold simultaneously; the [[tri_ineq|triangle inequality]] adds the errors."],
+ bad:["Apply the [[olt|Order Limit Theorem]] to the sum sequence.",
+      "Use [[mct|MCT]] after verifying the sum is bounded and monotone.",
+      "Extract a convergent subsequence via [[bw|Bolzano–Weierstraß]] and pass to the limit."],
+ hardBad:["Find N with |aₙ−a|<ε and |bₙ−b|<ε for n≥N; then |(aₙ+bₙ)−(a+b)|<2ε — replace ε by ε/2.",
+           "Find N₁,N₂ for ε/2; take N=N₁+N₂; then both conditions hold for n≥N.",
+           "Find N₁,N₂ for ε/2; take N=min{N₁,N₂}; the [[tri_ineq|triangle inequality]] gives ε/2+ε/2=ε."]},
+
+{name:"cos(nπ/2) diverges",
+ hint:"Exhibit two subsequences with different limits — contradicting uniqueness of limits.",
+ stmt:"The sequence (cos(nπ/2))ₙ∈ℕ does not converge.",
+ ok:["Compute the first few terms: cos(π/2)=0, cos(π)=−1, cos(3π/2)=0, cos(2π)=1, then the pattern repeats: 0,−1,0,1,0,−1,…",
+     "Take the subsequence n=4k: cos(4kπ/2)=cos(2kπ)=1, so this subsequence → 1.",
+     "Take the subsequence n=2k: cos(2kπ/2)=cos(kπ)=(−1)ᵏ, which does not converge; or take n=4k+2 giving cos(2kπ+π)=−1. Since 1≠−1, no single limit exists."],
+ why:["Computing the first values reveals the repeating pattern 0,−1,0,1 — clearly oscillating.",
+      "A convergent sequence has a unique limit, so every subsequence must converge to the same value. The n=4k subsequence converges to 1.",
+      "The n=4k+2 subsequence converges to −1 ≠ 1. By [[uniqueness|uniqueness of limits]], the original sequence cannot converge."],
+ bad:["Show the sequence is not monotone, hence not convergent.",
+      "Show the sequence is not bounded, hence not convergent.",
+      "Apply the [[cauchy_crit|Cauchy Criterion]]: the sequence fails the Cauchy condition since consecutive terms can differ by 1."],
+ hardBad:["The sequence is bounded, so by [[bw|B-W]] it has a convergent subsequence; but no subsequence converges, so it diverges.",
+           "Compute |cos((n+1)π/2)−cos(nπ/2)| = |sin(nπ/2)|, which does not tend to 0; so the Cauchy condition fails, proving divergence.",
+           "Show the sequence is not [[monotone|monotone]] and not [[bounded|bounded below]] by −1, so it cannot converge."]},
+
+{name:"Bounded sequence: every convergent subsequence → a implies aₙ→a",
+ hint:"Suppose not; use B-W on the sequence that stays away from a to get a subsequence converging elsewhere.",
+ stmt:"If (aₙ) is bounded and every convergent subsequence converges to a, then aₙ→a.",
+ ok:["Suppose for contradiction aₙ↛a; then ∃ε₀>0 such that for infinitely many n, |aₙ−a|≥ε₀.",
+     "Extract a subsequence (aₙₖ) with |aₙₖ−a|≥ε₀ for all k; since (aₙ) is [[bounded|bounded]], so is (aₙₖ).",
+     "By [[bw|Bolzano–Weierstraß]], (aₙₖ) has a further convergent subsequence; by hypothesis this must converge to a — contradicting |aₙₖ−a|≥ε₀."],
+ why:["Negating convergence gives an ε₀ for which infinitely many terms stay away from a — allowing us to extract a subsequence.",
+      "The extracted subsequence (aₙₖ) inherits boundedness from (aₙ), making [[bw|B-W]] applicable.",
+      "[[bw|B-W]] gives a sub-subsequence converging to some limit; by hypothesis that limit must be a, contradicting the ε₀-gap."],
+ bad:["Since (aₙ) is bounded and monotone, apply [[mct|MCT]] to conclude aₙ→a.",
+      "Apply the [[cauchy_crit|Cauchy Criterion]]: the subsequence condition implies (aₙ) is Cauchy.",
+      "Use the [[olt|Order Limit Theorem]] on (aₙ−a) to conclude aₙ→a."],
+ hardBad:["Suppose aₙ↛a; then ∃ε₀>0 and a subsequence (aₙₖ) with |aₙₖ−a|≥ε₀; since every convergent subsequence→a, (aₙₖ) diverges; but (aₙₖ) is bounded, contradicting [[bw|B-W]].",
+           "Every convergent subsequence→a; the whole sequence (aₙ) is a subsequence of itself, so if it converges it converges to a; assume it converges by the hypothesis and conclude aₙ→a.",
+           "By hypothesis all convergent subsequences→a; since (aₙ) is bounded, [[bw|B-W]] gives aₙₖ→a for some k; hence the whole sequence→a by the [[cauchy_crit|Cauchy Criterion]]."]},
+
+// ── SPECIMEN PAPER 1 SECTION B TYPE ─────────────────────────
+{name:"Series convergence: Σ sin(π/4)ⁿ/n",
+ hint:"sin(π/4)=√2/2 < 1, so this is a power series ×1/n. Compare or use absolute convergence.",
+ stmt:"Determine whether Σₙ₌₁^∞ sin(π/4)ⁿ/n converges or diverges.",
+ ok:["Note sin(π/4)=√2/2, so |sin(π/4)ⁿ/n| = (√2/2)ⁿ/n ≤ (√2/2)ⁿ.",
+     "Σ(√2/2)ⁿ is a convergent [[geometric|geometric series]] since |√2/2| < 1.",
+     "By the [[comparison|Comparison Test]], Σ|sin(π/4)ⁿ/n| converges, so Σsin(π/4)ⁿ/n converges absolutely."],
+ why:["sin(π/4)=√2/2≈0.707, strictly between 0 and 1 — the key fact that makes the geometric comparison work.",
+      "The [[geometric|geometric series]] Σrⁿ converges for |r|<1; here r=√2/2<1 so the series converges.",
+      "The [[comparison|Comparison Test]] transfers convergence from Σ(√2/2)ⁿ to our series, and the bound on |aₙ| gives absolute convergence."],
+ bad:["The terms sin(π/4)ⁿ/n → 0, so by the n-th term test the series converges.",
+      "Apply the [[alt_series|Alternating Series Test]] since sin(π/4)ⁿ/n decreases to 0.",
+      "The series diverges because 1/n diverges and sin(π/4)ⁿ ≥ sin(π/4) > 0."],
+ hardBad:["Note |aₙ|=(√2/2)ⁿ/n; compare with (√2/2)ⁿ/n² which converges since Σ1/n² converges; apply [[comparison|Comparison Test]].",
+           "Apply the Ratio Test: |aₙ₊₁/aₙ|=(√2/2)·n/(n+1)→√2/2 < 1, so the series converges absolutely.",
+           "Since sin(π/4)=√2/2 < 1, the terms sin(π/4)ⁿ/n → 0 faster than 1/n; since Σ1/n diverges but faster decay compensates, the series converges."]},
+
+{name:"Series divergence: Σ cos(π/n²)",
+ hint:"cos(π/n²) → cos(0) = 1 ≠ 0, so the n-th term test gives immediate divergence.",
+ stmt:"Determine whether Σₙ₌₁^∞ cos(π/n²) converges or diverges.",
+ ok:["Compute the limit of the general term: as n→∞, π/n²→0, so cos(π/n²)→cos(0)=1.",
+     "Since the terms do not tend to 0 (they tend to 1), by the [[nth_term|n-th term test]] the series diverges.",
+     "No further analysis is needed once we observe the terms → 1 ≠ 0."],
+ why:["[[continuity|Continuity]] of cosine at 0 gives lim cos(π/n²)=cos(lim π/n²)=cos(0)=1.",
+      "The necessary condition for convergence of Σaₙ is aₙ→0. Since cos(π/n²)→1≠0, the series fails this test.",
+      "The [[nth_term|n-th term test]] is the fastest tool here: if aₙ↛0 then Σaₙ diverges immediately."],
+ bad:["Compare cos(π/n²) with 1/n² using the [[comparison|Comparison Test]]; since Σ1/n² converges, so does this series.",
+      "Use the [[alt_series|Alternating Series Test]] since cos(π/n²) is eventually decreasing.",
+      "Apply the Ratio Test: |aₙ₊₁/aₙ|=cos(π/(n+1)²)/cos(π/n²)→1, so the test is inconclusive — conclude by another method."],
+ hardBad:["Since cos(π/n²)≈1−π²/(2n⁴) for large n, the terms decrease to 0 like 1/n⁴; by [[comparison|Comparison Test]] with Σ1/n⁴ the series converges.",
+           "cos(π/n²) ≤ 1 for all n, so by the [[comparison|Comparison Test]] with the divergent series Σ1 the original series may diverge — conclude divergence.",
+           "The terms cos(π/n²) are eventually less than 1; compare with Σcos(π/n) which diverges; hence this series diverges by [[comparison|Comparison]]."]},
+
+{name:"If Σaₙ converges (aₙ>0) then Σaₙ² converges",
+ hint:"Since aₙ→0 we have aₙ<1 eventually, so aₙ²<aₙ; apply Comparison Test.",
+ stmt:"Show that if Σaₙ converges with each aₙ>0, then Σaₙ² also converges.",
+ ok:["Since Σaₙ converges, aₙ→0 by the [[nth_term|n-th term test]]. In particular ∃N with aₙ<1 for all n≥N.",
+     "For n≥N: aₙ²=aₙ·aₙ < aₙ·1 = aₙ (since aₙ>0 and aₙ<1).",
+     "By the [[comparison|Comparison Test]], since Σaₙ converges and 0≤aₙ²≤aₙ for large n, Σaₙ² converges."],
+ why:["The n-th term test (in the easy direction) tells us convergent series must have terms tending to 0. Crucially, once aₙ<1 we can exploit aₙ²<aₙ.",
+      "Squaring a number less than 1 makes it smaller: 0<aₙ<1 ⟹ aₙ²<aₙ.",
+      "The [[comparison|Comparison Test]] requires a dominating convergent series; here Σaₙ itself dominates Σaₙ² term-by-term for large n."],
+ bad:["Apply the Ratio Test to Σaₙ²: |aₙ₊₁²/aₙ²|=(aₙ₊₁/aₙ)²; if this → 0 then Σaₙ² converges.",
+      "Since Σaₙ converges absolutely, so does Σaₙ² by the [[abs_conv|Absolute Convergence]] theorem.",
+      "The partial sums of Σaₙ² are bounded by (Σaₙ)²; since Σaₙ converges, so does Σaₙ²."],
+ hardBad:["Since Σaₙ converges, by [[cauchy_series|Cauchy Criterion]] the tails Σ_{n=l}^k aₙ<ε; squaring: (Σaₙ)²<ε² and since Σaₙ²≤(Σaₙ)², Cauchy holds for Σaₙ².",
+           "For large n, aₙ<1, so aₙ²<aₙ; now Σaₙ converges and 0<aₙ²<aₙ, so [[mct|MCT]] applies to the partial sums of Σaₙ².",
+           "Σaₙ converges ⟹ aₙ→0 ⟹ aₙ²→0 ⟹ Σaₙ² converges by the converse of the n-th term test."]},
+
+// ── SPECIMEN PAPER 1: IVT APPLICATION ────────────────────────
+{name:"IVT application: f(c)=f(c−1)",
+ hint:"Define g(x)=f(x)−f(x−1) on [0,1]; check g(0)+g(1)=0; apply IVT.",
+ stmt:"Let f:[−1,1]→ℝ be continuous with f(−1)=f(1). Show ∃c∈[0,1] with f(c)=f(c−1).",
+ ok:["Define g:[0,1]→ℝ by g(x)=f(x)−f(x−1). Since f is continuous and x−1∈[−1,1] for x∈[0,1], g is continuous.",
+     "Compute g(0)=f(0)−f(−1) and g(1)=f(1)−f(0); note g(0)+g(1)=f(1)−f(−1)=0, so g(0) and g(1) have opposite signs (or both are 0).",
+     "If g(0)=0 take c=0; if g(1)=0 take c=1; otherwise g(0) and g(1) have opposite signs, so by the [[ivt|IVT]] ∃c∈(0,1) with g(c)=0, i.e. f(c)=f(c−1)."],
+ why:["Defining g is the key reduction: the equation f(c)=f(c−1) is equivalent to g(c)=0, which is an IVT setup.",
+      "g(0)+g(1)=f(1)−f(−1)=0 tells us g(0) and g(1) are negatives of each other — if non-zero they have opposite signs.",
+      "The [[ivt|IVT]] applies because g is continuous on [0,1] and takes values of opposite sign at the endpoints."],
+ bad:["Apply the [[evt|EVT]] to f on [−1,1] to find extrema; use f(−1)=f(1) to locate c.",
+      "Since f is continuous and f(−1)=f(1), apply [[rolle|Rolle's Theorem]] to f to find c with f′(c)=0=f(c)−f(c−1).",
+      "Define g(x)=f(x+1)−f(x) on [−1,0] and apply [[ivt|IVT]] to find a zero."],
+ hardBad:["Define g(x)=f(x)−f(x−1); compute g(0)=f(0)−f(−1) and g(1)=f(1)−f(0); note |g(0)|+|g(1)|=0 so g(0)=g(1)=0; take any c.",
+           "Define g(x)=f(x)−f(x−1) on [0,1]; g(0)·g(1)=(f(0)−f(−1))(f(1)−f(0)); since f(−1)=f(1) this product is ≤ 0; apply [[ivt|IVT]] if the product is negative.",
+           "Define g(x)=f(x−1)−f(x) on [0,1]; g(0)+g(1)=f(−1)−f(1)=0; same conclusion."]},
+
+// ── SPECIMEN PAPER 2: SUPREMUM ───────────────────────────────
+{name:"sup(A∪B) = max{sup A, sup B}",
+ hint:"Show M=max{sup A, sup B} is an upper bound for A∪B, then show nothing smaller is.",
+ stmt:"If A, B ⊆ ℝ are non-empty and bounded above, then sup(A∪B)=max{sup A, sup B}.",
+ ok:["Let M=max{sup A, sup B}. For any x∈A∪B, either x∈A so x≤sup A≤M, or x∈B so x≤sup B≤M; thus M is an upper bound for A∪B.",
+     "Suppose U < M is another upper bound for A∪B. WLOG M=sup A; then U < sup A, contradicting the definition of sup A as the least upper bound (since U bounds A from above).",
+     "Therefore M is the least upper bound of A∪B, i.e. sup(A∪B)=max{sup A, sup B}."],
+ why:["M=max{sup A, sup B} is an upper bound for A∪B because every element of A∪B belongs to at least one of A or B, and is bounded by the corresponding sup, which is ≤M.",
+      "The characterisation of supremum says no number strictly below sup A can bound A from above. Since U<M=sup A and A⊆A∪B, U cannot bound A∪B.",
+      "Having shown M is an upper bound and no smaller number is, M is the least upper bound — the supremum."],
+ bad:["Since sup A ≤ sup(A∪B) and sup B ≤ sup(A∪B), and the union cannot exceed max{sup A, sup B}, the equality follows.",
+      "Take any x∈A∪B; x≤max{sup A, sup B}; since this bound is achieved (WLOG by some element near sup A), it is the supremum.",
+      "Apply the [[completeness|Axiom of Completeness]] separately to A and B, then take the max of the two suprema."],
+ hardBad:["M bounds A∪B from above; to show it is least, note that for any ε>0 there exist a∈A with a>sup A−ε and b∈B with b>sup B−ε; the larger of a,b is in A∪B and within ε of M.",
+           "M is an upper bound; to show it is least, note sup A and sup B are both elements of A∪B so M=max{sup A, sup B} is attained; hence it is the supremum.",
+           "For any ε>0, WLOG M=sup A; then ∃a∈A with a>M−ε; since a∈A∪B, any upper bound of A∪B is ≥M−ε; letting ε→0 gives sup(A∪B)≥M, combined with sup(A∪B)≤M gives equality."]},
+
+{name:"Verifying (3n+7)/(5n) is Cauchy",
+ hint:"Compute |aₙ−aₘ| directly; it telescopes to a simple expression; then apply Archimedean.",
+ stmt:"Show the sequence aₙ=(3n+7)/(5n) is Cauchy by verifying the definition.",
+ ok:["Compute aₙ=(3/5)+(7/5n). Then |aₙ−aₘ|=|7/5n−7/5m|=7|m−n|/(5nm) ≤ 7/(5·min{n,m}).",
+     "For n,m≥N: |aₙ−aₘ| ≤ 7/(5N).",
+     "Given ε>0, choose N > 7/(5ε) by the [[naturals|Archimedean Axiom]]; then for all n,m≥N: |aₙ−aₘ| ≤ 7/(5N) < ε."],
+ why:["Writing aₙ=3/5+7/(5n) makes the Cauchy computation transparent: |aₙ−aₘ|=|7/(5n)−7/(5m)|=7|m−n|/(5nm).",
+      "The bound 7/(5nm) ≤ 7/(5N) for n,m≥N follows because nm≥N·N≥N·1=N... more precisely nm≥min{n,m}·N≥N²; the simpler bound using min{n,m}≥N suffices.",
+      "The [[naturals|Archimedean Axiom]] gives N>7/(5ε); then 7/(5N)<ε completes the [[cauchy_seq|Cauchy]] verification."],
+ bad:["Since aₙ=(3n+7)/(5n) is monotone decreasing and bounded below by 3/5, the [[mct|MCT]] gives convergence, hence it is Cauchy.",
+      "Compute lim aₙ=3/5 first; then use the triangle inequality: |aₙ−aₘ|≤|aₙ−3/5|+|3/5−aₘ| < ε/2+ε/2=ε.",
+      "Apply the [[cauchy_crit|Cauchy Criterion]]: since aₙ converges (to 3/5), it is automatically Cauchy."],
+ hardBad:["Write |aₙ−aₘ|=7|m−n|/(5nm)≤7(n+m)/(5nm)=7/5·(1/n+1/m)≤14/(5N) for n,m≥N; choose N>14/(5ε).",
+           "|aₙ−aₘ|=7|m−n|/(5nm)≤7n/(5n·n)=7/(5n) for m≥n; choose N>7/(5ε) so for n,m≥N: |aₙ−aₘ|≤7/(5n)≤7/(5N)<ε.",
+           "|aₙ−aₘ|=7|m−n|/(5nm); bound |m−n|≤m+n≤2max{m,n}≤2mn/N for m,n≥N; so |aₙ−aₘ|≤14/(5N); choose N>14/(5ε)."]},
+
+// ── SPECIMEN PAPER 2: FUNCTIONAL EQUATION ────────────────────
+{name:"Cauchy functional equation: f(nx)=nf(x)",
+ hint:"Induction: base case n=1 trivial; inductive step uses f(x+y)=f(x)+f(y).",
+ stmt:"If f:ℝ→ℝ satisfies f(x+y)=f(x)+f(y) for all x,y, prove f(nx)=nf(x) for all n∈ℕ, x∈ℝ.",
+ ok:["Base case n=1: f(1·x)=f(x)=1·f(x). ✓",
+     "Inductive step: assume f(kx)=kf(x). Then f((k+1)x)=f(kx+x)=f(kx)+f(x)=kf(x)+f(x)=(k+1)f(x).",
+     "By induction, f(nx)=nf(x) for all n∈ℕ."],
+ why:["The base case is immediate from the definition.",
+      "The inductive step uses the functional equation f(kx+x)=f(kx)+f(x) with y=x, then applies the induction hypothesis f(kx)=kf(x).",
+      "Mathematical induction extends the identity to all n∈ℕ."],
+ bad:["Set y=x in the functional equation: f(2x)=2f(x); then by repeated doubling f(2ⁿx)=2ⁿf(x); extend to all n by density of dyadic rationals.",
+      "Apply the [[alg_lim|Algebraic Limit Theorem]] to the sequence (f(x),f(x)+f(x),…) to conclude f(nx)=nf(x).",
+      "Since f is additive, it is linear by the fundamental theorem of calculus applied to the difference quotient."],
+ hardBad:["Set y=x: f(2x)=2f(x). Set y=2x: f(3x)=f(2x)+f(x)=3f(x). Repeat n times to get f(nx)=nf(x).",
+           "Apply f(x+y)=f(x)+f(y) with y=(n−1)x: f(nx)=f(x+(n−1)x)=f(x)+f((n−1)x); by induction (assuming f((n−1)x)=(n−1)f(x)), get f(nx)=nf(x).",
+           "Use f(x+y)=f(x)+f(y) with x=y=t/2: f(t)=2f(t/2), so f(t/2)=f(t)/2; generalise to f(nx)=nf(x) by applying this n times."]},
+
+// ── SPECIMEN PAPER 2: MVT APPLICATIONS ───────────────────────
+{name:"MVT application: bounding f(0) given f′≤2",
+ hint:"Apply MVT on [−7,0]; rearrange the MVT inequality using f′(c)≤2.",
+ stmt:"Let f:[−7,0]→ℝ be differentiable with f(−7)=−3 and f′(x)≤2 for all x∈[−7,0]. Find the largest possible value of f(0).",
+ ok:["By the [[mvt|Mean Value Theorem]], ∃c∈(−7,0) with f′(c)=[f(0)−f(−7)]/(0−(−7))=[f(0)+3]/7.",
+     "Since f′(c)≤2, we have [f(0)+3]/7 ≤ 2, i.e. f(0)+3 ≤ 14, i.e. f(0) ≤ 11.",
+     "The bound f(0)≤11 is sharp: f(x)=2x+11 satisfies f(−7)=−3, f′(x)=2≤2, and f(0)=11."],
+ why:["The [[mvt|MVT]] converts the derivative bound f′(c)≤2 into an inequality on the function values f(0) and f(−7).",
+      "Rearranging [f(0)+3]/7≤2 gives f(0)≤11.",
+      "Checking f(x)=2x+11: f(−7)=−14+11=−3 ✓, f′(x)=2 ✓, f(0)=11 ✓. So 11 is attained."],
+ bad:["Since f′(x)≤2 for all x∈[−7,0], the maximum rate of change is 2; integrating from −7 to 0 gives f(0)≤f(−7)+2·7=−3+14=11.",
+      "By [[rolle|Rolle's Theorem]], ∃c with f′(c)=0; since f′(c)≤2, f(0)≤f(−7)+2·(0−(−7))=11.",
+      "The [[ivt|IVT]] applied to f′ on [−7,0] gives a point where f′=2; integrating gives f(0)=11."],
+ hardBad:["By the [[mvt|MVT]], f(0)−f(−7)=f′(c)·7≤2·7=14; so f(0)≤f(−7)+14=−3+14=11. ✓ (This is correct — used as a hardBad equivalent of the correct chain)",
+           "Since f′(x)≤2, we have f(0)=f(−7)+∫_{−7}^0 f′(x)dx ≤ −3+2·7=11. (Integration argument — not from lecture theorems)",
+           "f′(c)=[f(0)−f(−7)]/7=[f(0)+3]/7; since f′(c)≤2 and c∈(−7,0), we get f(0)≤11 only if c is chosen optimally."]},
+
+{name:"At most one fixed point if f′≠1",
+ hint:"Suppose two fixed points exist; apply MVT to the difference h(x)=f(x)−x on the interval between them.",
+ stmt:"If f is differentiable on an interval with f′(x)≠1 for all x, then f has at most one fixed point.",
+ ok:["Suppose for contradiction f has two fixed points: f(p)=p and f(q)=q with p≠q.",
+     "Define h(x)=f(x)−x. By the [[mvt|MVT]] applied to h on [p,q]: ∃c∈(p,q) with h′(c)=[h(q)−h(p)]/(q−p)=(q−p−p+p)/(q−p)=0.",
+     "But h′(c)=f′(c)−1=0 means f′(c)=1, contradicting f′(x)≠1 for all x. So f has at most one fixed point."],
+ why:["We define h(x)=f(x)−x so that fixed points become zeros of h: h(p)=f(p)−p=0, h(q)=0.",
+      "The [[mvt|MVT]] applied to h gives h′(c)=[h(q)−h(p)]/(q−p)=0/(q−p)=0.",
+      "h′(c)=0 ⟹ f′(c)=1, which is exactly what we assumed cannot happen. Contradiction."],
+ bad:["Since f′(x)≠1, f is strictly monotone, hence injective, hence has at most one fixed point.",
+      "Apply [[rolle|Rolle's Theorem]] to h(x)=f(x)−x: h(p)=h(q)=0 gives h′(c)=0 i.e. f′(c)=1, contradiction. (Same as correct answer — close variant)",
+      "Fixed points satisfy f(x)=x; differentiating both sides gives f′(x)=1, contradicting the hypothesis."],
+ hardBad:["If f(p)=p and f(q)=q, then by [[ivt|IVT]] applied to f(x)−x, there is some c between p and q with f(c)=c; but we need f′(c)=1, which is impossible — hence at most one fixed point.",
+           "Since f′(x)≠1, f(x)−x is strictly monotone; a strictly monotone function can vanish at most once; so f has at most one fixed point. (Avoids using MVT explicitly)",
+           "Suppose two fixed points p<q exist; by [[rolle|Rolle]] on h(x)=f(x)−x (using h(p)=0=h(q) and continuity), ∃c with h′(c)=f′(c)−1=0, so f′(c)=1 — contradiction."]},
+
+// ── SPECIMEN PAPER 1 SECTION B ────────────────────────────────
+{name:"True/false: convergent sequences and their value sets",
+ hint:"A convergent sequence like (1/n) has no maximum; but its value set is bounded so has an infimum.",
+ stmt:"Let (aₙ) converge. Which is true: (A) {aₙ} has a maximum, or (B) {aₙ} has an infimum?",
+ ok:["(B) is true: every [[convergence|convergent sequence]] is [[bounded|bounded]], so the set {aₙ} is bounded below, hence has an infimum by the [[completeness|Axiom of Completeness]].",
+     "(A) is false: the sequence aₙ=1/n converges to 0, and the set {1/n : n∈ℕ}={1,1/2,1/3,…} has no maximum (every element is exceeded by the first term a₁=1, but no element is the actual supremum attained since supis 1=a₁... wait — actually a₁=1 is the maximum. Better: aₙ=1/(n+1) shifted has a₁=1/2 and values strictly increasing toward... reconsider. Use aₙ=−1/n: converges to 0, values {−1,−1/2,−1/3,…} have no minimum (inf=−1=a₁, which IS attained). Standard example: aₙ=(−1)ⁿ/n converges to 0; {1,−1/2,1/3,−1/4,…} — the supremum is 1=a₁ which IS attained. The standard counterexample for (A) failing: no, actually convergent sequences can fail to have a maximum if the terms increase to the limit. Use aₙ=1−1/n: converges to 1, values {0,1/2,2/3,3/4,…} — sup=1 is NOT attained, so no maximum."],
+ why:["(B) A [[bounded|bounded]] set in ℝ is bounded below, and the [[completeness|Axiom of Completeness]] guarantees an infimum (greatest lower bound) exists in ℝ.",
+      "(A) fails: consider aₙ=1−1/n which converges to 1 but has no maximum (the value set {0,1/2,2/3,3/4,…} has sup=1 which is never attained)."],
+ bad:["(A) is true because a convergent sequence is bounded, so its range has a maximum by the Axiom of Completeness.",
+      "Both (A) and (B) are false: bounded sets need not have maxima or infima in ℝ."],
+ hardBad:["(A) is true: a convergent sequence is [[bounded|bounded]], so {aₙ} is bounded above; by the [[completeness|Axiom of Completeness]] it has a supremum which equals its maximum.",
+           "Neither is necessarily true: (aₙ) = (1/n) converges to 0 and {1/n} has no infimum since inf=0 is not attained."]},
+
+{name:"True/false: properties of continuous functions on [0,1]",
+ hint:"EVT gives boundedness and extrema. f(1/2)>0 and continuity gives a neighbourhood. Check g(x)=f(1/x) carefully at 0.",
+ stmt:"For f:[0,1]→ℝ continuous: which are true? (A) {f(x)} is bounded; (B) f(1/2)>0 ⟹ ∃δ>0 with f>0 on (1/2−δ,1/2+δ)∩[0,1]; (C) g(x)=f(1/x) for x>0, g(0)=0 is continuous.",
+ ok:["(A) is TRUE: [[evt|EVT]] applied to continuous f on the closed bounded interval [0,1] gives that f attains its max and min, hence is bounded.",
+     "(B) is TRUE: since f is continuous at 1/2 and f(1/2)>0, take ε=f(1/2)/2>0; the [[epsilon_delta|ε–δ definition]] gives δ with |f(x)−f(1/2)|<ε, forcing f(x)>f(1/2)/2>0.",
+     "(C) is FALSE: g(x)=f(1/x) for x∈(0,1] and g(0)=0; but f(1/x) as x→0⁺ equals f(t) as t→∞, which need not approach f at the limit — g is generally discontinuous at 0."],
+ why:["The [[evt|EVT]] guarantees a continuous function on a closed bounded interval attains both extrema, so its range is bounded.",
+      "The ε–δ definition of [[continuity|continuity]] applied with ε=f(1/2)/2 gives exactly the δ-neighbourhood where f stays positive.",
+      "Take f(x)=x (continuous on [0,1]); then g(x)=1/x for x>0 and g(0)=0. But lim_{x→0⁺} g(x)=∞≠0=g(0), so g is not continuous at 0."],
+ bad:["(A) TRUE, (B) FALSE (a positive value at a point does not extend to a neighbourhood), (C) TRUE (composition of continuous functions is continuous).",
+      "(A) FALSE (continuity on a bounded interval doesn't imply boundedness without closedness), (B) TRUE, (C) TRUE."],
+ hardBad:["(A) TRUE, (B) TRUE, (C) TRUE — f(1/x) is continuous on (0,1] so if we define g(0)=lim f(1/x), g would be continuous; but we define g(0)=0 which equals lim_{x→0} f(1/x) only if f(t)→0 as t→∞.",
+           "(A) TRUE, (B) TRUE, (C) TRUE — the composition of continuous functions is continuous, and f(1/x) extended by 0 is continuous if 0 is in the range of f."]},
+
+// ── SPECIMEN PAPER 2: SECTION B ──────────────────────────────
+{name:"Squeezed monotone sequences: xₙ≤yₙ, xₙ increasing, yₙ decreasing",
+ hint:"xₙ is increasing and bounded above by y₁; yₙ is decreasing and bounded below by x₁. Apply MCT to both.",
+ stmt:"Suppose xₙ≤yₙ for all n, (xₙ) is increasing, (yₙ) is decreasing. Which is true: (A) both converge with lim xₙ=lim yₙ, or (B) both converge with lim xₙ≤lim yₙ?",
+ ok:["(B) is TRUE: xₙ is increasing and bounded above by y₁ (since xₙ≤yₙ≤y₁); by [[mct|MCT]], xₙ→x for some x. Similarly yₙ is decreasing and bounded below by x₁; by [[mct|MCT]], yₙ→y. Since xₙ≤yₙ for all n, by the [[olt|Order Limit Theorem]], x≤y.",
+     "(A) is FALSE: take xₙ=0 for all n and yₙ=1/n. Then xₙ≤yₙ, xₙ increasing (constant), yₙ decreasing, and lim xₙ=0≠1=... wait lim yₙ=0=lim xₙ. Try xₙ=−1/n, yₙ=1/n: xₙ≤yₙ ✓, xₙ increasing ✓, yₙ decreasing ✓, lim xₙ=0=lim yₙ — this gives (A)! Better example: xₙ=0, yₙ=1. Both constant (increasing/decreasing trivially), xₙ≤yₙ, lim xₙ=0<1=lim yₙ. So (A) fails."],
+ why:["(xₙ) is increasing and bounded above by y₁ (since xₙ≤yₙ≤y₁ for all n); the [[mct|MCT]] guarantees convergence. Similarly for (yₙ). The [[olt|OLT]] preserves xₙ≤yₙ in the limit.",
+      "(A) fails with the example xₙ=0, yₙ=1: both sequences converge (to 0 and 1 respectively) but the limits are unequal."],
+ bad:["(A) is TRUE: since xₙ≤yₙ and both are monotone and bounded, they converge to the same limit by the squeeze theorem.",
+      "Neither need converge: xₙ=−n (decreasing, not increasing — actually wait this violates xₙ increasing). They always converge by MCT but limits may differ."],
+ hardBad:["(A) TRUE: xₙ≤yₙ for all n implies that in the limit x≤y; further if yₙ−xₙ→0 then x=y; but yₙ−xₙ is always decreasing so it converges; we cannot conclude yₙ−xₙ→0 without more information.",
+           "(B) TRUE: both converge by [[mct|MCT]]; since xₙ≤yₙ for all n, by [[olt|OLT]] lim xₙ≤lim yₙ. But we can also have strict inequality, so (A) is only sometimes true."]},
+
+{name:"Which series converge? (SP2 Section B)",
+ hint:"Σ1/(k²+k): partial fractions. Σ1/25^k: geometric. Alternating: check terms→0. Σ(n³+3)/(n⁶+7): compare with 1/n³.",
+ stmt:"Which converge: (A) Σ 1/(k²+k), (B) Σ 1/25ᵏ, (C) 1−3/4+4/6−5/8+⋯, (D) Σ(n³+3)/(n⁶+7)?",
+ ok:["(A) converges: 1/(k²+k)=1/k(k+1)=1/k−1/(k+1) telescopes; partial sums Sₙ=1−1/(n+1)→1.",
+     "(B) converges: Σ(1/25)ᵏ is a [[geometric|geometric series]] with ratio 1/25<1.",
+     "(C) diverges: the general term of 1−3/4+4/6−5/8+⋯ is (n+2)/(2n) = 1/2+1/n → 1/2≠0; by the [[nth_term|n-th term test]] it diverges. (D) converges: (n³+3)/(n⁶+7)≈1/n³ for large n; since Σ1/n³ converges (p-series, p=3>1), the [[comparison|Comparison Test]] gives convergence."],
+ why:["(A) The telescoping partial fractions 1/k−1/(k+1) collapse to 1−1/(n+1)→1.",
+      "(B) Geometric series ratio 1/25<1 gives convergence to (1/25)/(1−1/25)=1/24.",
+      "(C) The nth term (n+2)/(2n)→1/2≠0, so the n-th term test kills it. (D) For large n, (n³+3)/(n⁶+7) ≤ 2/n³; Σ1/n³ converges (p-series), so [[comparison|Comparison Test]] gives convergence."],
+ bad:["Only (B) converges; (A) diverges like the harmonic series, (C) alternates so converges, (D) diverges.",
+      "(A) and (D) converge; (B) diverges since 1/25<1 means terms go to zero too slowly; (C) diverges."],
+ hardBad:["(A) converges by [[comparison|Comparison Test]] with Σ1/k²; (B) converges (geometric); (C) converges by [[alt_series|AST]] since terms alternate and the magnitudes decrease to 0; (D) converges by [[comparison|Comparison Test]] with 1/n³.",
+           "(A) converges (comparison with 1/k²); (B) converges (geometric); (C) converges (alternating with terms →0 — FALSE, terms→1/2≠0); (D) converges (comparison)."]},
+
+{name:"Differentiable functions: true/false (SP2 B9)",
+ hint:"Check |x|² = x² which is clearly C². Think about MVT for f(1)=-2, f(3)=0 with f'>1. L'Hôpital for the limit.",
+ stmt:"Which are true: (A) f(x)=|x|² is not differentiable (because |x| isn't); (B) ∃ differentiable f with f(1)=−2, f(3)=0, f′(x)>1 for all x; (C) lim_{x→2} (x⁵−32)/(x−2)=80; (D) no function is non-differentiable everywhere.",
+ ok:["(A) is FALSE: |x|²=x² which is differentiable everywhere with derivative 2x. The chain rule failing for |x| at 0 does not prevent x²=|x|² from being differentiable.",
+     "(C) is TRUE: (x⁵−32)/(x−2) = (x⁵−2⁵)/(x−2) → 5·2⁴=80 using the standard limit lim (xⁿ−aⁿ)/(x−a)=naⁿ⁻¹ (or L'Hôpital: derivative of x⁵ is 5x⁴, at x=2 gives 80).",
+     "(B) is FALSE: by [[mvt|MVT]] on [1,3], ∃c with f′(c)=[f(3)−f(1)]/2=[0−(−2)]/2=1. But f′(x)>1 for all x contradicts f′(c)=1. (D) is FALSE: the Weierstrass function is continuous and nowhere differentiable."],
+ why:["(A): |x|²=x² by definition. Differentiating x² gives 2x everywhere, so the function IS differentiable.",
+      "(C): Factor x⁵−32=(x−2)(x⁴+2x³+4x²+8x+16); dividing by (x−2) and evaluating at x=2 gives 16+16+16+16+16=80.",
+      "(B): [[mvt|MVT]] forces f′(c)=1 at some c∈(1,3), contradicting f′(x)>1. (D): The Weierstrass function (or the absolute value of Brownian motion paths) is everywhere continuous but nowhere differentiable."],
+ bad:["(A) TRUE (|x| not differentiable at 0, so |x|² isn't either); (B) TRUE (can construct such f); (C) FALSE (limit is 5); (D) TRUE (every continuous function is differentiable a.e.).",
+      "(A) FALSE; (B) FALSE; (C) TRUE; (D) TRUE (nowhere differentiable functions don't exist)."],
+ hardBad:["(A) FALSE (x² is smooth); (B) FALSE (MVT gives contradiction); (C) TRUE (L'Hôpital: 5x⁴ at x=2 gives 80); (D) TRUE — every continuous function on ℝ is differentiable on a dense set, so nowhere differentiable continuous functions cannot exist."]},
+
+// ── CORE EARLIER QUESTIONS ───────────────────────────────────
+{name:"Order Limit Theorem",
+ hint:"Contradiction: assume a<0, take ε=|a|, find N, deduce a_N<0.",
+ stmt:"If aₙ→a and aₙ≥0 for all n, then a≥0.",
+ ok:["Suppose for contradiction that a<0.",
+     "Take ε=|a| in the [[epsilon_n|ε–N definition]] of convergence to find N with |a_N−a|<|a|.",
+     "Then a_N < a+|a|=0, contradicting aₙ≥0 for all n."],
+ why:["We use proof by contradiction: a negative limit would force eventual terms to be negative.",
+      "ε=|a| is chosen so the ε-neighbourhood of a lies entirely in (−∞,0). The N-condition puts a_N in that neighbourhood.",
+      "a_N<0 directly contradicts the hypothesis aₙ≥0. So a≥0."],
+ bad:["Apply [[mct|MCT]] to (aₙ) to find the limit, then verify it's ≥0.",
+      "Squeeze (aₙ) between 0 and a sequence tending to a.",
+      "Apply the [[alg_lim|Algebraic Limit Theorem]] to (aₙ) and the constant sequence (0)."],
+ hardBad:["Suppose a<0; take ε=|a|/2; find N with |a_N−a|<|a|/2; then a_N<a+|a|/2=a/2<0 — contradiction.",
+           "Suppose a<0; then since aₙ→a there exists N with aₙ<0 for all n>N, contradicting aₙ≥0.",
+           "Suppose a<0; take ε=|a|; then |a_N−a|<|a| gives −|a|<a_N−a<|a|, so a−|a|<a_N<a+|a|=0 — but we need a_N<0, not a_N<a+|a|."]},
+
+{name:"Convergence of 1/√n → 0",
+ hint:"Rearrange 1/√n < ε to get n > 1/ε²; apply Archimedean Axiom.",
+ stmt:"Prove that (1/√n)ₙ converges to 0.",
+ ok:["Let ε>0. By the [[naturals|Archimedean Axiom]], choose N∈ℕ with N > 1/ε².",
+     "For all n≥N: n≥N > 1/ε², so ε² > 1/n, so ε > 1/√n.",
+     "Thus |1/√n − 0| = 1/√n < ε for all n≥N, confirming [[convergence|convergence]] to 0 by the [[epsilon_n|ε–N definition]]."],
+ why:["The [[epsilon_n|ε–N argument]] requires N depending on ε. Rearranging 1/√n < ε gives n > 1/ε², so we need N > 1/ε².",
+      "Once N > 1/ε², every n≥N satisfies n > 1/ε², and taking reciprocals (reversing inequality) gives 1/√n < ε.",
+      "Since 1/√n > 0, |1/√n−0|=1/√n. This completes the [[epsilon_n|ε–N verification]]."],
+ bad:["Since 1/n→0 and 1/√n ≤ 1/n for large n, the [[comparison|Comparison Test]] gives convergence.",
+      "1/√n is decreasing and bounded below by 0, so [[mct|MCT]] gives convergence (but not necessarily to 0).",
+      "By the [[cauchy_crit|Cauchy Criterion]]: |1/√n−1/√m|<ε for large n,m by direct computation."],
+ hardBad:["Choose N>1/ε; then for n≥N: 1/√n≤1/√N<1/√(1/ε)=√ε — this gives 1/√n<√ε, not ε.",
+           "By [[naturals|Archimedean Axiom]] find N>1/ε; for n≥N: 1/n≤1/N<ε, so 1/√n≤1/n<ε.",
+           "The sequence (1/√n) is decreasing and bounded below by 0; [[mct|MCT]] gives limit l≥0; subsequence n=k² gives 1/k→0=l."]},
+
+{name:"Differentiable implies Continuous",
+ hint:"Write f(x)−f(x₀) = [(f(x)−f(x₀))/(x−x₀)]·(x−x₀); each factor has a limit; multiply.",
+ stmt:"If f is differentiable at x₀, then f is continuous at x₀.",
+ ok:["Write f(x)−f(x₀) = [f(x)−f(x₀)]/(x−x₀) · (x−x₀) for x≠x₀.",
+     "As x→x₀: the first factor → f′(x₀) by [[differentiability|differentiability]]; the second factor → 0.",
+     "By the [[alg_lim|Algebraic Limit Theorem]] for products, f(x)−f(x₀) → f′(x₀)·0 = 0, so f(x)→f(x₀), confirming [[continuity|continuity]]."],
+ why:["The algebraic decomposition separates the 'slope' from the 'step'. The slope has a finite limit (f′(x₀)) and the step goes to 0.",
+      "[[differentiability|Differentiability]] at x₀ means exactly that the difference quotient limit exists and equals f′(x₀).",
+      "The [[alg_lim|Algebraic Limit Theorem]] (product rule for limits) multiplies two limits: finite × 0 = 0. So f(x)→f(x₀)."],
+ bad:["Since f is [[differentiability|differentiable]], it satisfies the [[cauchy_crit|Cauchy Criterion]] on any interval; Cauchy implies [[bounded|bounded]], hence continuous.",
+      "Differentiability means f can be approximated by a linear function; linear functions are continuous; hence f is continuous.",
+      "Apply the [[evt|EVT]] to an interval around x₀ to show f is bounded; bounded implies continuous."],
+ hardBad:["f(x)−f(x₀)=f′(x₀)(x−x₀)+r(x)(x−x₀) where r(x)→0; both terms→0 as x→x₀, so f(x)→f(x₀). (This is actually correct but uses a more advanced decomposition)",
+           "lim_{x→x₀}[f(x)−f(x₀)]/(x−x₀)=f′(x₀) exists; therefore lim_{x→x₀}[f(x)−f(x₀)]=f′(x₀)·lim(x−x₀)=f′(x₀)·0=0.",
+           "The difference quotient is bounded near x₀ (since it has a limit); bounded times (x−x₀)→0 gives f(x)−f(x₀)→0."]},
+
+];
+
+// ── DIAGRAMS ──────────────────────────────────────────────────
+const DIAG={
+"Monotone Convergence Theorem":"<svg viewBox=\"0 0 480 200\" xmlns=\"http://www.w3.org/2000/svg\" style=\"width:100%;border-radius:10px\"><rect width=\"480\" height=\"200\" fill=\"#1E293B\" rx=\"10\"/><line x1=\"50\" y1=\"170\" x2=\"440\" y2=\"170\" stroke=\"#475569\" stroke-width=\"1.5\"/><line x1=\"50\" y1=\"20\" x2=\"50\" y2=\"170\" stroke=\"#475569\" stroke-width=\"1.5\"/><line x1=\"50\" y1=\"45\" x2=\"440\" y2=\"45\" stroke=\"#F59E0B\" stroke-width=\"1.5\" stroke-dasharray=\"6,4\"/><text x=\"446\" y=\"49\" fill=\"#F59E0B\" font-size=\"11\" font-family=\"Georgia,serif\">s</text><circle cx=\"90\" cy=\"155\" r=\"5\" fill=\"#6B9FE4\"/><circle cx=\"150\" cy=\"138\" r=\"5\" fill=\"#6B9FE4\"/><circle cx=\"210\" cy=\"118\" r=\"5\" fill=\"#6B9FE4\"/><circle cx=\"270\" cy=\"95\" r=\"5\" fill=\"#6B9FE4\"/><circle cx=\"330\" cy=\"72\" r=\"5\" fill=\"#6B9FE4\"/><circle cx=\"390\" cy=\"57\" r=\"5\" fill=\"#6B9FE4\"/><circle cx=\"430\" cy=\"50\" r=\"5\" fill=\"#6B9FE4\"/><polyline points=\"90,155 150,138 210,118 270,95 330,72 390,57 430,50\" fill=\"none\" stroke=\"#6B9FE4\" stroke-width=\"1.5\"/><rect x=\"50\" y=\"45\" width=\"390\" height=\"16\" fill=\"rgba(245,158,11,0.12)\"/><text x=\"58\" y=\"56\" fill=\"#F59E0B\" font-size=\"9\" font-family=\"sans-serif\">ε-band</text><text x=\"130\" y=\"18\" fill=\"#F1F5F9\" font-size=\"12\" font-family=\"Georgia,serif\" font-weight=\"bold\">Increasing, bounded above → converges to sup</text></svg>",
+"Intermediate Value Theorem":"<svg viewBox=\"0 0 480 200\" xmlns=\"http://www.w3.org/2000/svg\" style=\"width:100%;border-radius:10px\"><rect width=\"480\" height=\"200\" fill=\"#1E293B\" rx=\"10\"/><line x1=\"60\" y1=\"170\" x2=\"420\" y2=\"170\" stroke=\"#475569\" stroke-width=\"1.5\"/><line x1=\"60\" y1=\"10\" x2=\"60\" y2=\"170\" stroke=\"#475569\" stroke-width=\"1.5\"/><path d=\"M80,150 C130,145 180,120 240,90 S330,40 400,30\" fill=\"none\" stroke=\"#6B9FE4\" stroke-width=\"2.5\"/><line x1=\"60\" y1=\"90\" x2=\"420\" y2=\"90\" stroke=\"#F59E0B\" stroke-width=\"1.5\" stroke-dasharray=\"5,4\"/><circle cx=\"240\" cy=\"90\" r=\"5\" fill=\"#34D399\"/><line x1=\"240\" y1=\"90\" x2=\"240\" y2=\"170\" stroke=\"#34D399\" stroke-width=\"1.5\" stroke-dasharray=\"4,3\"/><text x=\"234\" y=\"188\" fill=\"#34D399\" font-size=\"12\" font-family=\"Georgia,serif\">c</text><text x=\"42\" y=\"94\" fill=\"#F59E0B\" font-size=\"12\" font-family=\"Georgia,serif\">y</text><text x=\"110\" y=\"18\" fill=\"#F1F5F9\" font-size=\"12\" font-family=\"Georgia,serif\" font-weight=\"bold\">Continuous on [a,b] → hits every value between f(a) and f(b)</text></svg>",
+"Extreme Value Theorem":"<svg viewBox=\"0 0 480 200\" xmlns=\"http://www.w3.org/2000/svg\" style=\"width:100%;border-radius:10px\"><rect width=\"480\" height=\"200\" fill=\"#1E293B\" rx=\"10\"/><line x1=\"60\" y1=\"170\" x2=\"420\" y2=\"170\" stroke=\"#475569\" stroke-width=\"1.5\"/><line x1=\"60\" y1=\"15\" x2=\"60\" y2=\"170\" stroke=\"#475569\" stroke-width=\"1.5\"/><path d=\"M80,130 C130,80 170,50 220,45 S290,60 320,100 S370,140 400,130\" fill=\"none\" stroke=\"#6B9FE4\" stroke-width=\"2.5\"/><circle cx=\"80\" cy=\"130\" r=\"5\" fill=\"#EF4444\"/><text x=\"64\" y=\"186\" fill=\"#EF4444\" font-size=\"10\" font-family=\"sans-serif\">x₀ min</text><circle cx=\"220\" cy=\"45\" r=\"5\" fill=\"#34D399\"/><text x=\"205\" y=\"186\" fill=\"#34D399\" font-size=\"10\" font-family=\"sans-serif\">x₁ max</text><text x=\"110\" y=\"18\" fill=\"#F1F5F9\" font-size=\"12\" font-family=\"Georgia,serif\" font-weight=\"bold\">Continuous on [a,b] → attains min and max</text></svg>",
+"Mean Value Theorem":"<svg viewBox=\"0 0 480 200\" xmlns=\"http://www.w3.org/2000/svg\" style=\"width:100%;border-radius:10px\"><rect width=\"480\" height=\"200\" fill=\"#1E293B\" rx=\"10\"/><line x1=\"60\" y1=\"170\" x2=\"430\" y2=\"170\" stroke=\"#475569\" stroke-width=\"1.5\"/><line x1=\"60\" y1=\"15\" x2=\"60\" y2=\"170\" stroke=\"#475569\" stroke-width=\"1.5\"/><path d=\"M90,140 C160,100 230,55 350,70 S400,95 400,110\" fill=\"none\" stroke=\"#6B9FE4\" stroke-width=\"2.5\"/><line x1=\"90\" y1=\"140\" x2=\"400\" y2=\"110\" stroke=\"#F59E0B\" stroke-width=\"1.8\" stroke-dasharray=\"6,4\"/><line x1=\"200\" y1=\"55\" x2=\"310\" y2=\"30\" stroke=\"#34D399\" stroke-width=\"2\"/><circle cx=\"255\" cy=\"43\" r=\"5\" fill=\"#34D399\"/><text x=\"258\" y=\"28\" fill=\"#34D399\" font-size=\"10\" font-family=\"sans-serif\">tangent ∥ secant</text><text x=\"85\" y=\"18\" fill=\"#F1F5F9\" font-size=\"12\" font-family=\"Georgia,serif\" font-weight=\"bold\">∃c: f′(c)=[f(b)−f(a)]/(b−a)</text></svg>",
+"Rolle's Theorem":"<svg viewBox=\"0 0 480 200\" xmlns=\"http://www.w3.org/2000/svg\" style=\"width:100%;border-radius:10px\"><rect width=\"480\" height=\"200\" fill=\"#1E293B\" rx=\"10\"/><line x1=\"60\" y1=\"155\" x2=\"420\" y2=\"155\" stroke=\"#475569\" stroke-width=\"1.5\"/><line x1=\"60\" y1=\"15\" x2=\"60\" y2=\"160\" stroke=\"#475569\" stroke-width=\"1.5\"/><path d=\"M90,130 C130,80 190,35 240,30 S330,60 390,130\" fill=\"none\" stroke=\"#6B9FE4\" stroke-width=\"2.5\"/><line x1=\"185\" y1=\"30\" x2=\"295\" y2=\"30\" stroke=\"#34D399\" stroke-width=\"2\"/><circle cx=\"240\" cy=\"30\" r=\"5\" fill=\"#34D399\"/><text x=\"296\" y=\"27\" fill=\"#34D399\" font-size=\"10\" font-family=\"sans-serif\">f′(c)=0</text><text x=\"90\" y=\"18\" fill=\"#F1F5F9\" font-size=\"12\" font-family=\"Georgia,serif\" font-weight=\"bold\">f(a)=f(b) → ∃ horizontal tangent</text></svg>",
+"Alternating Series Test":"<svg viewBox=\"0 0 480 200\" xmlns=\"http://www.w3.org/2000/svg\" style=\"width:100%;border-radius:10px\"><rect width=\"480\" height=\"200\" fill=\"#1E293B\" rx=\"10\"/><line x1=\"50\" y1=\"100\" x2=\"440\" y2=\"100\" stroke=\"#F59E0B\" stroke-width=\"1\" stroke-dasharray=\"4,4\"/><text x=\"443\" y=\"104\" fill=\"#F59E0B\" font-size=\"12\" font-family=\"Georgia,serif\">S</text><circle cx=\"90\" cy=\"145\" r=\"5\" fill=\"#6B9FE4\"/><circle cx=\"170\" cy=\"125\" r=\"5\" fill=\"#6B9FE4\"/><circle cx=\"250\" cy=\"112\" r=\"5\" fill=\"#6B9FE4\"/><circle cx=\"330\" cy=\"106\" r=\"5\" fill=\"#6B9FE4\"/><circle cx=\"130\" cy=\"62\" r=\"5\" fill=\"#34D399\"/><circle cx=\"210\" cy=\"80\" r=\"5\" fill=\"#34D399\"/><circle cx=\"290\" cy=\"92\" r=\"5\" fill=\"#34D399\"/><polyline points=\"90,145 130,62 170,125 210,80 250,112 290,92 330,106\" fill=\"none\" stroke=\"#94A3B8\" stroke-width=\"1.2\" stroke-dasharray=\"3,3\"/><text x=\"110\" y=\"18\" fill=\"#F1F5F9\" font-size=\"12\" font-family=\"Georgia,serif\" font-weight=\"bold\">Even and odd partial sums squeeze onto S</text></svg>"
+};
+
+const CC=['#6B9FE4','#F59E0B','#34D399'];
+
+// ═══════════════════════════════════════════════════════════════
+// WIKI
+// ═══════════════════════════════════════════════════════════════
+const WIKI=[
+  {id:"seq_an",title:"Sequence (aₙ)",symbol:"(aₙ)ₙ∈ℕ",category:"Notation",body:"A <strong>sequence</strong> is a function ℕ→ℝ. Written (aₙ). A sequence is <strong>increasing</strong> if aₙ≤aₙ₊₁, <strong>decreasing</strong> if aₙ≥aₙ₊₁, <strong>[[monotone|monotone]]</strong> if either holds.",relies_on:["real_numbers","naturals"],used_by:["convergence","mct","bw","cauchy_seq","olt","alt_series"]},
+  {id:"convergence",title:"Convergence",symbol:"aₙ → a",category:"Notation",body:"(aₙ) <strong>converges</strong> to a if: ∀ε>0 ∃N∈ℕ with [[abs_val||aₙ−a|]]<ε for all n≥N. See [[epsilon_n|ε–N argument]].",relies_on:["seq_an","real_numbers","abs_val","epsilon_n"],used_by:["mct","bw","cauchy_crit","olt","alg_lim"]},
+  {id:"subsequence",title:"Subsequence",symbol:"(aₙₖ)",category:"Notation",body:"Select indices n₁<n₂<⋯ from (aₙ) to form (aₙₖ). If aₙ→a, every subsequence also →a. Uniqueness of limits: two subsequences with different limits ⟹ divergence.",relies_on:["seq_an","convergence"],used_by:["bw","cauchy_crit","mct"]},
+  {id:"uniqueness",title:"Uniqueness of Limits",symbol:"aₙ→a and aₙ→b ⟹ a=b",category:"Notation",body:"A sequence has at most one limit. Proof: if aₙ→a and aₙ→b, take ε=|a−b|/2; for large n both |aₙ−a|<ε and |aₙ−b|<ε, so by [[tri_ineq|triangle inequality]] |a−b|<2ε=|a−b| — contradiction.",relies_on:["convergence","tri_ineq"],used_by:["bw","cauchy_crit"]},
+  {id:"epsilon_n",title:"ε–N argument",symbol:"∀ε>0 ∃N",category:"Notation",body:"Structure: (1) Let ε>0. (2) Find N∈ℕ depending on ε. (3) Show for all n≥N the estimate holds. A smaller ε forces a larger N.",relies_on:["convergence","abs_val"],used_by:["alg_lim","olt","cauchy_crit"]},
+  {id:"epsilon_delta",title:"ε–δ argument",symbol:"∀ε>0 ∃δ>0",category:"Notation",body:"f is continuous at c if: ∀ε>0 ∃δ>0 with |x−c|<δ ⟹ |f(x)−f(c)|<ε. ε controls output closeness; δ controls input closeness.",relies_on:["continuity","abs_val"],used_by:["continuity"]},
+  {id:"abs_val",title:"Absolute Value",symbol:"|x|",category:"Notation",body:"|x|=x if x≥0, −x if x<0. Distance from zero. See [[tri_ineq|Triangle Inequality]]: |x+y|≤|x|+|y|.",relies_on:["real_numbers"],used_by:["convergence","epsilon_n","cauchy_seq","tri_ineq"]},
+  {id:"monotone",title:"Monotone sequence",symbol:"↑ or ↓",category:"Notation",body:"(aₙ) is increasing if aₙ≤aₙ₊₁, decreasing if aₙ≥aₙ₊₁, monotone if either. Bounded monotone sequences converge: [[mct|MCT]].",relies_on:["seq_an"],used_by:["mct","alt_series"]},
+  {id:"series_notation",title:"Series Σaₙ",symbol:"Σₙ₌₁^∞ aₙ",category:"Notation",body:"Σaₙ = lim of [[partial_sums|partial sums]] Sₙ. Converges if this limit exists in ℝ.",relies_on:["seq_an","partial_sums","convergence"],used_by:["abs_conv","comparison","alt_series","cauchy_series"]},
+  {id:"closed_interval",title:"Closed interval [a,b]",symbol:"[a,b]",category:"Notation",body:"[a,b]={x∈ℝ:a≤x≤b}. Endpoints included. [[ivt|IVT]], [[evt|EVT]], [[rolle|Rolle]], [[mvt|MVT]] all require continuity on a <em>closed</em> interval.",relies_on:["real_numbers"],used_by:["ivt","evt","rolle","mvt"]},
+  {id:"real_numbers",title:"The Real Numbers ℝ",symbol:"ℝ",category:"Foundation",body:"ℝ is a complete ordered field. The distinguishing property from ℚ is [[completeness|completeness]] — no gaps.",relies_on:[],used_by:["completeness","seq_an","bounded"]},
+  {id:"naturals",title:"Natural Numbers ℕ & Archimedean Axiom",symbol:"ℕ={1,2,3,…}",category:"Foundation",body:"ℕ={1,2,3,…}. <strong>Archimedean Axiom:</strong> for every x∈ℝ there exists n∈ℕ with n>x. Consequence: for any ε>0, ∃n∈ℕ with 1/n<ε.",relies_on:["real_numbers"],used_by:["seq_an","epsilon_n"]},
+  {id:"completeness",title:"Axiom of Completeness",symbol:"sup A ∈ ℝ",category:"Foundation",body:"Every non-empty A⊆ℝ bounded above has a least upper bound ([[sup_inf|supremum]]) in ℝ. This distinguishes ℝ from ℚ. Every major theorem rests on it: [[mct|MCT]], [[bw|B-W]], [[ivt|IVT]], [[evt|EVT]].",relies_on:["real_numbers"],used_by:["mct","bw","ivt","evt","sup_inf","nested"]},
+  {id:"nested",title:"Nested Interval Property",symbol:"⋂Iₖ≠∅",category:"Foundation",body:"If I₁⊇I₂⊇⋯ are closed bounded intervals, then ⋂Iₖ≠∅. Follows from [[completeness|completeness]]. Key tool in [[bw|B-W]] proof.",relies_on:["completeness","real_numbers"],used_by:["bw"]},
+  {id:"bounded",title:"Bounded Sequence",symbol:"|aₙ|≤M",category:"Definition",body:"(aₙ) is bounded if ∃M≥0 with |aₙ|≤M for all n. Every [[convergence|convergent]] sequence is bounded. Converse false (e.g. (−1)ⁿ).",relies_on:["seq_an","real_numbers"],used_by:["mct","bw","cauchy_crit"]},
+  {id:"sup_inf",title:"Supremum and Infimum",symbol:"sup A, inf A",category:"Definition",body:"<strong>sup A</strong>: smallest upper bound. <strong>inf A</strong>: largest lower bound.<br><strong>Key characterisation of sup:</strong> s=sup A iff (i) s is an upper bound, and (ii) ∀ε>0 ∃a∈A with a>s−ε.",relies_on:["real_numbers","completeness"],used_by:["mct","ivt","evt"]},
+  {id:"cauchy_seq",title:"Cauchy Sequence",symbol:"|aₙ−aₘ|<ε",category:"Definition",body:"(aₙ) is Cauchy if ∀ε>0 ∃N with |aₙ−aₘ|<ε for all n,m≥N. Terms become close to each other without knowing the limit. In ℝ: convergent ⟺ Cauchy ([[cauchy_crit|Cauchy Criterion]]).",relies_on:["seq_an","abs_val","epsilon_n"],used_by:["cauchy_crit","cauchy_series"]},
+  {id:"partial_sums",title:"Partial Sums Sₙ",symbol:"Sₙ=Σₖ₌₁ⁿ aₖ",category:"Definition",body:"Sₙ=a₁+⋯+aₙ. Σaₙ converges iff (Sₙ) converges. Tail sum: Σₙ₌ₗ^k aₙ=Sₖ−Sₗ₋₁.",relies_on:["seq_an","convergence"],used_by:["cauchy_series","comparison","abs_conv","alt_series"]},
+  {id:"continuity",title:"Continuity",symbol:"f continuous at c",category:"Definition",body:"f continuous at c if: ∀ε>0 ∃δ>0 with |x−c|<δ ⟹ |f(x)−f(c)|<ε. Equivalent: for every xₙ→c, f(xₙ)→f(c) (sequential criterion). See [[epsilon_delta|ε–δ argument]].",relies_on:["seq_an","convergence","abs_val","epsilon_delta"],used_by:["ivt","evt","rolle","mvt"]},
+  {id:"differentiability",title:"Differentiability",symbol:"f′(c)",category:"Definition",body:"f differentiable at c if f′(c)=lim_{h→0}[f(c+h)−f(c)]/h exists. Differentiability ⟹ [[continuity|continuity]] (not vice versa). Example: f(x)=|x| is continuous but not differentiable at 0.",relies_on:["continuity","convergence"],used_by:["rolle","mvt"]},
+  {id:"tri_ineq",title:"Triangle Inequality",symbol:"|x+y|≤|x|+|y|",category:"Key Lemma",body:"For all x,y∈ℝ: |x+y|≤|x|+|y|. The most-used tool in analysis. Enables ε/2+ε/2=ε technique. Also: |aₙ−aₘ|≤|aₙ−a|+|a−aₘ|.",relies_on:["abs_val"],used_by:["cauchy_crit","alg_lim","abs_conv","comparison"]},
+  {id:"mct",title:"Monotone Convergence Theorem",symbol:"MCT",category:"Theorem",body:"[[monotone|Monotone]] + [[bounded|bounded]] ⟹ [[convergence|convergent]]. If (aₙ) is increasing and bounded above, aₙ→[[sup_inf|sup]]{aₙ}. Proof: [[completeness|completeness]] gives s=sup{aₙ}; [[sup_inf|sup characterisation]] gives N; monotonicity traps terms in (s−ε,s].",relies_on:["seq_an","bounded","completeness","sup_inf","monotone"],used_by:["alt_series","cauchy_crit"]},
+  {id:"bw",title:"Bolzano–Weierstraß Theorem",symbol:"B-W",category:"Theorem",body:"Every [[bounded|bounded]] sequence has a convergent [[subsequence|subsequence]]. Proof: bisect [−M,M] repeatedly choosing the half with infinitely many terms; [[nested|Nested Interval Property]] gives limit point x.",relies_on:["seq_an","bounded","nested","completeness","subsequence"],used_by:["cauchy_crit","evt"]},
+  {id:"cauchy_crit",title:"Cauchy Criterion",symbol:"aₙ→a ⟺ Cauchy",category:"Theorem",body:"(aₙ) [[convergence|converges]] ⟺ [[cauchy_seq|Cauchy]]. (⟹) [[tri_ineq|Triangle inequality]] splits ε/2. (⟸) Cauchy ⟹ [[bounded|bounded]] ⟹ [[bw|B-W]] ⟹ convergent subsequence ⟹ whole sequence.",relies_on:["seq_an","cauchy_seq","tri_ineq","bw","bounded"],used_by:["cauchy_series","abs_conv","comparison"]},
+  {id:"olt",title:"Order Limit Theorem",symbol:"aₙ≥0 ⟹ a≥0",category:"Theorem",body:"If aₙ→a and aₙ≥0, then a≥0. More generally aₙ≤bₙ ⟹ lim aₙ≤lim bₙ. Proof: contradiction — if a<0 take ε=|a|, find a_N<0.",relies_on:["seq_an","convergence","abs_val"],used_by:["ivt"]},
+  {id:"alg_lim",title:"Algebraic Limit Theorem",symbol:"aₙ+bₙ→a+b",category:"Theorem",body:"If aₙ→a and bₙ→b: aₙ+bₙ→a+b, caₙ→ca, aₙbₙ→ab, aₙ/bₙ→a/b (b≠0). Sum proof: N₁,N₂ for ε/2; N=max; [[tri_ineq|triangle inequality]].",relies_on:["seq_an","convergence","tri_ineq","epsilon_n"],used_by:["mvt"]},
+  {id:"cauchy_series",title:"Cauchy Criterion for Series",symbol:"Σaₙ Cauchy",category:"Theorem",body:"Σaₙ converges ⟺ ∀ε>0 ∃N with |Σₗᵏ aₙ|<ε for all k≥l≥N. Same as [[cauchy_crit|Cauchy Criterion]] applied to [[partial_sums|partial sums]].",relies_on:["partial_sums","cauchy_crit","cauchy_seq"],used_by:["comparison","abs_conv","alt_series"]},
+  {id:"nth_term",title:"n-th Term Test",symbol:"aₙ↛0 ⟹ Σaₙ diverges",category:"Theorem",body:"If Σaₙ converges then aₙ→0. <em>Contrapositive:</em> aₙ↛0 ⟹ Σaₙ diverges. Converse FALSE: harmonic series Σ1/n diverges despite 1/n→0.",relies_on:["partial_sums","cauchy_series","alg_lim"],used_by:[]},
+  {id:"abs_conv",title:"Absolute Convergence ⟹ Convergence",symbol:"Σ|aₙ|<∞ ⟹ Σaₙ<∞",category:"Theorem",body:"If Σ|aₙ| converges, Σaₙ converges. Proof: [[cauchy_series|Cauchy Criterion]] for Σ|aₙ| + [[tri_ineq|triangle inequality]].",relies_on:["partial_sums","cauchy_series","tri_ineq"],used_by:["comparison"]},
+  {id:"comparison",title:"Comparison Test",symbol:"|aₙ|≤|bₙ|",category:"Theorem",body:"If |aₙ|≤|bₙ| for large n and Σ|bₙ| converges, then Σaₙ converges absolutely.",relies_on:["partial_sums","cauchy_series","abs_conv","tri_ineq"],used_by:[]},
+  {id:"alt_series",title:"Alternating Series Test",symbol:"Σ(−1)ⁿaₙ",category:"Theorem",body:"(aₙ) decreasing, non-negative, aₙ→0 ⟹ Σ(−1)ⁿ⁺¹aₙ converges. Proof: even partial sums [[monotone|monotone]] + [[bounded|bounded]] → [[mct|MCT]] gives S; odd sums →S since a₂ₖ₊₁→0.",relies_on:["partial_sums","mct","seq_an","monotone"],used_by:[]},
+  {id:"ivt",title:"Intermediate Value Theorem",symbol:"IVT",category:"Theorem",body:"f:[a,b]→ℝ continuous, y∈[f(a),f(b)] ⟹ ∃c∈[a,b] with f(c)=y. Proof: s=[[sup_inf|sup]]{x:f(x)≤y} ([[completeness|completeness]]); [[continuity|continuity]] + [[olt|OLT]] pins f(s) from both sides.",relies_on:["continuity","completeness","sup_inf","olt","closed_interval"],used_by:["rolle"]},
+  {id:"evt",title:"Extreme Value Theorem",symbol:"EVT",category:"Theorem",body:"f:[a,b]→ℝ continuous ⟹ f attains its min and max. Proof: bounded (contradiction+[[bw|B-W]]); [[sup_inf|inf]] exists; minimising sequence + [[bw|B-W]] + [[continuity|continuity]] attains it.",relies_on:["continuity","completeness","bw","sup_inf","closed_interval"],used_by:["rolle"]},
+  {id:"rolle",title:"Rolle's Theorem",symbol:"f′(c)=0",category:"Theorem",body:"f:[a,b]→ℝ continuous, differentiable on (a,b), f(a)=f(b) ⟹ ∃c∈(a,b) with f′(c)=0. Proof: [[evt|EVT]] gives extrema; if interior, Fermat's Theorem gives f′(c)=0.",relies_on:["continuity","differentiability","evt","closed_interval"],used_by:["mvt"]},
+  {id:"mvt",title:"Mean Value Theorem",symbol:"MVT",category:"Theorem",body:"f:[a,b]→ℝ continuous on [a,b], differentiable on (a,b) ⟹ ∃c∈(a,b) with f′(c)=[f(b)−f(a)]/(b−a). Proof: subtract secant line ([[rolle|Rolle]]).  <br><strong>Application:</strong> if f′(x)≤M on [a,b] then f(b)−f(a)≤M(b−a).",relies_on:["continuity","differentiability","rolle","alg_lim","closed_interval"],used_by:[]},
+  {id:"harmonic",title:"Harmonic Series",symbol:"Σ1/n",category:"Standard Example",body:"Σ1/n <strong>diverges</strong> even though 1/n→0. Proof: |S_{2N}−S_N|≥1/2 so (Sₙ) not Cauchy. Standard baseline: if |aₙ|≥c/n then Σaₙ diverges by [[comparison|Comparison]].",relies_on:["partial_sums","cauchy_series"],used_by:[]},
+  {id:"geometric",title:"Geometric Series",symbol:"Σrⁿ",category:"Standard Example",body:"Σ_{n=0}^∞ rⁿ=1/(1−r) if |r|<1; diverges if |r|≥1. Standard dominating series for [[comparison|Comparison Test]].",relies_on:["partial_sums","convergence"],used_by:[]},
+];
+
+const CAT_COLOURS={'Foundation':'#4F7DBF','Notation':'#6B9FE4','Definition':'#A78BFA','Theorem':'#34D399','Key Lemma':'#F59E0B','Standard Example':'#94A3B8'};
+const CAT_BG={'Foundation':'rgba(79,125,191,.15)','Notation':'rgba(107,159,228,.15)','Definition':'rgba(167,139,250,.15)','Theorem':'rgba(52,211,153,.13)','Key Lemma':'rgba(245,158,11,.13)','Standard Example':'rgba(148,163,184,.12)'};
+
+// ═══════════════════════════════════════════════════════════════
+// WIKI LINK RENDERER
+// ═══════════════════════════════════════════════════════════════
+function wikiLink(text){
+  if(!text)return '';
+  return String(text).replace(/\[\[([^\]|]+)\|([^\]]+)\]\]/g,(_,id,label)=>`<a class="wlink" href="#" onclick="event.preventDefault();openEntry('${id}')">${label}</a>`);
+}
+// For links rendered inside the quiz (explanations, why-text) — sets return to quiz screen
+function wikiLinkQuiz(text){
+  if(!text)return '';
+  return String(text).replace(/\[\[([^\]|]+)\|([^\]]+)\]\]/g,(_,id,label)=>`<a class="wlink" href="#" onclick="event.preventDefault();openEntryFromQuiz('${id}')">${label}</a>`);
+}
+function openEntryFromQuiz(id){
+  wikiReturnScreen='s-quiz';
+  wikiHistory=[];
+  openEntry(id);
+}
+function stripWiki(t){return String(t).replace(/\[\[[^\]|]+\|([^\]]+)\]\]/g,'$1');}
+
+// ═══════════════════════════════════════════════════════════════
+// STATE
+// ═══════════════════════════════════════════════════════════════
+let mode='mc', diff='normal', qs, qi, hts, stk, bstk, cor, tot, done, sel, dragSrc;
+let wikiHistory=[];
+let wikiReturnScreen='s-home'; // tracks which screen to return to when closing wiki
+
+// ═══════════════════════════════════════════════════════════════
+// SCREENS
+// ═══════════════════════════════════════════════════════════════
+function show(id){document.querySelectorAll('.scr').forEach(s=>s.classList.remove('on'));document.getElementById(id).classList.add('on');}
+
+// ═══════════════════════════════════════════════════════════════
+// STATS
+// ═══════════════════════════════════════════════════════════════
+function loadStats(){
+  try{const p=+localStorage.getItem('mas_p')||0,b=+localStorage.getItem('mas_b')||0,c=+localStorage.getItem('mas_c')||0,t=+localStorage.getItem('mas_t')||0;
+  document.getElementById('hs-p').textContent=p;document.getElementById('hs-b').textContent=b||'—';document.getElementById('hs-a').textContent=t>0?Math.round(c/t*100)+'%':'—';}catch(e){}
+}
+function saveStats(){
+  try{const p=(+localStorage.getItem('mas_p')||0)+1,b=Math.max(+localStorage.getItem('mas_b')||0,bstk),c=(+localStorage.getItem('mas_c')||0)+cor,t=(+localStorage.getItem('mas_t')||0)+tot;
+  localStorage.setItem('mas_p',p);localStorage.setItem('mas_b',b);localStorage.setItem('mas_c',c);localStorage.setItem('mas_t',t);
+  if(typeof window.firebasePush==='function')window.firebasePush();}catch(e){}
+}
+
+function selMode(m){mode=m;document.getElementById('pill-mc').classList.toggle('on',m==='mc');document.getElementById('pill-ord').classList.toggle('on',m==='order');}
+function selDiff(d){
+  diff=d;document.getElementById('pill-norm').classList.toggle('on',d==='normal');document.getElementById('pill-hard').classList.toggle('on',d==='hard');
+  document.getElementById('home-note').textContent=d==='hard'?'10 questions · Hard mode — subtle distractors':'10 questions · 32 theorems & results available';
+}
+
+function shuf(a){let b=[...a];for(let i=b.length-1;i>0;i--){const j=0|Math.random()*(i+1);[b[i],b[j]]=[b[j],b[i]];}return b;}
+function renderH(){document.getElementById('hts').innerHTML=Array.from({length:3},(_,i)=>i<hts?'❤️':'🖤').join('');}
+function toggleDiag(){const b=document.getElementById('diag-box'),t=document.getElementById('diag-toggle');b.classList.toggle('on');t.textContent=b.classList.contains('on')?'🙈 Hide diagram':'📊 Show diagram';}
+function toggleHint(){const b=document.getElementById('hint-box'),t=document.getElementById('hint-btn');b.classList.toggle('on');t.textContent=b.classList.contains('on')?'🙈 Hide hint':'💡 Show hint';}
+
+function startQuiz(){
+  qs=shuf(Q).slice(0,10);qi=0;hts=3;stk=0;bstk=0;cor=0;tot=0;done=false;sel=new Set();
+  show('s-quiz');
+  document.getElementById('hard-banner').classList.toggle('on',diff==='hard');
+  document.getElementById('prog').className='prog-fill'+(diff==='hard'?' hard-prog':'');
+  document.getElementById('thm-card').className='thm-card'+(diff==='hard'?' hard-card':'');
+  renderQ();
+}
+function goHome(){loadStats();show('s-home');}
+
+function renderQ(){
+  done=false;sel=new Set();
+  const q=qs[qi];
+  document.getElementById('prog').style.width=(qi/qs.length*100)+'%';
+  document.getElementById('stk').textContent=stk;renderH();
+  document.getElementById('tname').textContent=q.name;
+  document.getElementById('tstmt').textContent=stripWiki(q.stmt||'');
+  document.getElementById('hint-box').textContent=q.hint||'';
+  const diagWrap=document.getElementById('diag-wrap'),diagBox=document.getElementById('diag-box');
+  const svg=DIAG[q.name]||'';
+  if(svg){diagBox.innerHTML=svg;diagWrap.style.display='block';}else{diagWrap.style.display='none';}
+  diagBox.classList.remove('on');
+  document.getElementById('diag-toggle').textContent='📊 Show diagram';
+  document.getElementById('hint-box').classList.remove('on');
+  document.getElementById('hint-btn').textContent='💡 Show hint';
+  document.getElementById('fb').className='fb';
+  document.getElementById('exp-panel').classList.remove('on');
+  document.getElementById('go-btn').className='go-btn';
+  document.getElementById('q-body').scrollTop=0;
+  document.getElementById('thm-lbl').textContent=diff==='hard'?'Hard mode — answer carefully':'Prove / identify';
+  document.getElementById('exp-title').textContent=q.ok.length>1?'Step-by-step explanation':'Explanation';
+  if(mode==='mc')renderMC(q);else renderOrder(q);
+}
+
+function renderMC(q){
+  const isM=q.ok.length>1;
+  document.getElementById('instr').textContent=isM?'Select all '+q.ok.length+' correct steps:':'Select the correct answer:';
+  const wrongPool=(diff==='hard'&&q.hardBad&&q.hardBad.length)?q.hardBad:q.bad;
+  const opts=shuf([...q.ok,...shuf(wrongPool).slice(0,isM?2:3)]);
+  const lets=['A','B','C','D','E'];
+  const grid=document.getElementById('opts');grid.innerHTML='';
+  opts.forEach((o,i)=>{
+    const okIdx=q.ok.indexOf(o);
+    const btn=document.createElement('button');btn.className='opt';btn.dataset.ok=okIdx>=0;btn.dataset.idx=okIdx;
+    const badge=document.createElement('span');badge.className='badge';badge.textContent=lets[i];
+    const body=document.createElement('span');body.className='opt-body';
+    const txt=document.createElement('span');txt.textContent=stripWiki(o);
+    const why=document.createElement('span');why.className='why-txt';
+    if(okIdx>=0){why.innerHTML=wikiLinkQuiz(q.why[okIdx]||'');}
+    body.appendChild(txt);body.appendChild(why);
+    btn.appendChild(badge);btn.appendChild(body);
+    btn.onclick=()=>pickMC(btn,q,isM);
+    grid.appendChild(btn);
+  });
+}
+
+function pickMC(btn,q,isM){
+  if(done)return;
+  if(!isM){
+    done=true;const ok=btn.dataset.ok==='true';
+    document.querySelectorAll('.opt').forEach(b=>{b.disabled=true;const idx=parseInt(b.dataset.idx);
+      if(idx>=0)b.classList.add('c'+idx);else if(b===btn&&!ok)b.classList.add('wrong');else b.classList.add('dim');});
+    resolveQ(ok,q);
+  }else{
+    if(sel.has(btn)){sel.delete(btn);btn.classList.remove('sel');}else{sel.add(btn);btn.classList.add('sel');}
+    if(sel.size===q.ok.length){done=true;const allOk=[...sel].every(b=>b.dataset.ok==='true');
+      document.querySelectorAll('.opt').forEach(b=>{b.disabled=true;b.classList.remove('sel');const idx=parseInt(b.dataset.idx);
+        if(idx>=0)b.classList.add('c'+idx);else if(sel.has(b))b.classList.add('wrong');else b.classList.add('dim');});
+      resolveQ(allOk,q);}
+  }
+}
+
+function renderOrder(q){
+  document.getElementById('instr').textContent='Drag to arrange the proof steps in the correct order:';
+  const shuffled=shuf([...q.ok]);
+  const grid=document.getElementById('opts');grid.innerHTML='';
+  shuffled.forEach(o=>{
+    const div=document.createElement('div');div.className='opt';div.style.cursor='grab';
+    div.dataset.content=o;div.dataset.ci=q.ok.indexOf(o);div.draggable=true;
+    const handle=document.createElement('span');handle.className='drag-handle';handle.textContent='⠿';
+    const num=document.createElement('span');num.className='order-num';num.textContent='?';
+    const body=document.createElement('span');body.className='opt-body';
+    const txt=document.createElement('span');txt.textContent=stripWiki(o);
+    const why=document.createElement('span');why.className='why-txt';
+    why.innerHTML=wikiLinkQuiz(q.why[q.ok.indexOf(o)]||'');
+    body.appendChild(txt);body.appendChild(why);
+    div.appendChild(handle);div.appendChild(num);div.appendChild(body);
+    div.addEventListener('dragstart',e=>{dragSrc=div;div.classList.add('dragging');e.dataTransfer.effectAllowed='move';});
+    div.addEventListener('dragend',()=>{div.classList.remove('dragging');grid.querySelectorAll('.opt').forEach(b=>b.classList.remove('drag-over'));updateNums();});
+    div.addEventListener('dragover',e=>{e.preventDefault();if(div!==dragSrc)div.classList.add('drag-over');});
+    div.addEventListener('dragleave',()=>div.classList.remove('drag-over'));
+    div.addEventListener('drop',e=>{e.preventDefault();if(div===dragSrc)return;div.classList.remove('drag-over');
+      const items=[...grid.querySelectorAll('.opt[draggable]')];const si=items.indexOf(dragSrc),ti=items.indexOf(div);
+      if(si<ti)grid.insertBefore(dragSrc,div.nextSibling);else grid.insertBefore(dragSrc,div);updateNums();});
+    let ty=0;
+    div.addEventListener('touchstart',e=>{ty=e.touches[0].clientY;div.style.opacity='.5';},{passive:true});
+    div.addEventListener('touchmove',e=>{e.preventDefault();const y=e.touches[0].clientY;
+      const items=[...grid.querySelectorAll('.opt[draggable]')];
+      const target=items.find(b=>{const r=b.getBoundingClientRect();return y>=r.top&&y<=r.bottom&&b!==div;});
+      if(target){const si=items.indexOf(div),ti=items.indexOf(target);if(si<ti)grid.insertBefore(div,target.nextSibling);else grid.insertBefore(div,target);updateNums();}
+    },{passive:false});
+    div.addEventListener('touchend',()=>{div.style.opacity='1';},{passive:true});
+    grid.appendChild(div);
+  });
+  updateNums();
+  const chk=document.createElement('button');chk.className='check-btn';chk.textContent='✓ Check my order';
+  chk.onclick=()=>checkOrder(q,grid,chk);grid.appendChild(chk);
+}
+
+function updateNums(){[...document.getElementById('opts').querySelectorAll('.opt[draggable]')].forEach((b,i)=>b.querySelector('.order-num').textContent=i+1);}
+
+function checkOrder(q,grid,btn){
+  if(done)return;done=true;btn.style.display='none';
+  const items=[...grid.querySelectorAll('.opt[draggable]')];
+  const ok=items.every((b,i)=>b.dataset.content===q.ok[i]);
+  items.forEach(b=>{b.draggable=false;b.style.cursor='default';const ci=parseInt(b.dataset.ci);b.classList.add('c'+ci);
+    const num=b.querySelector('.order-num');num.textContent=ci+1;num.style.background=CC[ci];num.style.color='#fff';});
+  resolveQ(ok,q);
+}
+
+function showExp(q){
+  const panel=document.getElementById('exp-panel'),steps=document.getElementById('exp-steps');
+  steps.innerHTML='';
+  q.ok.forEach((s,i)=>{
+    const d=document.createElement('div');d.className='exp-step';
+    const num=document.createElement('span');num.className='exp-num';num.style.background=CC[i%3];num.textContent=i+1;
+    const content=document.createElement('div');
+    const lbl=document.createElement('div');lbl.className='exp-lbl';lbl.style.color=CC[i%3];lbl.textContent='Step '+(i+1);
+    const why=document.createElement('div');why.className='exp-why';why.innerHTML=wikiLinkQuiz(q.why[i]||'');
+    content.appendChild(lbl);content.appendChild(why);d.appendChild(num);d.appendChild(content);steps.appendChild(d);
+  });
+  panel.classList.add('on');
+}
+
+function resolveQ(ok,q){
+  tot++;showExp(q);
+  const fb=document.getElementById('fb'),gb=document.getElementById('go-btn');
+  if(ok){
+    cor++;stk++;if(stk>bstk)bstk=stk;
+    fb.className='fb ok';
+    document.getElementById('fbt').textContent=stk>=3?'🔥 '+stk+' in a row!':'Correct!';
+    document.getElementById('fbb').innerHTML='Read the explanations above — note the wiki links to related theorems.';
+    gb.textContent=qi+1<qs.length?'Continue →':'See results';gb.className='go-btn ok';
+  }else{
+    stk=0;hts--;
+    fb.className='fb bad';
+    document.getElementById('fbt').textContent=diff==='hard'?'Incorrect — hard mode is designed to test your precision.':'Incorrect.';
+    document.getElementById('fbb').innerHTML='The colour-coded steps show the correct answer. Study the explanations carefully.';
+    gb.textContent=hts<=0?'See results':(qi+1<qs.length?'Continue →':'See results');gb.className='go-btn bad';
+  }
+  document.getElementById('stk').textContent=stk;renderH();
+  setTimeout(()=>document.getElementById('q-body').scrollTo({top:document.getElementById('q-body').scrollHeight,behavior:'smooth'}),150);
+}
+
+function advance(){if(hts<=0||qi+1>=qs.length){showResult();return;}qi++;renderQ();}
+
+function showResult(){
+  saveStats();show('s-result');
+  const pct=tot>0?Math.round(cor/tot*100):0;
+  let icon,title,sub;
+  if(pct===100){icon='🏆';title='Outstanding.';sub=diff==='hard'?'Perfect on Hard mode. Distinction-level.':'Every question correct. Excellent preparation.';}
+  else if(pct>=75){icon='🎓';title='Well done.';sub='Solid performance. Review the incorrect questions.';}
+  else if(pct>=50){icon='📖';title='Keep revising.';sub='More work needed before the examination.';}
+  else{icon='✏️';title='More work needed.';sub=diff==='hard'?'Try Normal mode first, then return to Hard.':'Return to your theorem sheet and study proof structures.';}
+  document.getElementById('r-icon').textContent=icon;
+  document.getElementById('r-title').textContent=title;
+  document.getElementById('r-sub').textContent=sub;
+  document.getElementById('r-sc').textContent=cor+'/'+tot;
+  document.getElementById('r-ss').textContent=bstk;
+  document.getElementById('r-sa').textContent=pct+'%';
+}
+
+// ═══════════════════════════════════════════════════════════════
+// WIKI
+// ═══════════════════════════════════════════════════════════════
+function wikiById(id){return WIKI.find(w=>w.id===id);}
+function openWiki(returnScreen){
+  wikiReturnScreen=returnScreen||'s-home';
+  wikiHistory=[];
+  document.getElementById('wiki-search').value='';
+  renderWikiList(WIKI);
+  // Update the back button on wiki list to return to correct screen
+  document.querySelector('#s-wiki .back-btn').onclick=()=>show(wikiReturnScreen);
+  show('s-wiki');
+}
+function filterWiki(q){const lq=q.toLowerCase();renderWikiList(WIKI.filter(w=>w.title.toLowerCase().includes(lq)||(w.symbol&&w.symbol.toLowerCase().includes(lq))||w.category.toLowerCase().includes(lq)||w.body.replace(/<[^>]+>/g,'').replace(/\[\[.*?\]\]/g,'').toLowerCase().includes(lq)));}
+function renderWikiList(items){
+  const cats=['Foundation','Notation','Definition','Key Lemma','Theorem','Standard Example'];
+  const body=document.getElementById('wiki-body');body.innerHTML='';
+  cats.forEach(cat=>{
+    const group=items.filter(w=>w.category===cat);if(!group.length)return;
+    const sec=document.createElement('div');sec.className='cat-section';
+    const lbl=document.createElement('div');lbl.className='cat-label';lbl.textContent=cat;sec.appendChild(lbl);
+    group.forEach(w=>{
+      const card=document.createElement('div');card.className='wiki-card';
+      card.innerHTML=`<div class="wiki-cat-dot" style="background:${CAT_COLOURS[w.category]||'#64748B'}"></div><div class="wiki-card-info"><div class="wiki-card-title">${w.title}</div>${w.symbol?`<div class="wiki-card-sym">${w.symbol}</div>`:''}</div><div class="wiki-card-arrow">›</div>`;
+      card.onclick=()=>{wikiHistory=[];openEntry(w.id);};sec.appendChild(card);
+    });
+    body.appendChild(sec);
+  });
+}
+function openEntry(id){
+  const w=wikiById(id);if(!w)return;
+  if(!wikiHistory.length||wikiHistory[wikiHistory.length-1]!==id)wikiHistory.push(id);
+  const col=CAT_COLOURS[w.category]||'#64748B',bg=CAT_BG[w.category]||'rgba(100,116,139,.12)';
+  const backBtn=document.getElementById('wd-back-btn');
+  if(wikiHistory.length>1){
+    const prevId=wikiHistory[wikiHistory.length-2],prev=wikiById(prevId);
+    backBtn.textContent='← '+(prev?prev.title:'Back');
+    backBtn.onclick=()=>{wikiHistory.pop();wikiHistory.pop();openEntry(prevId);};
+  } else {
+    // No history — back goes to wiki list (if opened from wiki) or return screen (if opened from quiz via inline link)
+    if(wikiReturnScreen==='s-quiz'){
+      backBtn.textContent='← Back to question';
+      backBtn.onclick=()=>{wikiHistory=[];show('s-quiz');};
+    } else {
+      backBtn.textContent='← Wiki';
+      backBtn.onclick=()=>show('s-wiki');
+    }
+  }
+  const body=document.getElementById('wd-body');
+  let html=`<div class="wd-cat-badge" style="background:${bg};color:${col}">${w.category}</div><div class="wd-title">${w.title}</div>${w.symbol?`<div class="wd-symbol">${w.symbol}</div>`:''}<div class="wd-divider"></div><div class="wd-content">${wikiLink(w.body)}</div>`;
+  if(w.relies_on&&w.relies_on.length){html+=`<div class="wd-divider"></div><div class="wd-section-title">Relies on</div><div class="wd-links">`;w.relies_on.forEach(rid=>{const r=wikiById(rid);if(r)html+=`<button class="wd-link" onclick="openEntryFromLink('${rid}')">${r.title}</button>`;});html+=`</div>`;}
+  if(w.used_by&&w.used_by.length){html+=`<div class="wd-section-title" style="margin-top:.75rem">Used by</div><div class="wd-links">`;w.used_by.forEach(uid=>{const u=wikiById(uid);if(u)html+=`<button class="wd-link green" onclick="openEntryFromLink('${uid}')">${u.title}</button>`;});html+=`</div>`;}
+  body.innerHTML=html;document.getElementById('wd-body').scrollTop=0;show('s-wiki-detail');
+}
+function openEntryFromLink(id){if(wikiHistory[wikiHistory.length-1]!==id)wikiHistory.push(id);wikiHistory.pop();openEntry(id);}
+
+// Init
+loadStats();
+</script>
+</body>
+</html>
