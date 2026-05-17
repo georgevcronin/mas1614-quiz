@@ -1298,9 +1298,8 @@ function renderMasteryPanel(){
   list.innerHTML='';
   toShow.forEach(q=>{const e=getQEntry(q),pct=masteryPct(e),col=masteryColor(e);
     const acc=rollingAcc(e);
-    const bagLabel=e.seen===0?'New':`Bag ${e.bag}/3`;
-    const accLabel=acc===null?'':` · ${Math.round(acc*100)}%`;
-    const wrap=document.createElement('div');wrap.className='mastery-bar-wrap';wrap.innerHTML=`<div class="mastery-name" title="${q.name}">${q.name}</div><div class="mastery-bar-bg"><div class="mastery-bar-fill" style="width:${pct}%;background:${col}"></div></div><div class="mastery-pct" style="color:${col}">${bagLabel}${accLabel}</div>`;list.appendChild(wrap);});
+    const label=e.seen===0?'New':acc===null?'—':Math.round(acc*100)+'%';
+    const wrap=document.createElement('div');wrap.className='mastery-bar-wrap';wrap.innerHTML=`<div class="mastery-name" title="${q.name}">${q.name}</div><div class="mastery-bar-bg"><div class="mastery-bar-fill" style="width:${pct}%;background:${col}"></div></div><div class="mastery-pct" style="color:${col}">${label}</div>`;list.appendChild(wrap);});
   const anySeen=Q.some(q=>getQEntry(q).seen>0);
   panel.style.display=anySeen?'block':'none';
 }
