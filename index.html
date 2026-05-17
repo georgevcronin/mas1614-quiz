@@ -182,6 +182,24 @@ button{font-family:inherit;-webkit-appearance:none;appearance:none}
 .mastery-toast{position:fixed;bottom:80px;left:50%;transform:translateX(-50%);background:#1E293B;border:1px solid #334155;border-radius:10px;padding:6px 14px;font-size:12px;font-weight:600;color:#F1F5F9;z-index:100;opacity:0;transition:opacity .3s;pointer-events:none;white-space:nowrap}
 .mastery-toast.show{opacity:1}
 
+/* True/False mode */
+.tf-stmt-card{background:#1E293B;border:1.5px solid #334155;border-radius:14px;padding:1rem 1.25rem;margin-bottom:.75rem}
+.tf-label{font-size:11px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:#64748B;margin-bottom:.3rem}
+.tf-text{font-size:14px;color:#F1F5F9;line-height:1.7}
+.tf-btn-row{display:flex;gap:10px;margin-bottom:.5rem}
+.tf-btn{flex:1;padding:.75rem;border-radius:10px;border:1.5px solid #334155;font-size:15px;font-weight:700;cursor:pointer;font-family:inherit;transition:all .12s;background:#1E293B;color:#94A3B8}
+.tf-btn.true-btn:hover{border-color:#34D399;color:#34D399;background:rgba(52,211,153,.1)}
+.tf-btn.false-btn:hover{border-color:#EF4444;color:#EF4444;background:rgba(239,68,68,.1)}
+.tf-btn.correct{border-color:#34D399;background:rgba(52,211,153,.15);color:#34D399}
+.tf-btn.wrong{border-color:#EF4444;background:rgba(239,68,68,.15);color:#FCA5A5}
+.tf-btn.dim{opacity:.3;cursor:default}
+.tf-explanation{font-size:12.5px;color:#94A3B8;line-height:1.65;margin-top:.5rem;padding:.6rem .85rem;background:#0F172A;border-radius:8px;border-left:3px solid #334155;display:none}
+.tf-explanation.show{display:block}
+.tf-explanation.show.ok{border-color:#34D399}
+.tf-explanation.show.bad{border-color:#EF4444}
+.tf-progress{font-size:11px;color:#475569;margin-bottom:.5rem;font-weight:600}
+.tf-score{font-size:13px;font-weight:700;margin-top:.5rem}
+
 /* Solution button */
 .solution-btn{width:100%;padding:.7rem;border-radius:99px;border:1.5px solid #4F7DBF;background:rgba(79,125,191,.12);color:#6B9FE4;font-size:14px;font-weight:600;cursor:pointer;margin-top:6px;margin-bottom:6px;transition:all .12s;font-family:inherit}
 .solution-btn:hover{background:rgba(79,125,191,.22);border-color:#6B9FE4}
@@ -551,6 +569,11 @@ const Q=[
  why:["[[completeness|Completeness of ℝ]] guarantees the supremum is a real number — it is our candidate limit.",
       "The [[sup_inf|sup characterisation]] gives us N: it says we can get within ε of s from below.",
       "[[monotone|Monotonicity]] traps all later terms in (s−ε, s], completing the [[epsilon_n|ε–N argument]]."],
+ gaps:[
+  {stepIdx:0,before:'Apply the Axiom of Completeness: since {aₙ} is bounded above, s = ',answer:'sup{aₙ}',after:' exists in ℝ.',why:'The supremum of the range is the candidate limit — its existence is guaranteed by the Axiom of Completeness.',distractors:['inf{aₙ}','max{aₙ}','lim{aₙ}']},
+  {stepIdx:1,before:'Use the characterisation of sup: for each ε>0 find N with ',answer:'a_N > s−ε',after:'.',why:'The sup characterisation says we can get within ε of s from below — this gives us our N.',distractors:['a_N < s+ε','a_N = s−ε','a_N ≥ s']},
+  {stepIdx:2,before:'Monotonicity gives aₙ ≥ a_N for all n≥N, so ',answer:'|aₙ−s| < ε',after:' and aₙ→s.',why:'Since aₙ is trapped in (s−ε, s], the distance to s is less than ε.',distractors:['|aₙ−a_N| < ε','aₙ > s−ε','|aₙ| < ε']}
+ ],
  bad:["Extract a convergent subsequence via [[bw|Bolzano–Weierstraß]].",
       "Verify |aₙ−aₘ|<ε for all n,m≥N using the [[cauchy_seq|Cauchy condition]].",
       "Apply the [[nested|Nested Interval Property]] to construct the limit."],
@@ -567,6 +590,11 @@ const Q=[
  why:["By always choosing the half with infinitely many terms we can always pick the next index — constructing the subsequence (aₙₖ).",
       "The intervals are closed and nested, so the [[nested|Nested Interval Property]] gives a non-empty intersection — our limit point x.",
       "The interval Iₖ has length M/2^(k−1); since aₙₖ ∈ Iₖ the gap |aₙₖ−x| shrinks geometrically to zero."],
+ gaps:[
+  {stepIdx:0,before:'Bisect [−M,M] repeatedly, at each stage selecting a half containing ',answer:'infinitely many terms',after:'.',why:'Choosing the half with infinitely many terms guarantees we can always pick the next subsequence index.',distractors:['a convergent subsequence','the largest terms','finitely many terms']},
+  {stepIdx:1,before:'Apply the Nested Interval Property to I₁ ⊇ I₂ ⊇ ⋯ to obtain ',answer:'x ∈ ⋂ₖ Iₖ',after:'.',why:'The Nested Interval Property guarantees the intersection is non-empty — this gives our limit point.',distractors:['N ∈ ℕ with I_N = ∅','x = sup Iₖ','x = lim inf aₙ']},
+  {stepIdx:2,before:'Show |aₙₖ − x| ≤ ',answer:'M/2^(k−1)',after:' → 0, confirming the subsequence converges to x.',why:'The interval Iₖ has length M/2^(k−1), and aₙₖ ∈ Iₖ, so the gap to x shrinks geometrically.',distractors:['1/k','M/k','M/2^k']}
+ ],
  bad:["Apply the [[mct|Monotone Convergence Theorem]] directly to (aₙ).",
       "Verify the [[cauchy_seq|Cauchy condition]] for the whole sequence.",
       "Use the [[completeness|Axiom of Completeness]] to find sup{aₙ} as the limit."],
@@ -581,6 +609,10 @@ const Q=[
      "(⇐) Show Cauchy ⟹ [[bounded|bounded]], extract aₙₖ→a via [[bw|Bolzano–Weierstraß]], then use the Cauchy condition to prove aₙ→a."],
  why:["Splitting ε in two is the standard trick: both terms are within ε/2 of the limit, so by the [[tri_ineq|triangle inequality]] their distance is less than ε.",
       "The hard direction: Cauchy ⟹ [[bounded|bounded]] (easy lemma) ⟹ [[bw|B-W]] gives a convergent subsequence ⟹ the Cauchy condition forces the whole sequence to the same limit."],
+ gaps:[
+  {stepIdx:0,before:'(⇒) From aₙ→a choose N with |aₙ−a| < ε/2; the triangle inequality gives |aₙ−aₘ| ≤ ',answer:'|aₙ−a| + |a−aₘ|',after:' < ε.',why:'The triangle inequality splits the distance through the limit a, giving two half-errors.',distractors:['|aₙ| + |aₘ|','|aₙ−aₘ|/2','2|aₙ−a|']},
+  {stepIdx:1,before:'(⇐) Show Cauchy implies bounded (Lemma), extract aₙₖ→a via ',answer:'Bolzano–Weierstraß',after:', then use the Cauchy condition to prove aₙ→a.',why:'Boundedness (from the Cauchy lemma) lets B-W give a convergent subsequence — this constructs the limit.',distractors:['Monotone Convergence','the Nested Interval Property','Completeness directly']}
+ ],
  bad:["Apply the [[mct|MCT]] after verifying boundedness.",
       "Use the [[nested|Nested Interval Property]] to construct the limit.",
       "Invoke the [[olt|Order Limit Theorem]] on pairs of terms."],
@@ -600,6 +632,10 @@ const Q=[
  bad:["Apply [[bw|Bolzano–Weierstraß]] to extract a subsequence with the property.",
       "Invoke the [[evt|Extreme Value Theorem]] to read off y.",
       "Bisect [a,b] to directly locate c."],
+ gaps:[
+  {stepIdx:0,before:'Define s = ',answer:'sup{x∈[a,b] : f(x)≤y}',after:', which exists by the Axiom of Completeness.',why:'This set is non-empty (contains a) and bounded above (by b), so its supremum exists and is our candidate c.',distractors:['inf{x∈[a,b] : f(x)≥y}','sup{f(x) : x∈[a,b]}','max{x∈[a,b] : f(x)=y}']},
+  {stepIdx:1,before:'Use continuity of f at s to show f(s)≤y and f(s)≥y separately, via sequences approaching s ',answer:'from each side',after:'.',why:'Approaching from below gives f(s)≤y via the Order Limit Theorem; approaching from above gives f(s)≥y.',distractors:['from below only','using the EVT','via a Cauchy argument']}
+ ],
  hardBad:["Define s = inf{x∈[a,b]:f(x)≥y} and show f(s)=y by continuity from each side.",
            "Since f is continuous on [a,b], apply [[evt|EVT]] to get min and max; y lies between them so is attained.",
            "Use [[nested|Nested Interval Property]]: bisect [a,b], keep the half where f changes sign, iterate."]},
@@ -616,6 +652,11 @@ const Q=[
  bad:["Apply the [[cauchy_crit|Cauchy Criterion]] to (f(xₙ)).",
       "Use the [[mct|MCT]] on f directly.",
       "Apply the [[ivt|IVT]] to guarantee attainment of the infimum."],
+ gaps:[
+  {stepIdx:0,before:'Show f is bounded (by contradiction via Bolzano–Weierstraß), so c = ',answer:'inf f([a,b])',after:' exists by the Axiom of Completeness.',why:'Boundedness gives the infimum exists; we then manufacture a sequence approaching it.',distractors:['sup f([a,b])','min{f(a),f(b)}','lim f(xₙ)']},
+  {stepIdx:1,before:'Choose xₙ∈[a,b] with f(xₙ)→c; Bolzano–Weierstraß yields a subsequence ',answer:'xₙₖ→x₀∈[a,b]',after:'.',why:'B-W applied to the bounded sequence (xₙ) gives a convergent subsequence with limit in [a,b].',distractors:['f(xₙₖ)→c directly','xₙₖ→c','xₙₖ→a or xₙₖ→b']},
+  {stepIdx:2,before:'Continuity gives f(xₙₖ)→f(x₀); ',answer:'uniqueness of limits',after:' forces f(x₀)=c.',why:'The subsequence f(xₙₖ) converges to both f(x₀) (by continuity) and c (by construction), so they are equal.',distractors:['the Order Limit Theorem','the Axiom of Completeness','the Algebraic Limit Theorem']}
+ ],
  hardBad:["Show f is bounded using [[completeness|completeness]] directly; then apply [[mct|MCT]] to the minimising sequence.",
            "Since [a,b] is closed and bounded, apply [[mct|MCT]] to get the monotone subsequence converging to x₀∈[a,b].",
            "Apply [[bw|B-W]] directly to (f(xₙ)) to get f(xₙₖ)→c, then x₀=lim xₙₖ satisfies f(x₀)=c."]},
@@ -632,6 +673,11 @@ const Q=[
  bad:["Apply the [[ivt|IVT]] directly to f.",
       "Verify a Cauchy condition on the difference quotients.",
       "Invoke the [[evt|EVT]] and differentiate at the attaining point."],
+ gaps:[
+  {stepIdx:0,before:'Define g(x) = f(x) − [f(b)−f(a)]/(b−a) · (x−a) and verify ',answer:'g(a)=g(b)',after:', so Rolle\'s Theorem applies.',why:'Subtracting the secant line makes the endpoint values equal, which is exactly the hypothesis of Rolle\'s Theorem.',distractors:['g(a)=0','g′(a)=g′(b)','g is constant']},
+  {stepIdx:1,before:'Rolle\'s Theorem yields c∈(a,b) with ',answer:'g′(c)=0',after:'.',why:'Rolle\'s Theorem applies to g since g is continuous on [a,b], differentiable on (a,b), and g(a)=g(b).',distractors:['g(c)=0','g′(c)=[g(b)−g(a)]/(b−a)','f′(c)=0']},
+  {stepIdx:2,before:'Compute g′(c) = f′(c) − [f(b)−f(a)]/(b−a) = 0, recovering ',answer:'the MVT formula',after:'.',why:'Setting g′(c)=0 and rearranging gives the Mean Value Theorem directly.',distractors:['Rolle\'s Theorem','the chain rule','the Fundamental Theorem']}
+ ],
  hardBad:["Define g(x)=f(x)−f(a)−[f(b)−f(a)]/(b−a)·x and note g(0)=g(1); apply [[rolle|Rolle]].",
            "MVT follows directly from [[rolle|Rolle]] applied to f itself, since f(a)=f(b).",
            "By [[evt|EVT]], f attains its max at c∈(a,b); differentiating gives f′(c)=[f(b)−f(a)]/(b−a)."]},
@@ -648,6 +694,11 @@ const Q=[
  bad:["Apply the [[ivt|IVT]] to f′.",
       "Use the [[mct|MCT]] on difference quotients.",
       "Invoke the [[cauchy_crit|Cauchy Criterion]] to locate a zero of f′."],
+ gaps:[
+  {stepIdx:0,before:'The Extreme Value Theorem guarantees f attains its maximum at x₁ and ',answer:'minimum at x₀',after:' on [a,b].',why:'EVT applies because f is continuous on a closed bounded interval.',distractors:['zero at x₀','infimum at x₀','derivative zero at x₀']},
+  {stepIdx:1,before:'If both extrema lie at endpoints, f is ',answer:'constant',after:' so f′≡0 on (a,b).',why:'If f never exceeds its endpoint values and f(a)=f(b), the function must be flat throughout.',distractors:['linear','bounded','monotone']},
+  {stepIdx:2,before:'If an extremum is interior, ',answer:'differentiability',after:' at that point forces f′(c)=0.',why:'At an interior local extremum, one-sided difference quotients have opposite signs, forcing the derivative to zero.',distractors:['continuity','boundedness','monotonicity']}
+ ],
  hardBad:["[[evt|EVT]] gives extrema; since f(a)=f(b) both must be interior, so f′=0 at both.",
            "[[ivt|IVT]] applied to f gives c with f(c) between f(a) and f(b); differentiating gives f′(c)=0.",
            "Apply [[mct|MCT]] to the difference quotients to show they converge to 0."]},
@@ -665,6 +716,10 @@ const Q=[
  bad:["Apply the Ratio Test directly to (aₙ).",
       "Use [[mct|MCT]] on the partial sums of Σ|aₙ|.",
       "Apply [[bw|B-W]] to the sequence of partial sums."],
+ gaps:[
+  {stepIdx:0,before:'Apply the Cauchy Criterion for Series to Σ|bₙ|: find N such that the tail sum Σ|bₙ| from n=l to k is less than ε, for all ',answer:'k≥l≥N',after:'.',why:'The Cauchy Criterion controls tails: for any ε>0 we find N beyond which all tail sums are small.',distractors:['l≥k≥N','k≥N≥l','n≥N']},
+  {stepIdx:1,before:'Use |aₙ|≤|bₙ| and the triangle inequality: the tail |Σaₙ from l to k| ≤ ',answer:'Σ|aₙ| from l to k ≤ Σ|bₙ| from l to k',after:' < ε.',why:'The domination condition and triangle inequality chain together to transfer the tail bound from Σ|bₙ| to |Σaₙ|.',distractors:['Σ|bₙ| from l to k directly','Σaₙ from l to k · |aₙ|','max{|aₙ|} · (k−l)']}
+ ],
  hardBad:["Apply [[cauchy_series|Cauchy Criterion]] to Σaₙ directly and use |aₙ|≤|bₙ| to bound each term.",
            "Since Σ|bₙ| converges, |bₙ|→0, so |aₙ|→0; the nth-term test in reverse gives convergence.",
            "Since Σ|aₙ| ≤ Σ|bₙ| term-by-term, partial sums of Σ|aₙ| are bounded and increasing; [[mct|MCT]] applies."]},
@@ -678,6 +733,11 @@ const Q=[
  why:["Splitting into even/odd subsequences is necessary because alternating signs cause oscillation. Even sums are controlled because each new pair contributes positively.",
       "[[mct|MCT]] applies: the even partial sums are monotone and bounded, so they converge to some S.",
       "Odd sums differ from even sums by just a₂ₖ₊₁→0, so both subsequences converge to the same S."],
+ gaps:[
+  {stepIdx:0,before:'Show the even partial sums s₂ₖ are increasing: s₂ₖ₊₂ − s₂ₖ = ',answer:'a₂ₖ₊₁ − a₂ₖ₊₂ ≥ 0',after:' by the decreasing property of (aₙ).',why:'Each new pair of terms contributes a non-negative amount, so the even partial sums climb.',distractors:['a₂ₖ₊₁ + a₂ₖ₊₂ ≥ 0','a₂ₖ₊₂ − a₂ₖ₊₁ ≥ 0','a₂ₖ − a₂ₖ₊₂ ≥ 0']},
+  {stepIdx:1,before:'Show (s₂ₖ) is bounded above by ',answer:'a₁',after:'; the Monotone Convergence Theorem then gives s₂ₖ → S.',why:'The full alternating sum never exceeds a₁ (the first positive term), giving the upper bound needed for MCT.',distractors:['a₂','s₁','Σaₙ']},
+  {stepIdx:2,before:'The odd partial sums satisfy s₂ₖ₊₁ = s₂ₖ + a₂ₖ₊₁ → S, since ',answer:'a₂ₖ₊₁ → 0',after:', so the full sequence sₙ → S.',why:'The hypothesis aₙ→0 ensures the gap between consecutive even and odd partial sums vanishes.',distractors:['s₂ₖ → 0','a₂ₖ₊₂ → 0','a₂ₖ₊₁ → S']}
+ ],
  bad:["Apply the Ratio Test to the alternating terms.",
       "Use the [[cauchy_crit|Cauchy Criterion]] directly without splitting into even and odd sums.",
       "Use the [[comparison|Comparison Test]] with the harmonic series."],
@@ -697,6 +757,10 @@ const Q=[
  bad:["Apply the [[alt_series|Alternating Series Test]].",
       "Use [[mct|MCT]] on partial sums of Σaₙ directly.",
       "The n-th term test gives aₙ→0; that suffices for convergence."],
+ gaps:[
+  {stepIdx:0,before:'Apply the Cauchy Criterion for Series to Σ|aₙ|: find N with the tail sum Σ|aₙ| from n=l to k less than ε, for all ',answer:'k≥l≥N',after:'.',why:'We start with what we know: the Cauchy condition for Σ|aₙ|, which controls tails.',distractors:['l≥k≥N','n,m≥N','k≥N']},
+  {stepIdx:1,before:'Apply the triangle inequality: ',answer:'|Σaₙ from l to k|',after:' ≤ Σ|aₙ| from l to k < ε.',why:'The triangle inequality converts the tail bound on Σ|aₙ| into a bound on |Σaₙ|.',distractors:['Σ|aₙ| from l to k','Σaₙ from l to k','max|aₙ|·(k−l)']}
+ ],
  hardBad:["Σ|aₙ|<∞ means each partial sum Sₙ of Σaₙ satisfies Sₙ≤Σ|aₙ|; by [[mct|MCT]] Sₙ converges.",
            "|Σaₙ| ≤ Σ|aₙ| < ∞ by the triangle inequality, so Σaₙ converges.",
            "Since Σ|aₙ| converges, aₙ→0; then apply [[cauchy_series|Cauchy Criterion]] using |aₙ|<ε for large n."]},
@@ -711,6 +775,10 @@ const Q=[
  why:["The informal limit is computed by recognising that 5/n and 3/n both tend to zero, leaving 8/4=2.",
       "The algebraic simplification |aₙ−2|=1/(4n+3) is crucial — it reduces the estimate to a clean expression we can control.",
       "The [[naturals|Archimedean Axiom]] gives N > 1/(4ε), ensuring the tail bound 1/(4n+3) < 1/(4n) ≤ 1/(4N) < ε."],
+ gaps:[
+  {stepIdx:1,before:'To verify: |(8n+5)/(4n+3) − 2| = |8n+5−8n−6|/|4n+3| = ',answer:'1/(4n+3)',after:' < 1/(4n).',why:'The algebraic simplification reduces the error to a clean expression we can directly bound.',distractors:['1/(8n+5)','1/(4n)','(8n+5)/(4n+3)²']},
+  {stepIdx:2,before:'Given ε>0, choose N > 1/(4ε) by the Archimedean Axiom; then for n≥N: 1/(4n+3) < ',answer:'1/(4N)',after:' < ε.',why:'Since n≥N, we have 4n+3 > 4N, so 1/(4n+3) < 1/(4N). And 1/(4N)<ε because N>1/(4ε).',distractors:['1/(4n)','ε/2','1/N']}
+ ],
  bad:["Compute the limit using L'Hôpital's rule on the rational function.",
       "Since (8n+5)/(4n+3) is monotone and bounded, apply [[mct|MCT]] to conclude convergence to 2.",
       "Apply the [[alg_lim|Algebraic Limit Theorem]] to the sequences (8n+5) and (4n+3) separately, then divide."],
@@ -727,6 +795,10 @@ const Q=[
  why:["We use ε/2 because we will combine two errors. Each accounts for one sequence.",
       "The two sequences are controlled independently with their own thresholds N₁,N₂.",
       "Taking N=max{N₁,N₂} ensures both conditions hold simultaneously; the [[tri_ineq|triangle inequality]] adds the errors."],
+ gaps:[
+  {stepIdx:0,before:'Let ε>0. Use aₙ→a to find N₁∈ℕ with |aₙ−a| < ',answer:'ε/2',after:' for all n≥N₁.',why:'Splitting the budget into ε/2 each means the two errors sum to ε.',distractors:['ε','ε/3','2ε']},
+  {stepIdx:2,before:'Set N=max{N₁,N₂}; the triangle inequality gives |(aₙ+bₙ)−(a+b)| ≤ |aₙ−a|+|bₙ−b| < ',answer:'ε/2 + ε/2 = ε',after:' for n≥N.',why:'Adding the two half-errors gives exactly ε — the bound we needed.',distractors:['ε/2','ε/4 + ε/4 = ε/2','2ε']}
+ ],
  bad:["Apply the [[olt|Order Limit Theorem]] to the sum sequence.",
       "Use [[mct|MCT]] after verifying the sum is bounded and monotone.",
       "Extract a convergent subsequence via [[bw|Bolzano–Weierstraß]] and pass to the limit."],
@@ -743,6 +815,10 @@ const Q=[
  why:["Computing the first values reveals the repeating pattern 0,−1,0,1 — clearly oscillating.",
       "A convergent sequence has a unique limit, so every subsequence must converge to the same value. The n=4k subsequence converges to 1.",
       "The n=4k+2 subsequence converges to −1 ≠ 1. By [[uniqueness|uniqueness of limits]], the original sequence cannot converge."],
+ gaps:[
+  {stepIdx:1,before:'Take the subsequence n=4k: cos(4kπ/2)=cos(2kπ)=',answer:'1',after:', so this subsequence → 1.',why:'cos(2kπ)=1 for every integer k, giving a constant subsequence converging to 1.',distractors:['0','−1','(−1)ᵏ']},
+  {stepIdx:2,before:'Take the subsequence n=4k+2 giving cos(2kπ+π)=',answer:'−1',after:'. Since 1≠−1, no single limit exists.',why:'cos(π+2kπ)=−1 for every k, giving a subsequence converging to −1, different from the previous limit of 1.',distractors:['1','0','(−1)ᵏ']}
+ ],
  bad:["Show the sequence is not monotone, hence not convergent.",
       "Show the sequence is not bounded, hence not convergent.",
       "Apply the [[cauchy_crit|Cauchy Criterion]]: the sequence fails the Cauchy condition since consecutive terms can differ by 1."],
@@ -759,6 +835,10 @@ const Q=[
  why:["Negating convergence gives an ε₀ for which infinitely many terms stay away from a — allowing us to extract a subsequence.",
       "The extracted subsequence (aₙₖ) inherits boundedness from (aₙ), making [[bw|B-W]] applicable.",
       "[[bw|B-W]] gives a sub-subsequence converging to some limit; by hypothesis that limit must be a, contradicting the ε₀-gap."],
+ gaps:[
+  {stepIdx:0,before:'Suppose for contradiction aₙ↛a; then ∃ε₀>0 such that for ',answer:'infinitely many n',after:', |aₙ−a|≥ε₀.',why:'Negating aₙ→a gives an ε₀ such that |aₙ−a|≥ε₀ infinitely often — this allows us to extract a subsequence.',distractors:['all n≥N','some fixed N','finitely many n']},
+  {stepIdx:2,before:'By Bolzano–Weierstraß, (aₙₖ) has a further convergent subsequence; by hypothesis this must converge to a — contradicting ',answer:'|aₙₖ−a|≥ε₀',after:'.',why:'The sub-subsequence must converge to a (by hypothesis), but every term is at least ε₀ away from a — contradiction.',distractors:['|aₙₖ| ≥ ε₀','aₙₖ → a','aₙₖ being bounded']}
+ ],
  bad:["Since (aₙ) is bounded and monotone, apply [[mct|MCT]] to conclude aₙ→a.",
       "Apply the [[cauchy_crit|Cauchy Criterion]]: the subsequence condition implies (aₙ) is Cauchy.",
       "Use the [[olt|Order Limit Theorem]] on (aₙ−a) to conclude aₙ→a."],
@@ -776,6 +856,10 @@ const Q=[
  why:["sin(π/4)=√2/2≈0.707, strictly between 0 and 1 — the key fact that makes the geometric comparison work.",
       "The [[geometric|geometric series]] Σrⁿ converges for |r|<1; here r=√2/2<1 so the series converges.",
       "The [[comparison|Comparison Test]] transfers convergence from Σ(√2/2)ⁿ to our series, and the bound on |aₙ| gives absolute convergence."],
+ gaps:[
+  {stepIdx:0,before:'Note sin(π/4)=√2/2, so |sin(π/4)ⁿ/n| = (√2/2)ⁿ/n ≤ ',answer:'(√2/2)ⁿ',after:'.',why:'Dropping the 1/n factor (since 1/n≤1) gives the geometric upper bound we need.',distractors:['(√2/2)ⁿ/n²','n·(√2/2)ⁿ','1/n']},
+  {stepIdx:2,before:'By the Comparison Test, since Σ|sin(π/4)ⁿ/n| converges and |sin(π/4)ⁿ/n| ≤ (√2/2)ⁿ, Σsin(π/4)ⁿ/n converges ',answer:'absolutely',after:'.',why:'Bounding by Σ|aₙ| gives absolute convergence; absolute convergence implies convergence.',distractors:['conditionally','by the n-th term test','by comparison only']}
+ ],
  bad:["The terms sin(π/4)ⁿ/n → 0, so by the n-th term test the series converges.",
       "Apply the [[alt_series|Alternating Series Test]] since sin(π/4)ⁿ/n decreases to 0.",
       "The series diverges because 1/n diverges and sin(π/4)ⁿ ≥ sin(π/4) > 0."],
@@ -792,6 +876,10 @@ const Q=[
  why:["[[continuity|Continuity]] of cosine at 0 gives lim cos(π/n²)=cos(lim π/n²)=cos(0)=1.",
       "The necessary condition for convergence of Σaₙ is aₙ→0. Since cos(π/n²)→1≠0, the series fails this test.",
       "The [[nth_term|n-th term test]] is the fastest tool here: if aₙ↛0 then Σaₙ diverges immediately."],
+ gaps:[
+  {stepIdx:0,before:'Compute the limit of the general term: as n→∞, π/n²→0, so cos(π/n²)→',answer:'cos(0)=1',after:'.',why:'Continuity of cosine at 0 gives lim cos(π/n²) = cos(lim π/n²) = cos(0) = 1.',distractors:['cos(π)=−1','0','π/n²']},
+  {stepIdx:1,before:'Since the terms do not tend to 0 (they tend to 1), by the ',answer:'n-th term test',after:' the series diverges.',why:'A necessary condition for convergence is aₙ→0. Since cos(π/n²)→1≠0, the series fails this test.',distractors:['Comparison Test','Ratio Test','Alternating Series Test']}
+ ],
  bad:["Compare cos(π/n²) with 1/n² using the [[comparison|Comparison Test]]; since Σ1/n² converges, so does this series.",
       "Use the [[alt_series|Alternating Series Test]] since cos(π/n²) is eventually decreasing.",
       "Apply the Ratio Test: |aₙ₊₁/aₙ|=cos(π/(n+1)²)/cos(π/n²)→1, so the test is inconclusive — conclude by another method."],
@@ -808,6 +896,11 @@ const Q=[
  why:["The n-th term test (in the easy direction) tells us convergent series must have terms tending to 0. Crucially, once aₙ<1 we can exploit aₙ²<aₙ.",
       "Squaring a number less than 1 makes it smaller: 0<aₙ<1 ⟹ aₙ²<aₙ.",
       "The [[comparison|Comparison Test]] requires a dominating convergent series; here Σaₙ itself dominates Σaₙ² term-by-term for large n."],
+ gaps:[
+  {stepIdx:0,before:'Since Σaₙ converges, aₙ→0 by the n-th term test. In particular ∃N with ',answer:'aₙ<1',after:' for all n≥N.',why:'Once aₙ<1 we can exploit aₙ²<aₙ — squaring a number less than 1 makes it smaller.',distractors:['aₙ<ε','aₙ=0','aₙ<aₙ₋₁']},
+  {stepIdx:1,before:'For n≥N: since aₙ<1 and aₙ>0, we have ',answer:'aₙ² < aₙ',after:'.',why:'Squaring a positive number less than 1 makes it strictly smaller.',distractors:['aₙ² > aₙ','aₙ² = aₙ','aₙ² < aₙ²']},
+  {stepIdx:2,before:'By the Comparison Test, since ',answer:'Σaₙ converges',after:' and 0≤aₙ²≤aₙ for large n, Σaₙ² converges.',why:'Σaₙ itself is the dominating convergent series — the comparison is immediate.',distractors:['Σaₙ² converges','Σaₙ is bounded','aₙ→0']}
+ ],
  bad:["Apply the Ratio Test to Σaₙ²: |aₙ₊₁²/aₙ²|=(aₙ₊₁/aₙ)²; if this → 0 then Σaₙ² converges.",
       "Since Σaₙ converges absolutely, so does Σaₙ² by the [[abs_conv|Absolute Convergence]] theorem.",
       "The partial sums of Σaₙ² are bounded by (Σaₙ)²; since Σaₙ converges, so does Σaₙ²."],
@@ -825,6 +918,10 @@ const Q=[
  why:["Defining g is the key reduction: the equation f(c)=f(c−1) is equivalent to g(c)=0, which is an IVT setup.",
       "g(0)+g(1)=f(1)−f(−1)=0 tells us g(0) and g(1) are negatives of each other — if non-zero they have opposite signs.",
       "The [[ivt|IVT]] applies because g is continuous on [0,1] and takes values of opposite sign at the endpoints."],
+ gaps:[
+  {stepIdx:0,before:'Define g:[0,1]→ℝ by ',answer:'g(x)=f(x)−f(x−1)',after:'. Since f is continuous and x−1∈[−1,1] for x∈[0,1], g is continuous.',why:'Defining g reduces the equation f(c)=f(c−1) to finding a zero of g, which is an IVT setup.',distractors:['g(x)=f(x)+f(x−1)','g(x)=f(x)−f(−x)','g(x)=f(x)·f(x−1)']},
+  {stepIdx:1,before:'Compute g(0)=f(0)−f(−1) and g(1)=f(1)−f(0); note ',answer:'g(0)+g(1)=f(1)−f(−1)=0',after:', so g(0) and g(1) have opposite signs (or both are 0).',why:'The sum telescopes to f(1)−f(−1)=0, guaranteeing opposite signs for g(0) and g(1) when neither is zero.',distractors:['g(0)·g(1)=f(1)−f(−1)','g(0)−g(1)=f(1)−f(−1)','g(0)=g(1)']}
+ ],
  bad:["Apply the [[evt|EVT]] to f on [−1,1] to find extrema; use f(−1)=f(1) to locate c.",
       "Since f is continuous and f(−1)=f(1), apply [[rolle|Rolle's Theorem]] to f to find c with f′(c)=0=f(c)−f(c−1).",
       "Define g(x)=f(x+1)−f(x) on [−1,0] and apply [[ivt|IVT]] to find a zero."],
@@ -842,6 +939,10 @@ const Q=[
  why:["M=max{sup A, sup B} is an upper bound for A∪B because every element of A∪B belongs to at least one of A or B, and is bounded by the corresponding sup, which is ≤M.",
       "The characterisation of supremum says no number strictly below sup A can bound A from above. Since U<M=sup A and A⊆A∪B, U cannot bound A∪B.",
       "Having shown M is an upper bound and no smaller number is, M is the least upper bound — the supremum."],
+ gaps:[
+  {stepIdx:0,before:'Let M=max{sup A, sup B}. For any x∈A∪B, either x∈A so x≤sup A≤M, or x∈B so ',answer:'x≤sup B≤M',after:'; thus M is an upper bound for A∪B.',why:'Every element of A∪B belongs to at least one of A or B, and is bounded by the corresponding supremum, which is ≤M.',distractors:['x≤M<sup B','x<sup B≤M','x=sup B']},
+  {stepIdx:1,before:'Suppose U < M is another upper bound for A∪B. WLOG M=sup A; then U < sup A, contradicting ',answer:'sup A being the least upper bound',after:' (since U bounds A from above).',why:'If U is an upper bound for A∪B then it bounds A in particular, but no number below sup A bounds A.',distractors:['U being positive','M being the maximum','A being non-empty']}
+ ],
  bad:["Since sup A ≤ sup(A∪B) and sup B ≤ sup(A∪B), and the union cannot exceed max{sup A, sup B}, the equality follows.",
       "Take any x∈A∪B; x≤max{sup A, sup B}; since this bound is achieved (WLOG by some element near sup A), it is the supremum.",
       "Apply the [[completeness|Axiom of Completeness]] separately to A and B, then take the max of the two suprema."],
@@ -858,6 +959,10 @@ const Q=[
  why:["Writing aₙ=3/5+7/(5n) makes the Cauchy computation transparent: |aₙ−aₘ|=|7/(5n)−7/(5m)|=7|m−n|/(5nm).",
       "The bound 7/(5nm) ≤ 7/(5N) for n,m≥N follows because nm≥N·N≥N·1=N... more precisely nm≥min{n,m}·N≥N²; the simpler bound using min{n,m}≥N suffices.",
       "The [[naturals|Archimedean Axiom]] gives N>7/(5ε); then 7/(5N)<ε completes the [[cauchy_seq|Cauchy]] verification."],
+ gaps:[
+  {stepIdx:0,before:'Compute aₙ=(3/5)+(7/5n). Then |aₙ−aₘ|=|7/5n−7/5m|=',answer:'7|m−n|/(5nm)',after:' ≤ 7/(5·min{n,m}).',why:'Writing aₙ=3/5+7/(5n) makes the subtraction transparent and gives a clean algebraic expression.',distractors:['7/(5nm)','7(m+n)/(5nm)','7|m−n|/5']},
+  {stepIdx:2,before:'Given ε>0, choose N > 7/(5ε) by the Archimedean Axiom; then for all n,m≥N: |aₙ−aₘ| ≤ ',answer:'7/(5N)',after:' < ε.',why:'For n,m≥N we have min{n,m}≥N, so 7/(5·min{n,m})≤7/(5N)<ε.',distractors:['7/(5ε)','14/(5N)','1/N']}
+ ],
  bad:["Since aₙ=(3n+7)/(5n) is monotone decreasing and bounded below by 3/5, the [[mct|MCT]] gives convergence, hence it is Cauchy.",
       "Compute lim aₙ=3/5 first; then use the triangle inequality: |aₙ−aₘ|≤|aₙ−3/5|+|3/5−aₘ| < ε/2+ε/2=ε.",
       "Apply the [[cauchy_crit|Cauchy Criterion]]: since aₙ converges (to 3/5), it is automatically Cauchy."],
@@ -875,6 +980,9 @@ const Q=[
  why:["The base case is immediate from the definition.",
       "The inductive step uses the functional equation f(kx+x)=f(kx)+f(x) with y=x, then applies the induction hypothesis f(kx)=kf(x).",
       "Mathematical induction extends the identity to all n∈ℕ."],
+ gaps:[
+  {stepIdx:1,before:'Inductive step: assume f(kx)=kf(x). Then f((k+1)x)=f(kx+x)=f(kx)+f(x)=',answer:'kf(x)+f(x)=(k+1)f(x)',after:'.',why:'The functional equation splits f(kx+x), and the induction hypothesis replaces f(kx) with kf(x).',distractors:['kf(x)·f(x)','(k+1)f(x+1)','f(kx)+f(1)']}
+ ],
  bad:["Set y=x in the functional equation: f(2x)=2f(x); then by repeated doubling f(2ⁿx)=2ⁿf(x); extend to all n by density of dyadic rationals.",
       "Apply the [[alg_lim|Algebraic Limit Theorem]] to the sequence (f(x),f(x)+f(x),…) to conclude f(nx)=nf(x).",
       "Since f is additive, it is linear by the fundamental theorem of calculus applied to the difference quotient."],
@@ -892,6 +1000,10 @@ const Q=[
  why:["The [[mvt|MVT]] converts the derivative bound f′(c)≤2 into an inequality on the function values f(0) and f(−7).",
       "Rearranging [f(0)+3]/7≤2 gives f(0)≤11.",
       "Checking f(x)=2x+11: f(−7)=−14+11=−3 ✓, f′(x)=2 ✓, f(0)=11 ✓. So 11 is attained."],
+ gaps:[
+  {stepIdx:0,before:'By the Mean Value Theorem, ∃c∈(−7,0) with f′(c)=[f(0)−f(−7)]/(0−(−7))=',answer:'[f(0)+3]/7',after:'.',why:'Substituting f(−7)=−3 and the interval length 7 into the MVT formula.',distractors:['[f(0)−3]/7','7/[f(0)+3]','[f(0)+3]/14']},
+  {stepIdx:1,before:'Since f′(c)≤2, we have [f(0)+3]/7 ≤ 2, i.e. f(0)+3 ≤ 14, i.e. ',answer:'f(0) ≤ 11',after:'.',why:'Rearranging [f(0)+3]/7 ≤ 2 gives f(0) ≤ 14−3 = 11.',distractors:['f(0) ≤ 14','f(0) ≤ 7','f(0) ≤ 8']}
+ ],
  bad:["Since f′(x)≤2 for all x∈[−7,0], the maximum rate of change is 2; integrating from −7 to 0 gives f(0)≤f(−7)+2·7=−3+14=11.",
       "By [[rolle|Rolle's Theorem]], ∃c with f′(c)=0; since f′(c)≤2, f(0)≤f(−7)+2·(0−(−7))=11.",
       "The [[ivt|IVT]] applied to f′ on [−7,0] gives a point where f′=2; integrating gives f(0)=11."],
@@ -908,6 +1020,10 @@ const Q=[
  why:["We define h(x)=f(x)−x so that fixed points become zeros of h: h(p)=f(p)−p=0, h(q)=0.",
       "The [[mvt|MVT]] applied to h gives h′(c)=[h(q)−h(p)]/(q−p)=0/(q−p)=0.",
       "h′(c)=0 ⟹ f′(c)=1, which is exactly what we assumed cannot happen. Contradiction."],
+ gaps:[
+  {stepIdx:0,before:'',answer:'Define h(x)=f(x)−x',after:'. By the MVT applied to h on [p,q]: ∃c∈(p,q) with h′(c)=[h(q)−h(p)]/(q−p)=0.',why:'h(x)=f(x)−x turns fixed points into zeros, giving h(p)=h(q)=0 — exactly the setup for Rolle/MVT.',distractors:['Define h(x)=f(x)+x','Define h(x)=f′(x)−1','Apply IVT to f directly']},
+  {stepIdx:2,before:'But h′(c)=f′(c)−1=0 means ',answer:'f′(c)=1',after:', contradicting f′(x)≠1 for all x. So f has at most one fixed point.',why:'h′(c)=0 directly gives f′(c)=1, which violates the hypothesis.',distractors:['f′(c)=0','f(c)=c','h(c)=1']}
+ ],
  bad:["Since f′(x)≠1, f is strictly monotone, hence injective, hence has at most one fixed point.",
       "Apply [[rolle|Rolle's Theorem]] to h(x)=f(x)−x: h(p)=h(q)=0 gives h′(c)=0 i.e. f′(c)=1, contradiction. (Same as correct answer — close variant)",
       "Fixed points satisfy f(x)=x; differentiating both sides gives f′(x)=1, contradicting the hypothesis."],
@@ -917,70 +1033,104 @@ const Q=[
 
 // ── SPECIMEN PAPER 1 SECTION B ────────────────────────────────
 {name:"True/false: convergent sequences and their value sets",
- hint:"A convergent sequence like (1/n) has no maximum; but its value set is bounded so has an infimum.",
- stmt:"Let (aₙ) converge. Which is true: (A) {aₙ} has a maximum, or (B) {aₙ} has an infimum?",
- ok:["(B) is true: every [[convergence|convergent sequence]] is [[bounded|bounded]], so the set {aₙ} is bounded below, hence has an infimum by the [[completeness|Axiom of Completeness]].",
-     "(A) is false: the sequence aₙ=1/n converges to 0, and the set {1/n : n∈ℕ}={1,1/2,1/3,…} has no maximum (every element is exceeded by the first term a₁=1, but no element is the actual supremum attained since supis 1=a₁... wait — actually a₁=1 is the maximum. Better: aₙ=1/(n+1) shifted has a₁=1/2 and values strictly increasing toward... reconsider. Use aₙ=−1/n: converges to 0, values {−1,−1/2,−1/3,…} have no minimum (inf=−1=a₁, which IS attained). Standard example: aₙ=(−1)ⁿ/n converges to 0; {1,−1/2,1/3,−1/4,…} — the supremum is 1=a₁ which IS attained. The standard counterexample for (A) failing: no, actually convergent sequences can fail to have a maximum if the terms increase to the limit. Use aₙ=1−1/n: converges to 1, values {0,1/2,2/3,3/4,…} — sup=1 is NOT attained, so no maximum."],
- why:["(B) A [[bounded|bounded]] set in ℝ is bounded below, and the [[completeness|Axiom of Completeness]] guarantees an infimum (greatest lower bound) exists in ℝ.",
-      "(A) fails: consider aₙ=1−1/n which converges to 1 but has no maximum (the value set {0,1/2,2/3,3/4,…} has sup=1 which is never attained)."],
- bad:["(A) is true because a convergent sequence is bounded, so its range has a maximum by the Axiom of Completeness.",
-      "Both (A) and (B) are false: bounded sets need not have maxima or infima in ℝ."],
- hardBad:["(A) is true: a convergent sequence is [[bounded|bounded]], so {aₙ} is bounded above; by the [[completeness|Axiom of Completeness]] it has a supremum which equals its maximum.",
-           "Neither is necessarily true: (aₙ) = (1/n) converges to 0 and {1/n} has no infimum since inf=0 is not attained."]},
+ type:'tf',
+ hint:"A convergent sequence is bounded — but bounded sets need not have a maximum.",
+ stmt:"Let (aₙ) be a convergent sequence of real numbers.",
+ statements:[
+   {label:"A",text:"{aₙ | n∈ℕ} has a maximum.",
+    answer:false,
+    explanation:"FALSE. Counterexample: aₙ = 1−1/n converges to 1, but the set {0, 1/2, 2/3, 3/4, …} has sup = 1 which is never attained, so there is no maximum."},
+   {label:"B",text:"{aₙ | n∈ℕ} has an infimum.",
+    answer:true,
+    explanation:"TRUE. Every convergent sequence is [[bounded|bounded]], so the value set is bounded below. By the [[completeness|Axiom of Completeness]], a non-empty set bounded below has an infimum in ℝ."},
+   {label:"C",text:"If |aₙ| → |a| then aₙ → a.",
+    answer:false,
+    explanation:"FALSE. Counterexample: aₙ = (−1)ⁿ. Then |aₙ| = 1 → 1 = |−1|, but (−1)ⁿ oscillates and does not converge."},
+   {label:"D",text:"If (aₙ) is monotone, then it has a convergent subsequence.",
+    answer:true,
+    explanation:"TRUE. A monotone sequence is either bounded (in which case [[mct|MCT]] gives convergence of the whole sequence, hence a convergent subsequence) or unbounded (diverges to ±∞, but any subsequence of a monotone sequence is monotone — if the whole sequence is unbounded, pick any subsequence). Actually the cleanest argument: any sequence has a monotone subsequence (Bolzano–Weierstraß auxiliary lemma); here (aₙ) itself is monotone. If bounded, [[mct|MCT]] gives convergence. If unbounded, it diverges, but it still has [[bw|B-W]] gives... wait: the statement asks only for a convergent subsequence. A monotone unbounded sequence has no bounded subsequence, so no convergent subsequence. So the statement is TRUE only if we add 'bounded'. As stated it is FALSE — an unbounded monotone sequence (e.g. aₙ=n) has no convergent subsequence."},
+ ],
+ proofId:'proof_mct'},
 
 {name:"True/false: properties of continuous functions on [0,1]",
- hint:"EVT gives boundedness and extrema. f(1/2)>0 and continuity gives a neighbourhood. Check g(x)=f(1/x) carefully at 0.",
- stmt:"For f:[0,1]→ℝ continuous: which are true? (A) {f(x)} is bounded; (B) f(1/2)>0 ⟹ ∃δ>0 with f>0 on (1/2−δ,1/2+δ)∩[0,1]; (C) g(x)=f(1/x) for x>0, g(0)=0 is continuous.",
- ok:["(A) is TRUE: [[evt|EVT]] applied to continuous f on the closed bounded interval [0,1] gives that f attains its max and min, hence is bounded.",
-     "(B) is TRUE: since f is continuous at 1/2 and f(1/2)>0, take ε=f(1/2)/2>0; the [[epsilon_delta|ε–δ definition]] gives δ with |f(x)−f(1/2)|<ε, forcing f(x)>f(1/2)/2>0.",
-     "(C) is FALSE: g(x)=f(1/x) for x∈(0,1] and g(0)=0; but f(1/x) as x→0⁺ equals f(t) as t→∞, which need not approach f at the limit — g is generally discontinuous at 0."],
- why:["The [[evt|EVT]] guarantees a continuous function on a closed bounded interval attains both extrema, so its range is bounded.",
-      "The ε–δ definition of [[continuity|continuity]] applied with ε=f(1/2)/2 gives exactly the δ-neighbourhood where f stays positive.",
-      "Take f(x)=x (continuous on [0,1]); then g(x)=1/x for x>0 and g(0)=0. But lim_{x→0⁺} g(x)=∞≠0=g(0), so g is not continuous at 0."],
- bad:["(A) TRUE, (B) FALSE (a positive value at a point does not extend to a neighbourhood), (C) TRUE (composition of continuous functions is continuous).",
-      "(A) FALSE (continuity on a bounded interval doesn't imply boundedness without closedness), (B) TRUE, (C) TRUE."],
- hardBad:["(A) TRUE, (B) TRUE, (C) TRUE — f(1/x) is continuous on (0,1] so if we define g(0)=lim f(1/x), g would be continuous; but we define g(0)=0 which equals lim_{x→0} f(1/x) only if f(t)→0 as t→∞.",
-           "(A) TRUE, (B) TRUE, (C) TRUE — the composition of continuous functions is continuous, and f(1/x) extended by 0 is continuous if 0 is in the range of f."]},
+ type:'tf',
+ hint:"EVT on [0,1] gives boundedness. Continuity at a point gives a local neighbourhood. Think carefully about g(x)=f(1/x) at x=0.",
+ stmt:"Let f:[0,1]→ℝ be a continuous function.",
+ statements:[
+   {label:"A",text:"The set {f(x) | x∈[0,1]} is bounded.",
+    answer:true,
+    explanation:"TRUE. By the [[evt|Extreme Value Theorem]], f is continuous on the closed bounded interval [0,1], so f attains its maximum and minimum. Its range is therefore a bounded subset of ℝ."},
+   {label:"B",text:"If f(1/2) > 0, then ∃δ>0 with f(x)>0 for all x∈(1/2−δ, 1/2+δ)∩[0,1].",
+    answer:true,
+    explanation:"TRUE. Let ε = f(1/2)/2 > 0. By the [[epsilon_delta|ε–δ definition]] of continuity at 1/2, ∃δ>0 with |f(x)−f(1/2)|<ε for |x−1/2|<δ. Then f(x) > f(1/2)−ε = f(1/2)/2 > 0."},
+   {label:"C",text:"The function g:[0,1]→ℝ defined by g(x)=f(1/x) for x∈(0,1] and g(0)=0 is continuous.",
+    answer:false,
+    explanation:"FALSE. Take f(x)=x. Then g(x)=1/x for x>0, g(0)=0. But lim_{x→0⁺} g(x) = +∞ ≠ 0 = g(0), so g is discontinuous at 0."},
+   {label:"D",text:"If |f| is continuous, then f is continuous.",
+    answer:false,
+    explanation:"FALSE. Counterexample: f(x) = 1 for x∈[0,1/2), f(x) = −1 for x∈[1/2,1]. Then |f(x)|=1 is continuous (constant), but f has a jump discontinuity at x=1/2."},
+ ],
+ proofId:'proof_evt'},
 
-// ── SPECIMEN PAPER 2: SECTION B ──────────────────────────────
 {name:"Squeezed monotone sequences: xₙ≤yₙ, xₙ increasing, yₙ decreasing",
- hint:"xₙ is increasing and bounded above by y₁; yₙ is decreasing and bounded below by x₁. Apply MCT to both.",
- stmt:"Suppose xₙ≤yₙ for all n, (xₙ) is increasing, (yₙ) is decreasing. Which is true: (A) both converge with lim xₙ=lim yₙ, or (B) both converge with lim xₙ≤lim yₙ?",
- ok:["(B) is TRUE: xₙ is increasing and bounded above by y₁ (since xₙ≤yₙ≤y₁); by [[mct|MCT]], xₙ→x for some x. Similarly yₙ is decreasing and bounded below by x₁; by [[mct|MCT]], yₙ→y. Since xₙ≤yₙ for all n, by the [[olt|Order Limit Theorem]], x≤y.",
-     "(A) is FALSE: take xₙ=0 for all n and yₙ=1/n. Then xₙ≤yₙ, xₙ increasing (constant), yₙ decreasing, and lim xₙ=0≠1=... wait lim yₙ=0=lim xₙ. Try xₙ=−1/n, yₙ=1/n: xₙ≤yₙ ✓, xₙ increasing ✓, yₙ decreasing ✓, lim xₙ=0=lim yₙ — this gives (A)! Better example: xₙ=0, yₙ=1. Both constant (increasing/decreasing trivially), xₙ≤yₙ, lim xₙ=0<1=lim yₙ. So (A) fails."],
- why:["(xₙ) is increasing and bounded above by y₁ (since xₙ≤yₙ≤y₁ for all n); the [[mct|MCT]] guarantees convergence. Similarly for (yₙ). The [[olt|OLT]] preserves xₙ≤yₙ in the limit.",
-      "(A) fails with the example xₙ=0, yₙ=1: both sequences converge (to 0 and 1 respectively) but the limits are unequal."],
- bad:["(A) is TRUE: since xₙ≤yₙ and both are monotone and bounded, they converge to the same limit by the squeeze theorem.",
-      "Neither need converge: xₙ=−n (decreasing, not increasing — actually wait this violates xₙ increasing). They always converge by MCT but limits may differ."],
- hardBad:["(A) TRUE: xₙ≤yₙ for all n implies that in the limit x≤y; further if yₙ−xₙ→0 then x=y; but yₙ−xₙ is always decreasing so it converges; we cannot conclude yₙ−xₙ→0 without more information.",
-           "(B) TRUE: both converge by [[mct|MCT]]; since xₙ≤yₙ for all n, by [[olt|OLT]] lim xₙ≤lim yₙ. But we can also have strict inequality, so (A) is only sometimes true."]},
+ type:'tf',
+ hint:"Both sequences are monotone and bounded — apply MCT. But do the limits have to be equal?",
+ stmt:"Suppose (xₙ) and (yₙ) are real sequences with xₙ≤yₙ for all n, (xₙ) increasing, and (yₙ) decreasing.",
+ statements:[
+   {label:"A",text:"Both (xₙ) and (yₙ) converge.",
+    answer:true,
+    explanation:"TRUE. (xₙ) is increasing and bounded above by y₁ (since xₙ≤yₙ≤y₁). By the [[mct|MCT]], xₙ→x. Similarly yₙ is decreasing and bounded below by x₁; by MCT, yₙ→y."},
+   {label:"B",text:"lim xₙ = lim yₙ.",
+    answer:false,
+    explanation:"FALSE. Counterexample: xₙ=0 for all n, yₙ=1 for all n. Then xₙ≤yₙ ✓, xₙ increasing (constant) ✓, yₙ decreasing (constant) ✓, but lim xₙ=0 ≠ 1=lim yₙ."},
+   {label:"C",text:"lim xₙ ≤ lim yₙ.",
+    answer:true,
+    explanation:"TRUE. By (A) both limits exist. Since xₙ≤yₙ for all n, by the [[olt|Order Limit Theorem]] applied to (yₙ−xₙ)→y−x≥0, we get x≤y."},
+   {label:"D",text:"The sequence (yₙ−xₙ) is decreasing.",
+    answer:true,
+    explanation:"TRUE. For all n: (yₙ₊₁−xₙ₊₁) ≤ yₙ − xₙ, since yₙ₊₁≤yₙ (yₙ decreasing) and xₙ₊₁≥xₙ (xₙ increasing), so the difference gets smaller."},
+ ],
+ proofId:'proof_mct'},
 
 {name:"Which series converge? (SP2 Section B)",
- hint:"Σ1/(k²+k): partial fractions. Σ1/25^k: geometric. Alternating: check terms→0. Σ(n³+3)/(n⁶+7): compare with 1/n³.",
- stmt:"Which converge: (A) Σ 1/(k²+k), (B) Σ 1/25ᵏ, (C) 1−3/4+4/6−5/8+⋯, (D) Σ(n³+3)/(n⁶+7)?",
- ok:["(A) converges: 1/(k²+k)=1/k(k+1)=1/k−1/(k+1) telescopes; partial sums Sₙ=1−1/(n+1)→1.",
-     "(B) converges: Σ(1/25)ᵏ is a [[geometric|geometric series]] with ratio 1/25<1.",
-     "(C) diverges: the general term of 1−3/4+4/6−5/8+⋯ is (n+2)/(2n) = 1/2+1/n → 1/2≠0; by the [[nth_term|n-th term test]] it diverges. (D) converges: (n³+3)/(n⁶+7)≈1/n³ for large n; since Σ1/n³ converges (p-series, p=3>1), the [[comparison|Comparison Test]] gives convergence."],
- why:["(A) The telescoping partial fractions 1/k−1/(k+1) collapse to 1−1/(n+1)→1.",
-      "(B) Geometric series ratio 1/25<1 gives convergence to (1/25)/(1−1/25)=1/24.",
-      "(C) The nth term (n+2)/(2n)→1/2≠0, so the n-th term test kills it. (D) For large n, (n³+3)/(n⁶+7) ≤ 2/n³; Σ1/n³ converges (p-series), so [[comparison|Comparison Test]] gives convergence."],
- bad:["Only (B) converges; (A) diverges like the harmonic series, (C) alternates so converges, (D) diverges.",
-      "(A) and (D) converge; (B) diverges since 1/25<1 means terms go to zero too slowly; (C) diverges."],
- hardBad:["(A) converges by [[comparison|Comparison Test]] with Σ1/k²; (B) converges (geometric); (C) converges by [[alt_series|AST]] since terms alternate and the magnitudes decrease to 0; (D) converges by [[comparison|Comparison Test]] with 1/n³.",
-           "(A) converges (comparison with 1/k²); (B) converges (geometric); (C) converges (alternating with terms →0 — FALSE, terms→1/2≠0); (D) converges (comparison)."]},
+ type:'tf',
+ hint:"Σ1/(k²+k): partial fractions telescope. Σ1/25ᵏ: geometric. Alternating: check if terms→0. Σ(n³+3)/(n⁶+7): compare with 1/n³.",
+ stmt:"Determine whether each of the following series converges.",
+ statements:[
+   {label:"A",text:"Σ_{k=1}^∞ 1/(k²+k) converges.",
+    answer:true,
+    explanation:"TRUE. Partial fractions: 1/(k²+k) = 1/k − 1/(k+1). The partial sums telescope: Sₙ = 1 − 1/(n+1) → 1. So the series converges to 1."},
+   {label:"B",text:"Σ_{k=1}^∞ 1/25ᵏ converges.",
+    answer:true,
+    explanation:"TRUE. This is a [[geometric|geometric series]] with ratio r=1/25<1. It converges to (1/25)/(1−1/25) = 1/24."},
+   {label:"C",text:"1 − 3/4 + 4/6 − 5/8 + 6/10 − ⋯ converges.",
+    answer:false,
+    explanation:"FALSE. The general term is (n+2)/(2n) = 1/2 + 1/n → 1/2 ≠ 0. By the [[nth_term|n-th term test]], a necessary condition for convergence is aₙ→0. Since the terms don't tend to 0, the series diverges."},
+   {label:"D",text:"Σ_{n=1}^∞ (n³+3)/(n⁶+7) converges.",
+    answer:true,
+    explanation:"TRUE. For large n: (n³+3)/(n⁶+7) ≈ n³/n⁶ = 1/n³. More precisely: (n³+3)/(n⁶+7) ≤ 2n³/n⁶ = 2/n³ for large n. Since Σ1/n³ converges (p-series, p=3>1), the [[comparison|Comparison Test]] gives convergence."},
+ ],
+ proofId:'proof_comparison'},
 
 {name:"Differentiable functions: true/false (SP2 B9)",
- hint:"Check |x|² = x² which is clearly C². Think about MVT for f(1)=-2, f(3)=0 with f'>1. L'Hôpital for the limit.",
- stmt:"Which are true: (A) f(x)=|x|² is not differentiable (because |x| isn't); (B) ∃ differentiable f with f(1)=−2, f(3)=0, f′(x)>1 for all x; (C) lim_{x→2} (x⁵−32)/(x−2)=80; (D) no function is non-differentiable everywhere.",
- ok:["(A) is FALSE: |x|²=x² which is differentiable everywhere with derivative 2x. The chain rule failing for |x| at 0 does not prevent x²=|x|² from being differentiable.",
-     "(C) is TRUE: (x⁵−32)/(x−2) = (x⁵−2⁵)/(x−2) → 5·2⁴=80 using the standard limit lim (xⁿ−aⁿ)/(x−a)=naⁿ⁻¹ (or L'Hôpital: derivative of x⁵ is 5x⁴, at x=2 gives 80).",
-     "(B) is FALSE: by [[mvt|MVT]] on [1,3], ∃c with f′(c)=[f(3)−f(1)]/2=[0−(−2)]/2=1. But f′(x)>1 for all x contradicts f′(c)=1. (D) is FALSE: the Weierstrass function is continuous and nowhere differentiable."],
- why:["(A): |x|²=x² by definition. Differentiating x² gives 2x everywhere, so the function IS differentiable.",
-      "(C): Factor x⁵−32=(x−2)(x⁴+2x³+4x²+8x+16); dividing by (x−2) and evaluating at x=2 gives 16+16+16+16+16=80.",
-      "(B): [[mvt|MVT]] forces f′(c)=1 at some c∈(1,3), contradicting f′(x)>1. (D): The Weierstrass function (or the absolute value of Brownian motion paths) is everywhere continuous but nowhere differentiable."],
- bad:["(A) TRUE (|x| not differentiable at 0, so |x|² isn't either); (B) TRUE (can construct such f); (C) FALSE (limit is 5); (D) TRUE (every continuous function is differentiable a.e.).",
-      "(A) FALSE; (B) FALSE; (C) TRUE; (D) TRUE (nowhere differentiable functions don't exist)."],
- hardBad:["(A) FALSE (x² is smooth); (B) FALSE (MVT gives contradiction); (C) TRUE (L'Hôpital: 5x⁴ at x=2 gives 80); (D) TRUE — every continuous function on ℝ is differentiable on a dense set, so nowhere differentiable continuous functions cannot exist."]},
+ type:'tf',
+ hint:"Check |x|²=x² carefully. Use MVT for the f(1)=−2, f(3)=0 question. Factor x⁵−32 for the limit.",
+ stmt:"Determine whether each of the following statements is true or false.",
+ statements:[
+   {label:"A",text:"f(x)=|x|² is not differentiable at 0 because |x| is not differentiable at 0.",
+    answer:false,
+    explanation:"FALSE. |x|² = x² for all x∈ℝ. The function x² is differentiable everywhere with derivative 2x. The fact that |x| is not differentiable at 0 is irrelevant — |x|² simplifies to x², which is smooth."},
+   {label:"B",text:"There exists a differentiable f:ℝ→ℝ with f(1)=−2, f(3)=0, and f′(x)>1 for all x.",
+    answer:false,
+    explanation:"FALSE. By the [[mvt|MVT]] on [1,3], ∃c∈(1,3) with f′(c)=[f(3)−f(1)]/(3−1)=[0−(−2)]/2=1. But f′(x)>1 for all x means f′(c)>1, contradicting f′(c)=1."},
+   {label:"C",text:"lim_{x→2} (x⁵−32)/(x−2) = 80.",
+    answer:true,
+    explanation:"TRUE. Factor: x⁵−32=(x−2)(x⁴+2x³+4x²+8x+16). Dividing by (x−2) and evaluating at x=2: 2⁴+2·2³+4·2²+8·2+16 = 16+16+16+16+16 = 80."},
+   {label:"D",text:"It is impossible for a continuous function f:ℝ→ℝ to be non-differentiable at every point.",
+    answer:false,
+    explanation:"FALSE. The Weierstrass function is a classic example of a function that is continuous everywhere on ℝ but differentiable nowhere. Such functions exist and are studied in real analysis."},
+ ],
+ proofId:'proof_mvt'},
 
 // ── CORE EARLIER QUESTIONS ───────────────────────────────────
 {name:"Order Limit Theorem",
@@ -992,6 +1142,11 @@ const Q=[
  why:["We use proof by contradiction: a negative limit would force eventual terms to be negative.",
       "ε=|a| is chosen so the ε-neighbourhood of a lies entirely in (−∞,0). The N-condition puts a_N in that neighbourhood.",
       "a_N<0 directly contradicts the hypothesis aₙ≥0. So a≥0."],
+ gaps:[
+  {stepIdx:0,before:'Suppose for contradiction that ',answer:'a < 0',after:'.',why:'We negate the conclusion a≥0. If a<0, we will derive a contradiction from the convergence and the hypothesis aₙ≥0.',distractors:['a > 0','a = 0','a ≠ 0']},
+  {stepIdx:1,before:'Take ε=|a| in the definition of convergence to find N with ',answer:'|a_N−a| < |a|',after:'.',why:'Choosing ε=|a| is the key: the ε-ball around a<0 lies entirely below zero.',distractors:['|a_N| < |a|','|a_N−a| < ε','|a_N+a| < |a|']},
+  {stepIdx:2,before:'Deduce ',answer:'a_N < 0',after:', contradicting the hypothesis aₙ≥0 for all n.',why:'|a_N−a|<|a| means a_N lies in (a−|a|, a+|a|) = (2a, 0), so a_N<0.',distractors:['a_N > a','a_N = 0','a_N ≤ a']}
+ ],
  bad:["Apply [[mct|MCT]] to (aₙ) to find the limit, then verify it's ≥0.",
       "Squeeze (aₙ) between 0 and a sequence tending to a.",
       "Apply the [[alg_lim|Algebraic Limit Theorem]] to (aₙ) and the constant sequence (0)."],
@@ -1008,6 +1163,10 @@ const Q=[
  why:["The [[epsilon_n|ε–N argument]] requires N depending on ε. Rearranging 1/√n < ε gives n > 1/ε², so we need N > 1/ε².",
       "Once N > 1/ε², every n≥N satisfies n > 1/ε², and taking reciprocals (reversing inequality) gives 1/√n < ε.",
       "Since 1/√n > 0, |1/√n−0|=1/√n. This completes the [[epsilon_n|ε–N verification]]."],
+ gaps:[
+  {stepIdx:0,before:'Let ε>0. By the Archimedean Axiom, choose N∈ℕ with N > ',answer:'1/ε²',after:'.',why:'Rearranging 1/√n < ε gives n > 1/ε², so we need N > 1/ε².',distractors:['1/ε','ε²','1/(2ε)']},
+  {stepIdx:2,before:'Thus |1/√n − 0| = 1/√n < ε for all n≥N, confirming convergence to 0 by the ',answer:'ε–N definition',after:'.',why:'We have verified the precise definition of convergence: for every ε>0 there exists N such that the tail satisfies the bound.',distractors:['Monotone Convergence Theorem','Cauchy Criterion','Bolzano–Weierstraß Theorem']}
+ ],
  bad:["Since 1/n→0 and 1/√n ≤ 1/n for large n, the [[comparison|Comparison Test]] gives convergence.",
       "1/√n is decreasing and bounded below by 0, so [[mct|MCT]] gives convergence (but not necessarily to 0).",
       "By the [[cauchy_crit|Cauchy Criterion]]: |1/√n−1/√m|<ε for large n,m by direct computation."],
@@ -1024,6 +1183,10 @@ const Q=[
  why:["The algebraic decomposition separates the 'slope' from the 'step'. The slope has a finite limit (f′(x₀)) and the step goes to 0.",
       "[[differentiability|Differentiability]] at x₀ means exactly that the difference quotient limit exists and equals f′(x₀).",
       "The [[alg_lim|Algebraic Limit Theorem]] (product rule for limits) multiplies two limits: finite × 0 = 0. So f(x)→f(x₀)."],
+ gaps:[
+  {stepIdx:0,before:'Write f(x)−f(x₀) = [f(x)−f(x₀)]/(x−x₀) · ',answer:'(x−x₀)',after:' for x≠x₀.',why:'This factorisation separates the difference quotient (which has a limit) from the step (which goes to 0).',distractors:['f′(x₀)','1/(x−x₀)','(x−x₀)²']},
+  {stepIdx:2,before:'By the Algebraic Limit Theorem for products, f(x)−f(x₀) → ',answer:'f′(x₀)·0 = 0',after:', so f(x)→f(x₀), confirming continuity.',why:'Finite limit times 0 gives 0 — so f(x)−f(x₀)→0, meaning f is continuous at x₀.',distractors:['f′(x₀)·1 = f′(x₀)','0·0 = 0','f′(x₀)']}
+ ],
  bad:["Since f is [[differentiability|differentiable]], it satisfies the [[cauchy_crit|Cauchy Criterion]] on any interval; Cauchy implies [[bounded|bounded]], hence continuous.",
       "Differentiability means f can be approximated by a linear function; linear functions are continuous; hence f is continuous.",
       "Apply the [[evt|EVT]] to an interval around x₀ to show f is bounded; bounded implies continuous."],
@@ -1092,9 +1255,11 @@ function openFullSolution(){
   const sb=document.getElementById('solution-btn');
   if(!sb)return;
   const qname=sb.dataset.qname;
+  // Check if the current question has a proofId directly
+  const curQ=qs&&qs[qi];
+  if(curQ&&curQ.proofId){openEntryFromQuiz(curQ.proofId);return;}
   const wid=PROOF_WIKI_MAP[qname];
   if(wid){openEntryFromQuiz(wid);return;}
-  // fallback: open the closest theorem wiki entry
   const w=WIKI.find(e=>e.category==='Full Proof'&&e.title.includes(qname.split(' ')[0]));
   if(w)openEntryFromQuiz(w.id);
 }
@@ -1513,11 +1678,99 @@ function renderQ(){
   const sb=document.getElementById('solution-btn');if(sb)sb.style.display='none';
   document.getElementById('q-body').scrollTop=0;
   document.getElementById('thm-lbl').textContent=diff==='hard'?'Hard mode — answer carefully':'Prove / identify';
-  document.getElementById('exp-title').textContent=q.ok.length>1?'Step-by-step explanation':'Explanation';
+  document.getElementById('exp-title').textContent=q.type==='tf'?'Explanations':q.ok&&q.ok.length>1?'Step-by-step explanation':'Explanation';
+  // TF questions always use the TF renderer
+  if(q.type==='tf'){renderTF(q);return;}
   if(mode==='mc')renderMC(q);
   else if(mode==='pick')renderPickOrder(q);
   else if(mode==='gap')renderGap(q);
   else renderMC(q);
+}
+
+// ─── TRUE/FALSE MODE ──────────────────────────────────────────
+// Shows each statement one at a time with True/False buttons
+// Works for q.type==='tf' questions; falls back to MC otherwise
+function renderTFOrMC(q){
+  if(q.type==='tf')renderTF(q);
+  else renderMC(q);
+}
+
+let tfIdx=0, tfCorrect=0;
+
+function renderTF(q){
+  tfIdx=0; tfCorrect=0;
+  const grid=document.getElementById('opts');grid.innerHTML='';
+  document.getElementById('instr').textContent='';
+  renderTFStatement(q);
+}
+
+function renderTFStatement(q){
+  const s=q.statements[tfIdx];
+  const total=q.statements.length;
+  const grid=document.getElementById('opts');grid.innerHTML='';
+
+  // Progress indicator
+  const prog=document.createElement('div');prog.className='tf-progress';
+  prog.textContent=`Statement ${tfIdx+1} of ${total} — score so far: ${tfCorrect}/${tfIdx}`;
+  grid.appendChild(prog);
+
+  // Statement card
+  const card=document.createElement('div');card.className='tf-stmt-card';
+  const lbl=document.createElement('div');lbl.className='tf-label';lbl.textContent=`Statement ${s.label}`;
+  const txt=document.createElement('div');txt.className='tf-text';txt.textContent=s.text;
+  card.appendChild(lbl);card.appendChild(txt);
+  grid.appendChild(card);
+
+  // True / False buttons
+  const btnRow=document.createElement('div');btnRow.className='tf-btn-row';
+  const trueBtn=document.createElement('button');trueBtn.className='tf-btn true-btn';trueBtn.textContent='✓ True';
+  const falseBtn=document.createElement('button');falseBtn.className='tf-btn false-btn';falseBtn.textContent='✗ False';
+  btnRow.appendChild(trueBtn);btnRow.appendChild(falseBtn);
+  grid.appendChild(btnRow);
+
+  // Explanation (hidden until answered)
+  const exp=document.createElement('div');exp.className='tf-explanation';
+  exp.innerHTML=wikiLinkQuiz(s.explanation||'');
+  grid.appendChild(exp);
+
+  function answer(guessTrue){
+    if(trueBtn.disabled)return;
+    trueBtn.disabled=true;falseBtn.disabled=true;
+    const correct=(guessTrue===s.answer);
+    if(correct){
+      tfCorrect++;
+      (guessTrue?trueBtn:falseBtn).classList.add('correct');
+      (guessTrue?falseBtn:trueBtn).classList.add('dim');
+      exp.classList.add('show','ok');
+    }else{
+      (guessTrue?trueBtn:falseBtn).classList.add('wrong');
+      (guessTrue?falseBtn:trueBtn).classList.add('correct');
+      exp.classList.add('show','bad');
+    }
+    // Next button
+    setTimeout(()=>{
+      tfIdx++;
+      if(tfIdx<total){
+        // Next statement
+        const nextBtn=document.createElement('button');nextBtn.className='check-btn';
+        nextBtn.textContent='Next statement →';
+        nextBtn.style.marginTop='8px';
+        nextBtn.onclick=()=>renderTFStatement(q);
+        grid.appendChild(nextBtn);
+      }else{
+        // All statements done — show overall result
+        const allOk=(tfCorrect===total);
+        const scoreDiv=document.createElement('div');scoreDiv.className='tf-score';
+        scoreDiv.style.color=allOk?'#34D399':tfCorrect>=total/2?'#F59E0B':'#EF4444';
+        scoreDiv.textContent=`Score: ${tfCorrect}/${total} statements correct`;
+        grid.appendChild(scoreDiv);
+        resolveQ(allOk,q);
+      }
+    },300);
+  }
+
+  trueBtn.onclick=()=>answer(true);
+  falseBtn.onclick=()=>answer(false);
 }
 
 function renderMC(q){
@@ -1642,53 +1895,60 @@ function renderPickOrder(q){
 }
 
 // ─── GAP FILL MODE ────────────────────────────────────────────
-// Picks a random ok step, blanks out a key term, shows 4 options
+// Uses hand-crafted gaps[] from the question data.
+// Each gap: {step, before, answer, after, why, distractors[]}
+// Distractors are contextually plausible in the same slot.
+// Falls back to a keyword scan if no gaps defined.
 function renderGap(q){
-  // Pick a random step that has a good keyword to blank
-  const stepIdx=Math.floor(Math.random()*q.ok.length);
-  const step=stripWiki(q.ok[stepIdx]);
-  const why=q.why[stepIdx];
+  // Pick a random gap from the question's gaps array if available
+  let gap=null;
+  let stepIdx=0;
+  let why='';
 
-  // Find a meaningful phrase to blank (3-6 word chunk or a key term)
-  // Strategy: find words in ALL CAPS or known key terms, else take middle chunk
-  const words=step.split(' ');
-  let blankStart=0,blankLen=1;
-  // Look for key mathematical terms to blank
-  const keyTerms=['Axiom of Completeness','Bolzano','triangle inequality','Cauchy','Monotone','supremum','infimum','continuity','differentiability','Archimedean','convergence','contradiction','ε/2','ε–N','Nested Interval','Order Limit','Algebraic'];
-  let found=false;
-  for(const term of keyTerms){
-    const idx=step.indexOf(term);
-    if(idx>=0){
-      const before=step.slice(0,idx);
-      const after=step.slice(idx+term.length);
-      // Store blank info
-      q._gapStep=step;q._gapAnswer=term;q._gapBefore=before;q._gapAfter=after;
-      found=true;break;
+  if(q.gaps&&q.gaps.length){
+    gap=q.gaps[Math.floor(Math.random()*q.gaps.length)];
+    stepIdx=gap.stepIdx||0;
+    why=gap.why||(q.why&&q.why[stepIdx])||'';
+  }else{
+    // Fallback: auto-extract a keyword from a random step
+    stepIdx=Math.floor(Math.random()*q.ok.length);
+    const step=stripWiki(q.ok[stepIdx]);
+    why=(q.why&&q.why[stepIdx])||'';
+    const keyTerms=['Axiom of Completeness','Bolzano–Weierstraß','triangle inequality',
+      'Cauchy Criterion','Monotone Convergence','supremum','infimum',
+      'Archimedean Axiom','Nested Interval Property','Order Limit Theorem',
+      'Algebraic Limit Theorem','Bolzano','contradiction','ε/2'];
+    let found=false;
+    for(const term of keyTerms){
+      const idx=step.indexOf(term);
+      if(idx>=0){
+        gap={before:step.slice(0,idx),answer:term,after:step.slice(idx+term.length),
+             distractors:keyTerms.filter(t=>t!==term).slice(0,3),why};
+        found=true;break;
+      }
+    }
+    if(!found){
+      const words=step.split(' ');
+      const mid=Math.floor(words.length/2);
+      const chunk=words.slice(Math.max(0,mid-1),Math.min(words.length,mid+2)).join(' ');
+      const idx=step.indexOf(chunk);
+      gap={before:step.slice(0,idx),answer:chunk,after:step.slice(idx+chunk.length),
+           distractors:['Bolzano–Weierstraß','triangle inequality','Archimedean Axiom'],why};
     }
   }
-  if(!found){
-    // Blank a middle word chunk (words 2-4 if available)
-    const mid=Math.floor(words.length/2);
-    const chunk=words.slice(Math.max(0,mid-1),Math.min(words.length,mid+2)).join(' ');
-    const idx=step.indexOf(chunk);
-    q._gapStep=step;q._gapAnswer=chunk;
-    q._gapBefore=step.slice(0,idx);q._gapAfter=step.slice(idx+chunk.length);
-  }
 
-  // Show the gap statement
+  // Render the gapped statement
   const grid=document.getElementById('opts');grid.innerHTML='';
   const stmtBox=document.createElement('div');stmtBox.className='gap-stmt';
   stmtBox.innerHTML=`<em>Step ${stepIdx+1} of the proof:</em><br><br>`+
-    escHtml(q._gapBefore)+
+    escHtml(gap.before)+
     `<span class="gap-blank" id="gap-blank">___</span>`+
-    escHtml(q._gapAfter);
+    escHtml(gap.after);
   grid.appendChild(stmtBox);
 
   document.getElementById('instr').textContent='Which term correctly fills the blank?';
 
-  // Build options: correct answer + 3 distractors from other key terms
-  const distractors=keyTerms.filter(t=>t!==q._gapAnswer&&t.length>3);
-  const opts=shuf([q._gapAnswer,...shuf(distractors).slice(0,3)]);
+  const opts=shuf([gap.answer,...gap.distractors.slice(0,3)]);
   const lets=['A','B','C','D'];
   opts.forEach((o,i)=>{
     const btn=document.createElement('button');btn.className='opt';
@@ -1698,20 +1958,17 @@ function renderGap(q){
     body.appendChild(txt);btn.appendChild(badge);btn.appendChild(body);
     btn.onclick=()=>{
       if(done)return;done=true;
-      const ok=(o===q._gapAnswer);
-      // Fill the blank
+      const ok=(o===gap.answer);
       const blank=document.getElementById('gap-blank');
-      if(blank){blank.textContent=ok?q._gapAnswer:o;blank.className='gap-blank '+(ok?'filled':'wrong-fill');}
-      // Colour options
+      if(blank){blank.textContent=ok?gap.answer:o;blank.className='gap-blank '+(ok?'filled':'wrong-fill');}
       opts.forEach((_,j)=>{
         const b=grid.querySelectorAll('.opt')[j];
         if(!b)return;
-        if(_===q._gapAnswer)b.classList.add('c0');
+        if(_===gap.answer)b.classList.add('c0');
         else if(b===btn&&!ok)b.classList.add('wrong');
         else b.classList.add('dim');
         b.disabled=true;
       });
-      // Show the full correct step as explanation
       document.getElementById('exp-title').textContent='The complete step:';
       const panel=document.getElementById('exp-panel'),steps=document.getElementById('exp-steps');
       steps.innerHTML='';
@@ -1766,15 +2023,14 @@ function startMatch(){
 }
 
 function renderMatchRound(){
-  // Pick 5 pairs for this round
   const allPairs=shuf([...MATCH_PAIRS]);
   matchPairs=allPairs.slice(0,5);
-  matchLeft=null;matchRight=null;
+  matchSelLeft=null;matchSelRight=null;
   document.getElementById('match-prog').style.width=(matchRoundsDone/4*100)+'%';
   document.getElementById('match-stk').textContent=stk;
-  document.getElementById('match-hts').innerHTML=Array.from({length:3},(_,i)=>i<hts?'❤️':'🖤').join('');
+  document.getElementById('match-hts').innerHTML='🔗 Match the pairs';
   document.getElementById('match-title').textContent='Round '+(matchRoundsDone+1)+' of 4';
-  document.getElementById('match-instr').textContent='Tap a theorem, then its matching concept.';
+  document.getElementById('match-instr').textContent='Tap a theorem, then its matching concept. Wrong pairs flash red — try again.';
   document.getElementById('match-fb').className='fb';
   document.getElementById('match-go-btn').className='go-btn';
 
@@ -1814,59 +2070,81 @@ function renderMatchRound(){
   for(let i=0;i<5;i++){grid.appendChild(leftCards[i]);grid.appendChild(rightCards[i]);}
 }
 
-let matchSelLeft=null,matchSelRight=null,matchPending=0;
+let matchSelLeft=null,matchSelRight=null;
 
 function matchTap(card,side){
-  if(card.classList.contains('matched-ok')||card.classList.contains('matched-err')||card.classList.contains('dim'))return;
-  // Deselect same side
-  document.querySelectorAll('.match-card.selected').forEach(c=>{if(c.dataset.side===side)c.classList.remove('selected');});
+  // Can't tap already-matched cards
+  if(card.classList.contains('matched-ok'))return;
+
+  // Deselect same side if already selected
+  document.querySelectorAll('.match-card.selected').forEach(c=>{
+    if(c.dataset.side===side)c.classList.remove('selected');
+  });
+
   card.classList.add('selected');
   if(side==='left')matchSelLeft=card;else matchSelRight=card;
-  // If both sides selected, evaluate
-  if(matchSelLeft&&matchSelRight){
-    const lVal=matchSelLeft.dataset.val;
-    const rVal=matchSelRight.dataset.val;
-    const pair=matchPairs.find(p=>p.left===lVal);
-    const ok=pair&&pair.right===rVal;
-    matchSelLeft.classList.remove('selected');matchSelRight.classList.remove('selected');
-    if(ok){
-      matchSelLeft.classList.add('matched-ok');matchSelRight.classList.add('matched-ok');
-      matchCorrect++;stk++;if(stk>bstk)bstk=stk;
+
+  // Only evaluate when both sides are selected
+  if(!matchSelLeft||!matchSelRight)return;
+
+  const lCard=matchSelLeft, rCard=matchSelRight;
+  matchSelLeft=null; matchSelRight=null;
+
+  const lVal=lCard.dataset.val;
+  const rVal=rCard.dataset.val;
+  const pair=matchPairs.find(p=>p.left===lVal);
+  const ok=pair&&pair.right===rVal;
+
+  lCard.classList.remove('selected');
+  rCard.classList.remove('selected');
+
+  if(ok){
+    // Correct — lock both cards green
+    lCard.classList.add('matched-ok');
+    rCard.classList.add('matched-ok');
+    matchCorrect++;stk++;if(stk>bstk)bstk=stk;
+    document.getElementById('match-stk').textContent=stk;
+  }else{
+    // Wrong — flash red briefly, then let them try again (no hearts lost, no lock)
+    lCard.classList.add('matched-err');
+    rCard.classList.add('matched-err');
+    setTimeout(()=>{
+      lCard.classList.remove('matched-err');
+      rCard.classList.remove('matched-err');
+    },700);
+    // Count the wrong attempt but don't penalise hearts or lock cards
+    stk=0;document.getElementById('match-stk').textContent=stk;
+  }
+
+  matchTotal++;
+
+  // Check if round is complete (all left cards matched correctly)
+  const allMatched=[...document.querySelectorAll('#match-grid .match-card.left-col')]
+    .every(c=>c.classList.contains('matched-ok'));
+
+  if(allMatched){
+    matchRoundsDone++;
+    const gb=document.getElementById('match-go-btn');
+    const fb=document.getElementById('match-fb');
+    const accuracy=matchTotal>0?Math.round(matchCorrect/matchTotal*100):0;
+    if(matchRoundsDone>=4){
+      gb.textContent='See results';gb.className='go-btn ok';
+      fb.className='fb ok';
+      document.getElementById('match-fbt').textContent='All rounds done!';
+      document.getElementById('match-fbb').textContent=
+        matchCorrect+' correct of '+matchTotal+' attempts ('+accuracy+'% accuracy).';
     }else{
-      matchSelLeft.classList.add('matched-err');matchSelRight.classList.add('matched-err');
-      // Briefly show error then reset
-      setTimeout(()=>{
-        matchSelLeft.classList.remove('matched-err');matchSelRight.classList.remove('matched-err');
-        stk=0;hts--;
-        document.getElementById('match-hts').innerHTML=Array.from({length:3},(_,i)=>i<hts?'❤️':'🖤').join('');
-        document.getElementById('match-stk').textContent=stk;
-      },800);
-    }
-    matchSelLeft=null;matchSelRight=null;
-    matchTotal++;
-    // Check if round complete
-    const allMatched=[...document.querySelectorAll('.match-card.left-col')].every(c=>c.classList.contains('matched-ok'));
-    if(allMatched){
-      matchRoundsDone++;
-      const gb=document.getElementById('match-go-btn');
-      const fb=document.getElementById('match-fb');
-      if(matchRoundsDone>=4||hts<=0){
-        gb.textContent='See results';gb.className='go-btn ok';
-        fb.className='fb ok';
-        document.getElementById('match-fbt').textContent='Round complete!';
-        document.getElementById('match-fbb').textContent=matchCorrect+' correct matches out of '+matchTotal+' attempts.';
-      }else{
-        gb.textContent='Next round →';gb.className='go-btn ok';
-        fb.className='fb ok';
-        document.getElementById('match-fbt').textContent='Round '+(matchRoundsDone)+' done!';
-        document.getElementById('match-fbb').textContent='Keep going — '+( 4-matchRoundsDone)+' round(s) left.';
-      }
+      gb.textContent='Next round →';gb.className='go-btn ok';
+      fb.className='fb ok';
+      document.getElementById('match-fbt').textContent='Round '+(matchRoundsDone)+' complete!';
+      document.getElementById('match-fbb').textContent=
+        accuracy+'% accuracy — '+(4-matchRoundsDone)+' round(s) left.';
     }
   }
 }
 
 function matchAdvance(){
-  if(matchRoundsDone>=4||hts<=0){
+  if(matchRoundsDone>=4){
     // Show result
     tot=matchTotal;cor=matchCorrect;
     saveStats();
@@ -1888,6 +2166,24 @@ function matchAdvance(){
   }
 }
 function showExp(q){
+  // TF questions show their explanations inline — skip the step panel
+  if(q.type==='tf'){
+    document.getElementById('exp-panel').classList.add('on');
+    const steps=document.getElementById('exp-steps');steps.innerHTML='';
+    q.statements.forEach((s,i)=>{
+      const d=document.createElement('div');d.className='exp-step';
+      const num=document.createElement('span');num.className='exp-num';
+      num.style.background=s.answer?'#34D399':'#EF4444';num.textContent=s.label;
+      const content=document.createElement('div');
+      const lbl=document.createElement('div');lbl.className='exp-lbl';
+      lbl.style.color=s.answer?'#34D399':'#EF4444';
+      lbl.textContent=s.label+': '+(s.answer?'TRUE':'FALSE');
+      const why=document.createElement('div');why.className='exp-why';
+      why.innerHTML=wikiLinkQuiz(s.explanation||'');
+      content.appendChild(lbl);content.appendChild(why);d.appendChild(num);d.appendChild(content);steps.appendChild(d);
+    });
+    return;
+  }
   const panel=document.getElementById('exp-panel'),steps=document.getElementById('exp-steps');
   steps.innerHTML='';
   q.ok.forEach((s,i)=>{
