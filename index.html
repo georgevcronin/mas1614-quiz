@@ -275,7 +275,7 @@ button{font-family:inherit;-webkit-appearance:none;appearance:none}
     <button class="diff-pill" id="pill-hard" onclick="selDiff('hard')">🔥 Hard <span class="diff-badge">NEW</span></button>
   </div>
   <button class="start-btn" onclick="startQuiz()">Start Quiz →</button>
-  <div class="home-note" id="home-note">10 questions · 37 theorems &amp; results available</div>
+  <div class="home-note" id="home-note">10 questions · 50 theorems &amp; results available</div>
   <button class="start-btn" style="margin-top:.85rem;background:linear-gradient(135deg,#4F7DBF,#3B5FA0);box-shadow:0 8px 24px rgba(79,125,191,.3)" onclick="openWiki('s-home')">📖 Open Wiki</button>
   <div class="sync-row" id="sync-row-login">
     <input class="sync-input" id="sync-username-input" placeholder="Enter a username to sync…" maxlength="30" onkeydown="if(event.key==='Enter')syncLogin()">
@@ -493,6 +493,7 @@ initFirebase();
 const Q=[
 
 {name:"Monotone Convergence Theorem",
+ cat:"Monotone & Bounded Sequences",
  hint:"The limit candidate is the supremum — completeness guarantees it exists. The sup characterisation gives the N you need. Monotonicity is what traps later terms close to the sup.",
  stmt:"If (aₙ) is increasing and bounded above, then (aₙ) converges to sup{aₙ | n∈ℕ}.",
  ok:["Since {aₙ} is bounded above, the [[completeness|Axiom of Completeness]] gives s = sup{aₙ} ∈ ℝ.",
@@ -516,6 +517,7 @@ const Q=[
             "For the decreasing case: if (aₙ) is decreasing and bounded below, set s=inf{aₙ}; the sup characterisation argument applies symmetrically with all inequalities reversed — in particular a_N<s+ε, not a_N>s−ε."]},
 
 {name:"Bolzano–Weierstraß Theorem",
+ cat:"Subsequences & Bolzano–Weierstraß",
  hint:"Bisect [−M,M] into two halves; at least one contains infinitely many terms — choose that half as I₁. Repeat to get nested closed intervals I₁⊇I₂⊇⋯ each of length M/2^(k−1). The Nested Interval Property gives x∈∩Iₖ, and |aₙₖ−x| ≤ length of Iₖ → 0.",
  stmt:"Every bounded sequence in ℝ has a convergent subsequence.",
  ok:["Bisect [−M,M] repeatedly, always selecting a half containing infinitely many terms; this defines nested closed intervals I₁⊇I₂⊇⋯ and lets us pick indices n₁<n₂<⋯ with aₙₖ∈Iₖ.",
@@ -537,6 +539,7 @@ const Q=[
             "The Nested Interval Property requires closed bounded intervals. Our Iₖ are closed by construction (each half includes its midpoint). If we used open intervals the intersection could be empty."]},
 
 {name:"Cauchy Criterion",
+ cat:"Cauchy Sequences",
  hint:"(⇒) Choose N so |aₙ−a|<ε/2; triangle inequality gives |aₙ−aₘ|≤|aₙ−a|+|a−aₘ|<ε. (⇐) Show Cauchy implies bounded (take ε=1, bound all terms beyond N); apply B-W to get a convergent subsequence aₙₖ→a; then use the Cauchy condition to show the full sequence also → a.",
  stmt:"(aₙ) converges if and only if it is Cauchy: ∀ε>0 ∃N with |aₙ−aₘ|<ε for all n,m≥N.",
  ok:["(⇒) aₙ→a: choose N with |aₙ−a|<ε/2; the [[tri_ineq|triangle inequality]] gives |aₙ−aₘ| ≤ |aₙ−a|+|a−aₘ| < ε.",
@@ -555,6 +558,7 @@ const Q=[
             "(⇐) The proof that Cauchy implies bounded: given ε=1 find N₁ with |aₙ−aₘ|<1 for n,m≥N₁; taking m=N₁ gives |aₙ|<|a_{N₁}|+1 for n≥N₁; the full bound is M=max{|a₁|,…,|a_{N₁}|,|a_{N₁}|+1}."]},
 
 {name:"Intermediate Value Theorem",
+ cat:"Continuity & Functional Limits",
  hint:"Let A = {x∈[a,b] : f(x)≤y}. It's non-empty (a∈A) and bounded above (by b), so s=sup A exists. Take sequences approaching s from below (showing f(s)≤y via OLT) and from above (showing f(s)≥y via OLT). Both inequalities force f(s)=y.",
  stmt:"If f:[a,b]→ℝ is continuous and f(a) ≤ y ≤ f(b), then there exists c∈[a,b] with f(c) = y.",
  ok:["Let A={x∈[a,b]:f(x)≤y}; it is non-empty (a∈A) and bounded above (by b), so s=sup A exists by [[completeness|completeness]].",
@@ -577,6 +581,7 @@ const Q=[
             "The set A={x∈[a,b]:f(x)≤y} is closed (preimage of (−∞,y] under continuous f), so sup A∈A, giving f(s)≤y directly. The 'from above' argument then gives f(s)≥y. But this requires knowing A is closed, which itself uses continuity."]},
 
 {name:"Extreme Value Theorem",
+ cat:"Continuity & Functional Limits",
  hint:"First show f is bounded: if not, pick xₙ with |f(xₙ)|>n; B-W gives xₙₖ→x₀∈[a,b]; continuity forces f(xₙₖ)→f(x₀), contradicting |f(xₙₖ)|→∞. So c=inf f([a,b]) exists. Build a minimising sequence xₙ with f(xₙ)→c; B-W gives xₙₖ→x₀; continuity gives f(x₀)=c.",
  stmt:"A continuous function f:[a,b]→ℝ attains its minimum and maximum on [a,b].",
  ok:["f is [[bounded|bounded]]: if not, pick xₙ with |f(xₙ)|>n; [[bw|B–W]] gives xₙₖ→x₀∈[a,b]; [[continuity|continuity]] forces |f(xₙₖ)|→|f(x₀)|<∞ — contradiction. So c=inf f([a,b]) exists.",
@@ -600,6 +605,7 @@ const Q=[
             "Boundedness of f requires the closed interval [a,b]: on an open interval (a,b) a continuous function can be unbounded (e.g. 1/(x−a) on (a,b)). The proof specifically uses that the B-W limit x₀ lies in the closed [a,b]."]},
 
 {name:"Mean Value Theorem",
+ cat:"Differentiation & MVT",
  hint:"Define g(x)=f(x)−[f(b)−f(a)]/(b−a)·(x−a). This subtracts the secant line, making g(a)=g(b)=0. Apply Rolle's Theorem to g: it's continuous on [a,b], differentiable on (a,b), and g(a)=g(b). Rolle gives c with g′(c)=0, and computing g′(c) recovers the MVT formula.",
  stmt:"If f:[a,b]→ℝ is continuous on [a,b] and differentiable on (a,b), then ∃c∈(a,b) with f′(c) = [f(b)−f(a)]/(b−a).",
  ok:["Define g(x)=f(x)−[f(b)−f(a)]/(b−a)·(x−a); verify g(a)=g(b)=0 so [[rolle|Rolle's Theorem]] applies to g on [a,b].",
@@ -623,6 +629,7 @@ const Q=[
             "Rolle requires g continuous on [a,b] and differentiable on (a,b). Both follow from the MVT hypotheses on f; subtracting a linear function preserves both properties. This must be stated explicitly."]},
 
 {name:"Rolle's Theorem",
+ cat:"Differentiation & MVT",
  hint:"Apply EVT to get the global max at x₁ and min at x₀. Case 1: both extrema are at endpoints — since f(a)=f(b), f must be constant, so f′≡0. Case 2: an extremum is at an interior point c — show both one-sided difference quotients force f′(c)≥0 and f′(c)≤0, hence f′(c)=0.",
  stmt:"If f:[a,b]→ℝ is continuous, differentiable on (a,b), and f(a)=f(b), then ∃c∈(a,b) with f′(c)=0.",
  ok:["The [[evt|Extreme Value Theorem]] gives a global maximum at x₁ and minimum at x₀ on [a,b].",
@@ -646,6 +653,7 @@ const Q=[
             "The case split: if f is constant then f′≡0. If f is non-constant, the max and min are different. At least one must be interior (since the max and min cannot both occur only at endpoints a and b if their values differ). The interior extremum gives f′(c)=0."]},
 
 {name:"Comparison Test for Series",
+ cat:"Infinite Series",
  hint:"Apply the Cauchy Criterion to Σ|bₙ| (which converges): get N with tail Σ|bₙ| from l to k < ε for all k≥l≥N. Then use |aₙ|≤|bₙ| and the triangle inequality to chain: |Σaₙ from l to k| ≤ Σ|aₙ| ≤ Σ|bₙ| < ε. This verifies the Cauchy condition for Σaₙ.",
  stmt:"If |aₙ|≤|bₙ| for all large n and Σ|bₙ| converges, then Σaₙ converges absolutely.",
  ok:["Apply the [[cauchy_series|Cauchy Criterion]] to Σ|bₙ|: find N so that Σ|bₙ| from l to k < ε for all k≥l≥N.",
@@ -668,6 +676,7 @@ const Q=[
             "Applying the Cauchy criterion directly to Σaₙ (not Σ|aₙ|) would give ordinary convergence; absolute convergence requires running the criterion on Σ|aₙ|. Since |aₙ|≤|bₙ|, the Cauchy criterion for Σ|bₙ| controls tails of Σ|aₙ|."]},
 
 {name:"Alternating Series Test",
+ cat:"Infinite Series",
  hint:"Split into even and odd partial sums. Even sums s₂ₖ are increasing because s₂ₖ₊₂−s₂ₖ=a₂ₖ₊₁−a₂ₖ₊₂≥0 (decreasing sequence). They're bounded above by a₁. So MCT gives s₂ₖ→S. Odd sums: s₂ₖ₊₁=s₂ₖ+a₂ₖ₊₁→S+0=S since aₙ→0. Both subsequences → S, so sₙ→S.",
  stmt:"If (aₙ) is decreasing, non-negative, and aₙ→0, then Σ(−1)ⁿ⁺¹aₙ converges.",
  ok:["Even partial sums s₂ₖ are [[monotone|increasing]] (s₂ₖ₊₂−s₂ₖ=a₂ₖ₊₁−a₂ₖ₊₂≥0) and bounded above by a₁; [[mct|MCT]] gives s₂ₖ→S.",
@@ -691,6 +700,7 @@ const Q=[
             "If both (s₂ₖ) and (s₂ₖ₊₁) converge by MCT to limits S_e and S_o respectively, then |S_e−S_o|=lim|s₂ₖ−s₂ₖ₊₁|=lim a₂ₖ₊₁=0, so S_e=S_o=S. This is a valid complete proof, just longer."]},
 
 {name:"Absolute Convergence implies Convergence",
+ cat:"Infinite Series",
  hint:"Since Σ|aₙ| converges, it satisfies the Cauchy criterion: find N with Σ|aₙ| from l to k < ε. The triangle inequality gives |Σaₙ from l to k| ≤ Σ|aₙ| from l to k < ε. This is exactly the Cauchy criterion for Σaₙ, so Σaₙ converges.",
  stmt:"If Σ|aₙ| converges, then Σaₙ converges.",
  ok:["Apply the [[cauchy_series|Cauchy Criterion for Series]] to Σ|aₙ|: find N with tail Σ|aₙ| from l to k < ε.",
@@ -711,6 +721,7 @@ const Q=[
             "Writing aₙ=aₙ⁺−aₙ⁻ with aₙ⁺=max(aₙ,0) and aₙ⁻=max(−aₙ,0): both 0≤aₙ⁺≤|aₙ| and 0≤aₙ⁻≤|aₙ|, so Comparison gives Σaₙ⁺<∞ and Σaₙ⁻<∞, hence Σaₙ converges — a valid alternative proof."]},
 
 {name:"Limit of (8n+5)/(4n+3)",
+ cat:"Sequence Convergence",
  hint:"Compute |(8n+5)/(4n+3)−2| = |8n+5−8n−6|/|4n+3| = 1/(4n+3). Since 4n+3>4n, this is less than 1/(4n). To make 1/(4n)<ε you need n>1/(4ε), so choose N>1/(4ε) via the Archimedean Axiom.",
  stmt:"Prove that ((8n+5)/(4n+3))ₙ converges to 2.",
  ok:["Divide numerator and denominator by n: (8n+5)/(4n+3) = (8+5/n)/(4+3/n) → 8/4 = 2 as n→∞.",
@@ -731,6 +742,7 @@ const Q=[
             "N>1/ε would give 1/N<ε, and 1/(4n+3)<1/n≤1/N<ε for n≥N. This also works but gives a weaker (larger) N than necessary — N>1/(4ε) is sharper."]},
 
 {name:"Algebraic Limit Theorem — sum",
+ cat:"Sequence Convergence",
  hint:"You're combining two errors, so budget ε/2 each. Find N₁ with |aₙ−a|<ε/2 for n≥N₁, and N₂ with |bₙ−b|<ε/2 for n≥N₂. Take N=max{N₁,N₂}. For n≥N, apply the triangle inequality: |(aₙ+bₙ)−(a+b)| ≤ |aₙ−a|+|bₙ−b| < ε/2+ε/2=ε.",
  stmt:"If aₙ→a and bₙ→b, then aₙ+bₙ → a+b. Prove this from the ε–N definition.",
  ok:["Let ε>0. Use aₙ→a to find N₁∈ℕ with |aₙ−a|<ε/2 for all n≥N₁.",
@@ -751,6 +763,7 @@ const Q=[
             "N=max{N₁,N₂} ensures n≥N implies BOTH n≥N₁ and n≥N₂. Using N=N₁·N₂ or N=N₁+N₂ would also guarantee both, but max is the tightest and most natural choice."]},
 
 {name:"cos(nπ/2) diverges",
+ cat:"Subsequences & Bolzano–Weierstraß",
  hint:"The sequence cycles 1,0,−1,0,1,… with period 4. Pick n=4k: cos(2kπ)=1, so this subsequence → 1. Pick n=4k+2: cos(kπ+π)=−1, so this subsequence → −1. Since a convergent sequence has a unique limit, two subsequences with different limits proves divergence.",
  stmt:"The sequence (cos(nπ/2))ₙ∈ℕ does not converge. Prove this.",
  ok:["The sequence takes values 0, −1, 0, 1, 0, −1, … (period 4), so it is clearly oscillating.",
@@ -771,6 +784,7 @@ const Q=[
             "The subsequence n=4k gives cos(2kπ)=1; n=4k+2 gives cos(kπ+π)=cos((2k+1)π)=−1. The calculation cos((4k+2)π/2)=cos(2kπ+π)=cos(π)·cos(2kπ)−sin(π)·sin(2kπ)=(−1)·1−0=−1."]},
 
 {name:"Bounded sequence: subsequence criterion",
+ cat:"Subsequences & Bolzano–Weierstraß",
  hint:"Suppose aₙ ↛ a. Then ∃ε₀>0 such that |aₙ−a|≥ε₀ for infinitely many n — extract these as a subsequence (aₙₖ) with |aₙₖ−a|≥ε₀ for all k. Since (aₙ) is bounded, so is (aₙₖ). Apply B-W to get a further convergent sub-subsequence. By hypothesis it must → a, contradicting the ε₀-gap.",
  stmt:"If (aₙ) is bounded and every convergent subsequence converges to a, then aₙ→a.",
  ok:["Suppose for contradiction aₙ↛a; then ∃ε₀>0 such that for infinitely many n, |aₙ−a|≥ε₀.",
@@ -791,6 +805,7 @@ const Q=[
             "The hypothesis is 'every subsequence of (aₙ) that converges tends to a'. We only apply this once: to the sub-subsequence (aₙₖⱼ). It is crucial that (aₙₖⱼ) is a subsequence of (aₙ), not just of (aₙₖ)."]},
 
 {name:"Series convergence: Σ sin(π/4)ⁿ/n",
+ cat:"Infinite Series",
  hint:"Note sin(π/4)=√2/2≈0.707, which is strictly less than 1. So |sin(π/4)ⁿ/n| = (√2/2)ⁿ/n ≤ (√2/2)ⁿ (dropping the 1/n factor since 1/n≤1). The right-hand side is a geometric series with ratio √2/2<1, which converges. Apply the Comparison Test.",
  stmt:"Determine whether Σₙ₌₁^∞ sin(π/4)ⁿ/n converges or diverges.",
  ok:["Note sin(π/4)=√2/2, so |sin(π/4)ⁿ/n| = (√2/2)ⁿ/n ≤ (√2/2)ⁿ.",
@@ -811,6 +826,7 @@ const Q=[
             "Ratio test: |aₙ₊₁/aₙ|=(√2/2)^(n+1)/(n+1) · n/(√2/2)ⁿ = (√2/2)·n/(n+1) → √2/2 < 1. Ratio test gives absolute convergence directly, without needing to find a comparison series."]},
 
 {name:"Series divergence: Σ cos(π/n²)",
+ cat:"Infinite Series",
  hint:"Before reaching for comparison tests, ask: what does the general term approach as n→∞? If it does not go to zero, there is a one-line test that settles it immediately.",
  stmt:"Determine whether Σₙ₌₁^∞ cos(π/n²) converges or diverges.",
  ok:["As n→∞: π/n²→0, so by continuity of cosine, cos(π/n²)→cos(0) = 1.",
@@ -831,6 +847,7 @@ const Q=[
             "One might attempt the limit comparison test with Σ1: lim cos(π/n²)/1 = 1 ≠ 0, so both series diverge or both converge together. Since Σ1 diverges, so does Σcos(π/n²). This is valid but overkill."]},
 
 {name:"If Σaₙ converges (aₙ>0) then Σaₙ² converges",
+ cat:"Infinite Series",
  hint:"Since Σaₙ converges, aₙ→0 by the n-th term test. So ∃N with aₙ<1 for all n≥N. For such n, squaring a number in (0,1) makes it smaller: aₙ²=aₙ·aₙ < aₙ·1=aₙ. Now 0≤aₙ²≤aₙ for large n, and Σaₙ converges, so the Comparison Test gives Σaₙ² converges.",
  stmt:"Let aₙ>0 for all n. Suppose Σaₙ converges. Prove that Σaₙ² also converges.",
  ok:["Since Σaₙ converges, aₙ→0 by the [[nth_term|n-th term test]]. In particular ∃N with aₙ<1 for all n≥N.",
@@ -852,6 +869,7 @@ const Q=[
             "The limit comparison test: lim aₙ²/aₙ = lim aₙ = 0. A limit-comparison with limit 0 (not 1) says: if Σaₙ converges and lim bₙ/aₙ=0 with bₙ≥0, then Σbₙ converges. Here bₙ=aₙ² and this holds."]},
 
 {name:"IVT application: f(c)=f(c−1)",
+ cat:"Continuity & Functional Limits",
  hint:"Define g(x)=f(x)−f(x−1) on [0,1]. Compute g(0)+g(1)=(f(0)−f(−1))+(f(1)−f(0))=f(1)−f(−1)=0. So g(0)=−g(1), meaning they have opposite signs (or one is zero). IVT then gives c∈[0,1] with g(c)=0, i.e. f(c)=f(c−1).",
  stmt:"Let f:[−1,1]→ℝ be continuous with f(−1)=f(1). Show ∃c∈[0,1] with f(c)=f(c−1).",
  ok:["Define g:[0,1]→ℝ by g(x)=f(x)−f(x−1). Since f is continuous and x−1∈[−1,1] for x∈[0,1], g is continuous.",
@@ -872,6 +890,7 @@ const Q=[
             "g(c)=0 means f(c)=f(c−1). For c∈[0,1], c−1∈[−1,0]⊂[−1,1], so both c and c−1 lie in the domain of f. The conclusion f(c)=f(c−1) is exactly what was required."]},
 
 {name:"sup(A∪B) = max{sup A, sup B}",
+ cat:"Suprema & Completeness",
  hint:"Let M=max{sup A, sup B}. Every x∈A∪B satisfies x≤sup A≤M or x≤sup B≤M, so M is an upper bound. To show it's the least: if U<M, WLOG M=sup A, then U<sup A, so U is not an upper bound for A — hence not for A∪B either. So sup(A∪B)=M.",
  stmt:"If A, B ⊆ ℝ are non-empty and bounded above, then sup(A∪B) = max{sup A, sup B}.",
  ok:["Let M=max{sup A, sup B}. For any x∈A∪B, either x∈A so x≤sup A≤M, or x∈B so x≤sup B≤M; thus M is an upper bound.",
@@ -892,6 +911,7 @@ const Q=[
             "The formula fails if A or B is empty: sup ∅ is conventionally −∞, and max{sup A,−∞}=sup A. The result sup(A∪∅)=sup A is still correct in this convention."]},
 
 {name:"Verifying (3n+7)/(5n) is Cauchy",
+ cat:"Cauchy Sequences",
  hint:"Write aₙ=3/5+7/(5n). Then |aₙ−aₘ|=|7/(5n)−7/(5m)|=7|m−n|/(5nm). Since |m−n|≤max{m,n} and nm≥min{m,n}·min{m,n}, you get |aₙ−aₘ|≤7/(5·min{n,m})≤7/(5N) for n,m≥N. Choose N>7/(5ε) by the Archimedean Axiom.",
  stmt:"Show the sequence aₙ=(3n+7)/(5n) is Cauchy by verifying the definition directly.",
  ok:["Write aₙ=3/5+7/(5n). Then |aₙ−aₘ|=|7/(5n)−7/(5m)| = 7|m−n|/(5nm) ≤ 7/(5·min{n,m}).",
@@ -912,6 +932,7 @@ const Q=[
             "Direct computation: aₙ=3/5+7/(5n), so aₙ−aₘ=7/(5n)−7/(5m)=7(m−n)/(5nm). Taking absolute values: |aₙ−aₘ|=7|m−n|/(5nm). The factoring step requires aₙ to be written in this form first."]},
 
 {name:"Cauchy functional equation: f(nx)=nf(x)",
+ cat:"Continuity & Functional Limits",
  hint:"Base case n=1: f(1·x)=f(x)=1·f(x). Inductive step: assume f(kx)=kf(x). Then f((k+1)x)=f(kx+x)=f(kx)+f(x) (by the functional equation) =kf(x)+f(x) (by hypothesis) =(k+1)f(x). Conclude by induction.",
  stmt:"If f:ℝ→ℝ satisfies f(x+y)=f(x)+f(y) for all x,y∈ℝ, prove that f(nx)=nf(x) for all n∈ℕ, x∈ℝ.",
  ok:["Base case n=1: f(1·x)=f(x)=1·f(x). ✓",
@@ -931,6 +952,7 @@ const Q=[
             "The base case n=0 gives f(0)=0·f(x)=0; this requires f(0)=0, which follows from f(0)=f(0+0)=f(0)+f(0), giving f(0)=0. For n∈ℕ={1,2,3,…} the base case is n=1: f(x)=1·f(x). ✓"]},
 
 {name:"MVT application: bounding f(0) given f′≤2",
+ cat:"Differentiation & MVT",
  hint:"Apply the MVT on [−7,0]: ∃c∈(−7,0) with f′(c)=[f(0)−f(−7)]/(0−(−7))=[f(0)+3]/7. Since f′(c)≤2, we get [f(0)+3]/7≤2, so f(0)+3≤14, giving f(0)≤11. Check sharpness: f(x)=2x+11 achieves f(−7)=−3, f′=2≤2, f(0)=11.",
  stmt:"Let f:[−7,0]→ℝ be differentiable with f(−7)=−3 and f′(x)≤2 for all x. What is the largest possible value of f(0)?",
  ok:["By the [[mvt|Mean Value Theorem]], ∃c∈(−7,0) with f′(c)=[f(0)−f(−7)]/(0−(−7)) = [f(0)+3]/7.",
@@ -951,6 +973,7 @@ const Q=[
             "Lower bound on f(0): MVT also gives f(0)≥f(−7)+7·inf f′. Without a lower bound on f′, we can only conclude f(0)≤11. The problem asks for an upper bound, so the lower bound direction is not needed."]},
 
 {name:"At most one fixed point if f′≠1",
+ cat:"Differentiation & MVT",
  hint:"Suppose f(p)=p and f(q)=q with p≠q. Define h(x)=f(x)−x; then h(p)=0=h(q). Apply MVT to h on [p,q]: ∃c with h′(c)=[h(q)−h(p)]/(q−p)=0. But h′(c)=f′(c)−1=0 means f′(c)=1, contradicting f′(x)≠1 for all x.",
  stmt:"If f is differentiable on an interval with f′(x)≠1 for all x, then f has at most one fixed point.",
  ok:["Suppose for contradiction that f(p)=p and f(q)=q with p≠q.",
@@ -971,6 +994,7 @@ const Q=[
             "MVT requires h continuous on [p,q] and differentiable on (p,q). h=f−id inherits these from f. The conclusion c∈(p,q) (OPEN interval) is important: the contradiction f′(c)=1 must occur at an interior point."]},
 
 {name:"Order Limit Theorem",
+ cat:"Sequence Convergence",
  hint:"Suppose a<0. Take ε=|a|>0 in the definition of convergence: ∃N with |a_N−a|<|a|. This means a_N lies in the interval (a−|a|, a+|a|)=(2a, 0), so a_N<0. But a_N≥0 by hypothesis — contradiction. So a≥0.",
  stmt:"If aₙ→a and aₙ≥0 for all n, then a≥0.",
  ok:["Suppose for contradiction that a<0.",
@@ -992,6 +1016,7 @@ const Q=[
             "The contradiction requires a_N<0, which contradicts the hypothesis aₙ≥0. The ε must be chosen so that a+ε<0, i.e. ε<|a|. Both ε=|a| and ε=|a|/2 satisfy this (with equality for |a|, giving a+|a|=0 which is ≤0 not <0 — so ε=|a|/2 is safer)."]},
 
 {name:"Convergence of 1/√n → 0",
+ cat:"Sequence Convergence",
  hint:"You need 1/√n<ε, which rearranges to n>1/ε². By the Archimedean Axiom, choose N∈ℕ with N>1/ε². Then for all n≥N: n≥N>1/ε², so ε²>1/n, so ε>1/√n. Since 1/√n>0, we get |1/√n−0|=1/√n<ε.",
  stmt:"Prove from the ε–N definition that 1/√n → 0 as n→∞.",
  ok:["Let ε>0. By the [[naturals|Archimedean Axiom]], choose N∈ℕ with N > 1/ε².",
@@ -1012,6 +1037,7 @@ const Q=[
             "For ε≥1 the result is trivial (1/√n≤1≤ε for all n≥1), so we only need to handle ε∈(0,1). In this range N>1/ε² is positive and the Archimedean Axiom applies."]},
 
 {name:"Differentiable implies Continuous",
+ cat:"Differentiation & MVT",
  hint:"Write f(x)−f(x₀) = [(f(x)−f(x₀))/(x−x₀)] · (x−x₀). As x→x₀: the first factor → f′(x₀) by differentiability (finite limit), and the second factor → 0. By the Algebraic Limit Theorem for products, the product → f′(x₀)·0=0. So f(x)→f(x₀), which is continuity.",
  stmt:"Prove that if f is differentiable at x₀, then f is continuous at x₀.",
  ok:["Write f(x)−f(x₀) = [f(x)−f(x₀)]/(x−x₀) · (x−x₀) for x≠x₀.",
@@ -1033,6 +1059,7 @@ const Q=[
 
 // -- TRUE/FALSE BLOCKS ----------------------------------------
 {name:"True/false: convergent sequences and their value sets",
+ cat:"Sequence Convergence",
  type:'tf',
  hint:"Every convergent sequence is bounded, so the value set always has an infimum (and supremum). But 'has a supremum' is not the same as 'has a maximum' — the supremum need not be attained. Try aₙ=1−1/n for a counterexample to A. For C, try aₙ=(−1)ⁿ.",
  stmt:"Let (aₙ) be a convergent sequence of real numbers. For each statement below, decide True or False.",
@@ -1053,6 +1080,7 @@ const Q=[
  proofId:'proof_mct'},
 
 {name:"True/false: properties of continuous functions on [0,1]",
+ cat:"Continuity & Functional Limits",
  type:'tf',
  hint:"EVT says a continuous function on a closed bounded interval is bounded and attains its bounds. For B: use the ε-δ definition with ε=f(1/2)/2 to get a neighbourhood where f>0. For C: try f(x)=x — then g(x)=1/x blows up near 0. For D: try a step function with values ±1.",
  stmt:"Let f:[0,1]→ℝ be continuous. For each statement, decide True or False.",
@@ -1073,6 +1101,7 @@ const Q=[
  proofId:'proof_evt'},
 
 {name:"Squeezed monotone sequences",
+ cat:"Monotone & Bounded Sequences",
  type:'tf',
  hint:"(xₙ) is increasing and bounded above by y₁ (since xₙ≤yₙ≤y₁), so MCT gives xₙ→x. Similarly yₙ is decreasing and bounded below by x₁, so MCT gives yₙ→y. The OLT applied to yₙ−xₙ→y−x≥0 gives x≤y for C. For B: try constant sequences xₙ=0, yₙ=1.",
  stmt:"Suppose (xₙ) and (yₙ) satisfy xₙ≤yₙ for all n, with (xₙ) increasing and (yₙ) decreasing. Decide True or False for each.",
@@ -1093,6 +1122,7 @@ const Q=[
  proofId:'proof_mct'},
 
 {name:"Which series converge?",
+ cat:"Infinite Series",
  type:'tf',
  hint:"For each part, choose your weapon: can you telescope? Is it geometric? Does the general term even go to zero? Can you dominate term-by-term by a known series?",
  stmt:"Determine whether each series converges or diverges.",
@@ -1113,6 +1143,7 @@ const Q=[
  proofId:'proof_comparison'},
 
 {name:"Differentiable functions: true/false",
+ cat:"Differentiation & MVT",
  type:'tf',
  hint:"A: |x|²=x² for all x∈ℝ — the composition eliminates the kink, so it's differentiable everywhere. B: Apply MVT to [1,3]: ∃c with f′(c)=[f(3)−f(1)]/2=[0−(−2)]/2=1, but f′>1 everywhere — contradiction. C: factor x⁵−32=(x−2)(x⁴+2x³+4x²+8x+16) and evaluate at x=2. D: look up the Weierstrass function.",
  stmt:"Determine whether each statement is true or false.",
@@ -1133,6 +1164,7 @@ const Q=[
  proofId:'proof_mvt'},
 
 {name:"Limit of (6n−1)/(3n+2)",
+ cat:"Sequence Convergence",
  hint:"Compute |(6n−1)/(3n+2)−2| directly — it simplifies to a fraction with denominator 3n+2. Then choose N large enough to make it less than ε.",
  stmt:"Prove directly from the ε–N definition that (6n−1)/(3n+2) → 2 as n→∞.",
  ok:["Compute |(6n−1)/(3n+2)−2| = |6n−1−6n−4|/|3n+2| = 5/(3n+2) < 5/(3n).",
@@ -1155,6 +1187,7 @@ const Q=[
             "The error |(6n−1)/(3n+2)−2|=(1)/(3n+2): numerator is |6n−1−6n−4|=|−5|=5, giving 5/(3n+2). The bound 5/(3n+2)<5/(3n) is valid since 3n+2>3n."]},
 
 {name:"Convergence of n/(n²+1)",
+ cat:"Sequence Convergence",
  hint:"Find a simple upper bound for n/(n²+1) that goes to zero. What does n/(n²+1) simplify to approximately for large n?",
  stmt:"Prove from the ε–N definition that n/(n²+1) → 0 as n→∞.",
  ok:["Note n/(n²+1) < n/n² = 1/n for all n≥1.",
@@ -1176,6 +1209,7 @@ const Q=[
             "Choosing N>1/ε² and using n/(n²+1)<1/n≤1/N<ε² gives convergence to 0 with error ε² — this proves the sequence is eventually within ε² of 0, not within ε. To get within ε, use N>1/ε."]},
 
 {name:"OLT: if aₙ→a and bₙ→b with aₙ≤bₙ, then a≤b",
+ cat:"Sequence Convergence",
  hint:"Apply the Order Limit Theorem to the sequence (bₙ−aₙ). What do you know about its terms and its limit?",
  stmt:"Suppose aₙ→a, bₙ→b, and aₙ≤bₙ for all n. Prove that a≤b.",
  ok:["Define cₙ=bₙ−aₙ≥0 for all n.",
@@ -1197,6 +1231,7 @@ const Q=[
             "The OLT route (via cₙ=bₙ−aₙ) is cleaner: it reduces the two-sequence problem to the one-sequence statement 'non-negative sequence has non-negative limit'. The contradiction route is longer but avoids introducing an auxiliary sequence."]},
 
 {name:"Sandwich/Squeeze Theorem",
+ cat:"Sequence Convergence",
  hint:"If aₙ≤cₙ≤bₙ and both aₙ and bₙ converge to the same limit L, what can you say about |cₙ−L|?",
  stmt:"If aₙ≤cₙ≤bₙ for all n, and aₙ→L and bₙ→L, then cₙ→L.",
  ok:["Let ε>0. Find N₁ with |aₙ−L|<ε for n≥N₁, and N₂ with |bₙ−L|<ε for n≥N₂.",
@@ -1218,6 +1253,7 @@ const Q=[
             "The squeeze: cₙ is sandwiched between aₙ (which is >L−ε) and bₙ (which is <L+ε). Both bounds must hold simultaneously — hence taking N=max{N₁,N₂} to activate both bounds at once."]},
 
 {name:"Convergence of rⁿ for |r|<1",
+ cat:"Sequence Convergence",
  hint:"For the ε–N argument, you need rⁿ<ε. Take logarithms: n·log|r|<log ε, so n > log ε / log|r|. For r=0, treat separately.",
  stmt:"Prove that if |r|<1 then rⁿ→0 as n→∞.",
  ok:["If r=0 the result is immediate (0ⁿ=0 for all n). Assume 0<|r|<1.",
@@ -1239,6 +1275,7 @@ const Q=[
             "Bernoulli approach: write |r|=1/(1+p) with p>0; then |r|ⁿ=1/(1+p)ⁿ≤1/(1+np)≤1/(np); choose N>1/(pε). This is valid but requires the Bernoulli inequality (1+p)ⁿ≥1+np."]},
 
 {name:"Absolute Convergence: if Σaₙ² and Σbₙ² converge, so does Σaₙbₙ",
+ cat:"Infinite Series",
  hint:"The key inequality is |aₙbₙ| ≤ (aₙ²+bₙ²)/2 — this is AM–GM. Then the right side is dominated by a convergent series.",
  stmt:"Prove that if Σaₙ² and Σbₙ² both converge, then Σaₙbₙ converges absolutely.",
  ok:["Use the AM–GM inequality: |aₙbₙ| ≤ (aₙ²+bₙ²)/2 for all n.",
@@ -1258,6 +1295,325 @@ const Q=[
  hardBad:["AM-GM: for reals a,b: 2|ab|≤a²+b² follows from (|a|−|b|)²≥0, expanding: a²−2|a||b|+b²≥0. Dividing by 2: |ab|=|a||b|≤(a²+b²)/2. This is the AM-GM inequality for two terms.",
             "The Comparison Test applies: 0≤|aₙbₙ|≤(aₙ²+bₙ²)/2, and Σ(aₙ²+bₙ²)/2=(Σaₙ²+Σbₙ²)/2<∞ by the ALT. So Σ|aₙbₙ| converges by Comparison.",
             "Alternative: Cauchy-Schwarz gives (Σ|aₙbₙ| from 1 to N)²≤(Σaₙ² from 1 to N)(Σbₙ² from 1 to N)≤(Σaₙ²)(Σbₙ²)<∞. So partial sums of Σ|aₙbₙ| are bounded; since they are increasing (terms ≥0), MCT gives convergence."]},
+
+// ---- NEW EXAM-PAPER QUESTIONS ----
+
+{name:"Sup of A = {m/n : m,n∈ℕ, m<n}",
+ cat:"Suprema & Completeness",
+ hint:"Every element of A satisfies m/n < 1 since m < n. Can you get arbitrarily close to 1?",
+ stmt:"Compute sup A where A = {m/n | m,n∈ℕ, m<n}, and verify using the definition of supremum. Is sup A a maximum?",
+ ok:["Every element m/n satisfies m/n < 1 since m < n, so 1 is an upper bound for A.",
+     "For any ε>0, choose n large enough so that (n−1)/n = 1−1/n > 1−ε; this element is in A, so no number less than 1 is an upper bound.",
+     "Therefore sup A = 1. Since 1∉A (as m<n strictly), 1 is not a maximum of A."],
+ why:["m<n implies m/n<1, so 1 is an upper bound.",
+      "The element (n−1)/n ∈ A can be made arbitrarily close to 1 by taking n large (Archimedean Axiom), so nothing smaller than 1 is an upper bound.",
+      "sup A = 1 but 1∉A since any fraction with value 1 requires m=n, excluded by m<n strictly."],
+ gaps:[
+  {stepIdx:0,before:'Every element satisfies m/n < 1 since m < n, so ',answer:'1',after:' is an upper bound for A.',why:'m<n means m/n<n/n=1.',distractors:['0','2','1/2']},
+  {stepIdx:1,before:'Take the element (n−1)/n ∈ A; this equals ',answer:'1−1/n',after:', which can be made within ε of 1 for large n.',why:'(n−1)/n = n/n − 1/n = 1 − 1/n.',distractors:['1−1/n²','n/(n+1)','1/n']}
+ ],
+ bad:["sup A = 0 since all fractions m/n with m<n are less than 1 and the infimum is 0.",
+      "sup A = 1/2 since the average of 0 and 1 lies in A.",
+      "sup A does not exist since A is infinite.",
+      "sup A = 1 and it is a maximum since (n−1)/n → 1.",
+      "sup A = n/(n+1) for the largest n."],
+ hardBad:["sup A = 1, and it is also a maximum because every sequence in A converges to 1.",
+           "The element 1/1 = 1 has m=n=1, and since m<n is strict, 1∉A; but we could take the limit of (n−1)/n as n→∞ to get 1 — limits of elements are not necessarily elements.",
+           "sup A = 1 because 1 is the smallest upper bound, verified by: if M<1 then M<1 and (M+1)/2 ∈ A and (M+1)/2 > M — but (M+1)/2 need not be rational or of the form m/n with m<n."]},
+
+{name:"Bernoulli's Inequality",
+ cat:"Suprema & Completeness",
+ hint:"Prove by induction. The base case n=1 is direct. For the step, expand (1+x)^(n+1) = (1+x)(1+x)^n and apply the induction hypothesis.",
+ stmt:"Prove by induction that (1+x)ⁿ ≥ 1+nx for all n∈ℕ and all x∈ℝ with x≥−1.",
+ ok:["Base case n=1: (1+x)¹ = 1+x = 1+1·x ✓",
+     "Inductive step: assume (1+x)ⁿ ≥ 1+nx. Then (1+x)ⁿ⁺¹ = (1+x)(1+x)ⁿ ≥ (1+x)(1+nx).",
+     "Expand: (1+x)(1+nx) = 1+nx+x+nx² = 1+(n+1)x+nx² ≥ 1+(n+1)x since nx²≥0."],
+ why:["The base case establishes equality for n=1.",
+      "The induction hypothesis applies since (1+x)≥0 (as x≥−1) so multiplying preserves the inequality.",
+      "The nx² term is non-negative for all real x, giving the final inequality."],
+ gaps:[
+  {stepIdx:1,before:'(1+x)ⁿ⁺¹ = (1+x)(1+x)ⁿ ≥ (1+x)(1+nx) = 1+(n+1)x + ',answer:'nx²',after:' ≥ 1+(n+1)x.',why:'Expanding (1+x)(1+nx): 1·1+1·nx+x·1+x·nx = 1+nx+x+nx²=1+(n+1)x+nx².',distractors:['x²','n²x²','(n+1)x²']},
+  {stepIdx:2,before:'Since x≥−1 we have x²≥0 and n≥1, so nx²≥0; thus 1+(n+1)x+nx² ≥ ',answer:'1+(n+1)x',after:'.',why:'Dropping a non-negative term makes the expression smaller.',distractors:['1+nx','1+(n+1)x+x','nx']}
+ ],
+ bad:["The inequality holds because x≥−1 means 1+x≥0, so we can take powers without sign changes.",
+      "Apply the Binomial Theorem: (1+x)ⁿ = Σ C(n,k)xᵏ ≥ 1+nx by dropping all terms k≥2.",
+      "Differentiate both sides with respect to x: n(1+x)ⁿ⁻¹ ≥ n, which holds since (1+x)≥0.",
+      "The result follows directly from the AM-GM inequality applied to n copies of (1+x)."],
+ hardBad:["The induction step needs (1+x)≥0 to multiply both sides of (1+x)ⁿ≥1+nx without flipping the inequality; this requires x≥−1, which is the hypothesis.",
+           "The expansion (1+x)(1+nx)=1+(n+1)x+nx² uses the distributive law twice; the nx² term is non-negative for all x∈ℝ (not just x≥−1), so the hypothesis x≥−1 is only needed for the multiplication step.",
+           "For x=−1: (1+(−1))ⁿ=0ⁿ=0 and 1+n(−1)=1−n≤0 for n≥1, so (1+x)ⁿ=0≥1−n; equality holds only at n=1."]},
+
+{name:"Recursive sequence: aₙ₊₁=√(c+aₙ)",
+ cat:"Monotone & Bounded Sequences",
+ hint:"Show the sequence is increasing (by induction on n) and bounded above (find a fixed point L with L=√(c+L) and show aₙ≤L for all n). Then MCT applies.",
+ stmt:"Define a₁=√c and aₙ₊₁=√(c+aₙ) for n≥1, where c>0. Show the sequence converges and find its limit.",
+ ok:["The fixed point L satisfies L=√(c+L), so L²=c+L, giving L=(1+√(1+4c))/2 > 0.",
+     "Induction shows (aₙ) is increasing: a₂=√(c+a₁)>√(c)=a₁, and if aₙ>aₙ₋₁ then aₙ₊₁=√(c+aₙ)>√(c+aₙ₋₁)=aₙ.",
+     "Induction shows aₙ≤L for all n: a₁=√c<L, and if aₙ≤L then aₙ₊₁=√(c+aₙ)≤√(c+L)=L. MCT gives aₙ→L."],
+ why:["The fixed point gives the candidate limit — set lim aₙ=L and pass the recurrence to the limit.",
+      "Monotonicity follows by induction since √ is increasing.",
+      "Boundedness by L follows by induction; MCT then guarantees convergence to L."],
+ gaps:[
+  {stepIdx:0,before:'Setting L=lim aₙ and taking limits in aₙ₊₁=√(c+aₙ) gives L=√(c+L), so L²−L−c=0, hence L=',answer:'(1+√(1+4c))/2',after:'(taking the positive root).',why:'Quadratic formula on L²−L−c=0: L=(1±√(1+4c))/2; take + since L>0.',distractors:['(1+√c)/2','√(1+c)','c+1/2']},
+  {stepIdx:2,before:'If aₙ≤L then aₙ₊₁=√(c+aₙ)≤√(c+L)=',answer:'L',after:'. So (aₙ) is bounded above by L.',why:'√ is increasing and c+L=L², so √(c+L)=L.',distractors:['L+1','√L','2L']}
+ ],
+ bad:["The sequence converges since it is bounded below by 0 and increasing.",
+      "The limit is c since the +aₙ term becomes negligible.",
+      "The limit is 2 for all c by a fixed-point argument.",
+      "Apply the Cauchy criterion directly to show (aₙ) converges.",
+      "The sequence converges to L=1+c by solving L=c+L incorrectly."],
+ hardBad:["The induction for aₙ≤L: a₁=√c and L=(1+√(1+4c))/2; need √c≤(1+√(1+4c))/2. Since 4c<1+4c, we have 2√c<√(1+4c), so 2√c+1<1+√(1+4c), giving √c<(1+√(1+4c))/2=L.",
+           "The fixed-point equation L=√(c+L) has two solutions: L=(1+√(1+4c))/2>0 and L=(1−√(1+4c))/2<0. Since aₙ>0 for all n, the limit must be the positive root.",
+           "MCT requires the sequence to be monotone AND bounded. Increasing is shown by induction; bounded above by L is shown separately. Both are needed — neither alone is sufficient."]},
+
+{name:"Continuity of |x−a|/(x−a) at x=a",
+ cat:"Continuity & Functional Limits",
+ hint:"Check the left and right limits as x→a separately. Use sequences approaching a from each side.",
+ stmt:"Let f(x) = |x−a|/(x−a) for x≠a and f(a)=1. Is f continuous at x=a? Justify rigorously.",
+ ok:["For x>a: |x−a|/(x−a) = (x−a)/(x−a) = 1, so the right limit as x→a⁺ is 1.",
+     "For x<a: |x−a|/(x−a) = (a−x)/(x−a) = −1, so the left limit as x→a⁻ is −1.",
+     "Since the left and right limits differ (−1≠1), lim_{x→a} f(x) does not exist, so f is not continuous at a."],
+ why:["|x−a| equals x−a for x>a and a−x for x<a — the sign change is the key.",
+      "The left-limit −1 and right-limit 1 are found by taking sequences xₙ↓a and xₙ↑a respectively.",
+      "Continuity requires the limit to exist and equal f(a); since the limit doesn't exist, f is discontinuous at a."],
+ gaps:[
+  {stepIdx:0,before:'For x>a: |x−a|/(x−a) = ',answer:'1',after:', so the right-hand limit as x→a is 1.',why:'x>a means x−a>0 so |x−a|=x−a, giving ratio 1.',distractors:['−1','0','undefined']},
+  {stepIdx:1,before:'For x<a: |x−a|/(x−a) = (a−x)/(x−a) = ',answer:'−1',after:', so the left-hand limit as x→a is −1.',why:'x<a means x−a<0 so |x−a|=a−x, giving (a−x)/(x−a)=−1.',distractors:['1','0','a']}
+ ],
+ bad:["f is continuous at a since |x−a|/(x−a) simplifies to 1 for all x≠a.",
+      "f is continuous at a since f(a)=1 is defined.",
+      "f is not continuous since it is not differentiable at a.",
+      "f is continuous everywhere since |x| is continuous."],
+ hardBad:["To apply the sequential criterion, take xₙ=a+1/n→a; then f(xₙ)=1→1=f(a); so f is continuous — but this only checks one sequence (from the right). The criterion requires ALL sequences xₙ→a to give f(xₙ)→f(a), including xₙ=a−1/n.",
+           "The left limit −1 and right limit 1 could both equal f(a) if we redefine f(a); but we are told f(a)=1, and the left limit is −1≠f(a), so f is discontinuous regardless of choice.",
+           "f is the sign function sgn(x−a); it has a jump discontinuity at a of magnitude 2 (from −1 to +1)."]},
+
+{name:"Functional equation: f continuous at 0 implies f(x)=ax",
+ cat:"Continuity & Functional Limits",
+ hint:"First show f(0)=0 and f(−x)=−f(x). Then show f(rx)=rf(x) for rationals r. Continuity at 0 extends this to all reals.",
+ stmt:"Suppose f:ℝ→ℝ satisfies f(x+y)=f(x)+f(y) for all x,y∈ℝ, and f is continuous at 0. Prove f(x)=ax where a=f(1).",
+ ok:["f(0)=0: set x=y=0 to get f(0)=2f(0), so f(0)=0. f(−x)=−f(x): f(x)+f(−x)=f(0)=0.",
+     "By induction f(nx)=nf(x) for n∈ℕ; hence f(1)=nf(1/n) giving f(1/n)=f(1)/n, and f(m/n)=mf(1)/n=a·(m/n) for all rationals.",
+     "Continuity at 0: for any x∈ℝ take rationals qₖ→x; then f(qₖ)=aqₖ→ax; continuity forces f(x)=ax."],
+ why:["Setting x=y=0 gives f(0)=2f(0), so f(0)=0; then f(x+y)=f(x)+f(y) at y=−x gives f(−x)=−f(x).",
+      "f(nx)=nf(x) by induction; setting x=1/n gives f(1)=nf(1/n); the rational case follows.",
+      "Continuity at 0 means f(hₙ)→0 whenever hₙ→0. For x∈ℝ and qₖ∈ℚ with qₖ→x: f(x)=f(qₖ+(x−qₖ))=f(qₖ)+f(x−qₖ)→ax+0=ax."],
+ gaps:[
+  {stepIdx:0,before:'Setting x=y=0: f(0+0)=f(0)+f(0) gives f(0)=',answer:'0',after:'. Then f(x+y) at y=−x gives f(0)=f(x)+f(−x), so f(−x)=−f(x).',why:'f(0)=2f(0) implies f(0)=0.',distractors:['1','f(1)','−f(0)']},
+  {stepIdx:1,before:'By induction f(nx)=nf(x). Setting x=1/n: f(1)=nf(1/n) so f(1/n)=',answer:'f(1)/n',after:'. For m/n∈ℚ: f(m/n)=mf(1/n)=a·(m/n) where a=f(1).',why:'f(1)=f(n·(1/n))=nf(1/n), so f(1/n)=f(1)/n=a/n.',distractors:['1/n','a/n²','f(n)']}
+ ],
+ bad:["f(x)=ax follows immediately from f(x+y)=f(x)+f(y) without needing continuity.",
+      "Set y=x to get f(2x)=2f(x), then apply this repeatedly.",
+      "Since f is additive, it is linear, so f(x)=ax+b; f(0)=0 gives b=0.",
+      "Continuity at 0 implies differentiability, and differentiating f(x+y)=f(x)+f(y) gives f′(x)=f′(0)=a."],
+ hardBad:["Without continuity (or measurability), there exist pathological additive functions f:ℝ→ℝ satisfying f(x+y)=f(x)+f(y) but NOT of the form f(x)=ax; continuity at a single point is exactly what rules these out.",
+           "The extension from rationals to reals uses: for x∈ℝ, write x=lim qₖ with qₖ∈ℚ; then f(x−qₖ)→f(0)=0 by continuity at 0 (since x−qₖ→0); hence f(x)=f(qₖ)+f(x−qₖ)→aqₖ+0=ax.",
+           "f(rx)=rf(x) for all r∈ℚ is proved for positive rationals m/n (using induction and f(1/n)=a/n); extending to negative rationals uses f(−x)=−f(x)."]},
+
+{name:"How many continuous f with f(x)²=x²",
+ cat:"Continuity & Functional Limits",
+ hint:"f(x)²=x² means f(x)=x or f(x)=−x at each point. Continuity constrains which combinations are possible — think about connected intervals.",
+ stmt:"How many continuous functions f:ℝ→ℝ satisfy f(x)²=x² for all x∈ℝ? Justify fully.",
+ ok:["f(x)²=x² means f(x)=±x at each x∈ℝ. For f to be continuous, it cannot 'jump' between x and −x on any interval.",
+     "Since ℝ is connected, f must be globally one of: f≡x, f≡−x, or... check if switching is possible.",
+     "At x=0 both values ±0=0 agree. For x>0: if f switches from x to −x at some c>0, then by IVT f takes value 0 at c, but f(c)=±c implies c=0 — contradiction. So f(x)=x for all x>0 or f(x)=−x for all x>0; similarly for x<0. There are exactly 4 continuous solutions."],
+ why:["f(x)=±x at each point. Continuity + IVT prevent switching between +x and −x for x≠0.",
+      "On x>0 exactly two options; on x<0 exactly two options; at x=0 they all agree. Total: 2×2=4.",
+      "The 4 solutions are: f(x)=x; f(x)=−x; f(x)=|x|; f(x)=−|x|."],
+ gaps:[
+  {stepIdx:0,before:'f(x)²=x² means f(x)=x or f(x)=−x at each point. At x=0 both give f(0)=',answer:'0',after:'.',why:'±0=0 so both branches agree at 0.',distractors:['1','−1','undefined']},
+  {stepIdx:2,before:'On x>0: f cannot switch between +x and −x (IVT gives f(c)=0 at switch point but f(c)=±c forces c=0, contradiction). There are 2 options on x>0, 2 on x<0, total of ',answer:'4',after:' continuous solutions.',why:'2 choices on (0,∞) × 2 choices on (−∞,0) = 4 functions.',distractors:['2','1','infinitely many']}
+ ],
+ bad:["There is exactly 1: f(x)=x.",
+      "There are exactly 2: f(x)=x and f(x)=−x.",
+      "There are infinitely many, since f can switch between x and −x at any point.",
+      "There are exactly 3: x, −x, and |x|.",
+      "There are no continuous solutions."],
+ hardBad:["The 4 solutions are f(x)=x, f(x)=−x, f(x)=|x|, f(x)=−|x|. Note |x|=x for x≥0 and |x|=−x for x<0; so |x| is a valid combination where f=x on [0,∞) and f=−x on (−∞,0).",
+           "The IVT argument: if f=x near some a>0 and f=−x near some b>0, then by continuity f takes all values between a and −b; since a>0>−b, f must pass through 0; but f(c)=0 means c=0, so the switch can only happen at 0.",
+           "f(x)=x and f(x)=|x| agree on x≥0 but differ on x<0 (one gives x, the other −x); both are continuous and satisfy f(x)²=x². Similarly for −x and −|x|."]},
+
+{name:"Differentiability of piecewise function at 0",
+ cat:"Differentiation & MVT",
+ hint:"Compute the derivative from the definition: lim_{h→0} [f(h)−f(0)]/h. Separate the cases h∈ℚ and h∉ℚ.",
+ stmt:"Let f(x)=x/2 for x∈ℚ and f(x)=x for x∉ℚ. Is f differentiable at 0? Compute f(0) and f′(0) if it exists.",
+ ok:["f(0)=0/2=0 since 0∈ℚ.",
+     "The difference quotient at 0 is f(h)/h. For h∈ℚ∩(ℝ\\{0}): f(h)/h=(h/2)/h=1/2. For h∉ℚ: f(h)/h=h/h=1.",
+     "Since both rationals and irrationals are dense in ℝ, lim_{h→0} f(h)/h does not exist (takes both values 1/2 and 1 in every neighbourhood of 0). So f is NOT differentiable at 0."],
+ why:["f(0)=0 since 0 is rational.",
+      "The difference quotient takes value 1/2 along rational sequences and 1 along irrational sequences approaching 0.",
+      "A limit must be unique — since two subsequences give different values, the limit does not exist."],
+ gaps:[
+  {stepIdx:1,before:'For rational h≠0: f(h)/h=(h/2)/h=',answer:'1/2',after:'. For irrational h: f(h)/h=h/h=1.',why:'Rational h: f(h)=h/2 so quotient is 1/2. Irrational h: f(h)=h so quotient is 1.',distractors:['1','0','h/2']},
+  {stepIdx:2,before:'Since rationals and irrationals are both dense, the difference quotient takes two values near 0. The limit ',answer:'does not exist',after:', so f is not differentiable at 0.',why:'A limit must be unique; different subsequences give 1/2 and 1.',distractors:['equals 1/2','equals 1','equals 3/4']}
+ ],
+ bad:["f is differentiable at 0 with f′(0)=1/2, since rationals are dense.",
+      "f is differentiable at 0 with f′(0)=1, since irrationals are dense.",
+      "f is differentiable at 0 with f′(0)=3/4, the average of 1/2 and 1.",
+      "f is not differentiable since it is discontinuous everywhere except 0.",
+      "f is differentiable since f(0)=0 and f is continuous at 0."],
+ hardBad:["f IS continuous at 0: for any ε>0, choose δ=2ε; for |h|<δ, |f(h)−0|≤|h|<2ε (for both cases). But continuity at 0 does not imply differentiability at 0.",
+           "The difference quotient values 1/2 (rationals) and 1 (irrationals) are both bounded, so by Bolzano–Weierstraß the limit exists — but B-W gives a convergent subsequence, not convergence of the full expression.",
+           "If the limit of f(h)/h existed and equalled L, then taking rational hₙ→0 gives L=1/2, and taking irrational hₙ→0 gives L=1. Since 1/2≠1, no such L exists."]},
+
+{name:"Differentiability of |f| when f(c)≠0",
+ cat:"Differentiation & MVT",
+ hint:"Split into cases f(c)>0 and f(c)<0. In each case, |f| equals either f or −f in a neighbourhood of c by continuity.",
+ stmt:"Let f:I→ℝ be differentiable at c∈I with f(c)≠0. Show that |f| is differentiable at c and find |f|′(c).",
+ ok:["Since f is differentiable at c, f is continuous at c. Since f(c)≠0, by continuity there exists δ>0 with f(x)≠0 for all x∈(c−δ,c+δ).",
+     "Case 1: f(c)>0. Then f(x)>0 on (c−δ,c+δ), so |f(x)|=f(x) near c. Thus |f|=f near c, so |f|′(c)=f′(c).",
+     "Case 2: f(c)<0. Then f(x)<0 near c, so |f(x)|=−f(x). Thus |f|′(c)=−f′(c). In both cases |f|′(c)=f′(c)·sgn(f(c))."],
+ why:["Continuity at c means f cannot change sign in a small neighbourhood — so |f| agrees with either f or −f near c.",
+      "If f>0 near c then |f|=f near c and the derivative is f′(c).",
+      "If f<0 near c then |f|=−f near c and the derivative is −f′(c)=f′(c)·(−1)=f′(c)·sgn(f(c))."],
+ gaps:[
+  {stepIdx:0,before:'Since f(c)≠0 and f is continuous at c, by continuity there is a neighbourhood of c on which f maintains ',answer:'its sign',after:' (all positive or all negative).',why:'f(c)>0 and continuity gives f(x)>0 near c; similarly for f(c)<0.',distractors:['its value','its derivative','its maximum']},
+  {stepIdx:2,before:'In both cases |f|′(c) = f′(c) · ',answer:'sgn(f(c))',after:' where sgn(f(c))=+1 if f(c)>0 and −1 if f(c)<0.',why:'Case 1: |f|=f near c so derivative is f′(c)=f′(c)·(+1). Case 2: |f|=−f near c so derivative is −f′(c)=f′(c)·(−1).',distractors:['|f(c)|','1/f(c)','f′(c)']}
+ ],
+ bad:["If f is differentiable at c then |f| is differentiable at c with derivative |f′(c)|.",
+      "|f| is not differentiable at c since the absolute value function is not differentiable at 0.",
+      "|f|′(c) = f′(c) regardless of the sign of f(c).",
+      "|f| is differentiable iff f(c)>0."],
+ hardBad:["The result fails at f(c)=0: consider f(x)=x, c=0; f is differentiable but |f|=|x| is not differentiable at 0. The hypothesis f(c)≠0 is essential.",
+           "sgn(f(c)) can be written as f(c)/|f(c)| for f(c)≠0. So |f|′(c)=f′(c)·f(c)/|f(c)|.",
+           "The chain rule would give |f|′(c)=sgn(f(c))·f′(c) formally, but the chain rule for g∘f requires g to be differentiable at f(c); g=|·| is not differentiable at 0. The case-by-case proof avoids this issue."]},
+
+{name:"f′=g′ on interval implies f−g constant",
+ cat:"Differentiation & MVT",
+ hint:"Apply the MVT to the function h=f−g. What does h′≡0 imply?",
+ stmt:"Let f,g:[a,b]→ℝ be continuous on [a,b] and differentiable on (a,b) with f′(x)=g′(x) for all x∈(a,b). Show f−g is constant on [a,b].",
+ ok:["Define h=f−g. Then h is continuous on [a,b] and differentiable on (a,b) with h′(x)=f′(x)−g′(x)=0 for all x∈(a,b).",
+     "By the MVT, for any x,y∈[a,b] with x<y, there exists c∈(x,y) with h(y)−h(x)=h′(c)(y−x)=0·(y−x)=0.",
+     "So h(x)=h(y) for all x,y∈[a,b], i.e. h=f−g is constant on [a,b]."],
+ why:["h′≡0 is the key: MVT relates h(y)−h(x) to h′(c) for some interior c.",
+      "h′(c)=0 for all c∈(a,b) makes every difference h(y)−h(x) equal to zero.",
+      "h constant means f(x)−g(x)=C for some C∈ℝ, i.e. f=g+C."],
+ gaps:[
+  {stepIdx:0,before:'Let h=f−g. Then h′(x)=f′(x)−g′(x)=',answer:'0',after:' for all x∈(a,b).',why:'f′(x)=g′(x) for all x so their difference is 0.',distractors:['f′(x)','1','g′(x)']},
+  {stepIdx:1,before:'By MVT, for x<y in [a,b], ∃c∈(x,y) with h(y)−h(x)=h′(c)(y−x)=',answer:'0',after:'. So h is constant.',why:'h′(c)=0 makes the right side 0, giving h(y)=h(x).',distractors:['h′(x)·(y−x)','f′(c)·(y−x)','1']}
+ ],
+ bad:["f−g is constant since f and g have the same derivative, so they are the same function.",
+      "Apply the Cauchy Criterion to h=f−g to show it is constant.",
+      "h′≡0 implies h≡0 by the FTC.",
+      "Since f′=g′ everywhere, f and g are parallel, so their difference is constant.",
+      "Apply Rolle's Theorem to h to get h′(c)=0 for some c."],
+ hardBad:["MVT requires h continuous on [a,b] and differentiable on (a,b); both hold by hypothesis. The conclusion c∈(x,y) is an open interval — if x and y are the endpoints a and b, c∈(a,b) which is fine.",
+           "The conclusion is that f and g differ by a constant C=f(a)−g(a). This C can be any real number — the theorem does not force C=0 (which would mean f=g).",
+           "The result is often stated as: if h′≡0 on (a,b) then h is constant on [a,b]. The key step is MVT, not integration; the FTC is not available here without additional hypotheses on h′."]},
+
+{name:"Strictly decreasing f with f(a)>0, f(b)<0 has a zero",
+ cat:"Continuity & Functional Limits",
+ hint:"This is a direct application of IVT — but check what continuity hypotheses are actually needed.",
+ stmt:"Let f:[1,10]→ℝ be strictly decreasing with f(1)>0 and f(10)<0. Must f have a zero? What if f is also continuous?",
+ ok:["Strictly decreasing alone does not force a zero — f could jump from positive to negative values without hitting 0. Example: f(x)=1 for x∈[1,2), f(x)=−1 for x∈[2,10].",
+     "If f is also continuous: since f(1)>0 and f(10)<0, the IVT applies and gives c∈(1,10) with f(c)=0.",
+     "So f need not have a zero without continuity, but must have exactly one zero if continuous (strictly decreasing means no repeated values)."],
+ why:["Without continuity, strictly decreasing functions can jump over 0.",
+      "Continuity + IVT: f is continuous on [1,10] with f(1)>0>f(10), so there exists c with f(c)=0.",
+      "Uniqueness: strictly decreasing means f is injective, so at most one zero; IVT gives at least one."],
+ gaps:[
+  {stepIdx:0,before:'Without continuity: a strictly decreasing function can have a ',answer:'jump discontinuity',after:' that skips over 0 entirely.',why:'E.g. f=1 on [1,2) and f=−1 on [2,10] is strictly decreasing with no zero.',distractors:['removable discontinuity','tangent point','maximum']},
+  {stepIdx:1,before:'With continuity: IVT applies since f(1)>0 and f(10)<0, giving c∈(1,10) with f(c)=',answer:'0',after:'.',why:'IVT: continuous function takes all intermediate values between f(1) and f(10).',distractors:['f(1)','f(10)','(f(1)+f(10))/2']}
+ ],
+ bad:["Yes, any strictly decreasing function with f(1)>0 and f(10)<0 must have a zero.",
+      "No, a continuous function can still avoid 0 if it decreases quickly enough.",
+      "Yes, by the MVT applied to f.",
+      "No, strict decrease is too weak — even continuity is not sufficient."],
+ hardBad:["A strictly decreasing function is injective (one-to-one): if f(x)=f(y) then x=y. So if a zero exists it is unique. But injectivity alone does not guarantee a zero exists.",
+           "The IVT requires continuity on a CLOSED bounded interval. Here f is continuous on [1,10] (closed and bounded), and f(1)>0>f(10), so the conclusion c∈(1,10) is a strict interior point.",
+           "A monotone function on [a,b] can only have jump discontinuities (no oscillatory ones), and only countably many. So a monotone function either hits 0 or jumps over it — continuity rules out the latter."]},
+
+{name:"Series: convergence of Σ1/k(k+1) and Σ1/k²",
+ cat:"Infinite Series",
+ hint:"1/(k(k+1)) telescopes. For 1/k² use a comparison: 1/k² < 1/k(k−1) for k≥2.",
+ stmt:"Show that Σ_{k=1}^∞ 1/(k(k+1)) converges and find its value. Deduce that Σ_{k=1}^∞ 1/k² converges.",
+ ok:["Partial fractions: 1/(k(k+1))=1/k−1/(k+1). The partial sum telescopes: s_N=1−1/(N+1)→1.",
+     "So Σ1/(k(k+1))=1.",
+     "For k≥2: 1/k²<1/(k(k−1))=1/(k−1)−1/k. So Σ_{k=2}^∞ 1/k² < Σ_{k=2}^∞ (1/(k−1)−1/k)=1. Since partial sums are increasing and bounded, MCT gives Σ1/k² converges."],
+ why:["1/(k(k+1)) is a telescoping series; partial sums are s_N=1−1/(N+1).",
+      "The limit of s_N as N→∞ is 1.",
+      "For the deduction: 1/k²≤1/(k(k−1)) for k≥2 since k(k−1)≤k², and 1/(k(k−1)) telescopes to a finite bound."],
+ gaps:[
+  {stepIdx:0,before:'Partial fractions: 1/(k(k+1)) = ',answer:'1/k−1/(k+1)',after:'. Partial sum: s_N = 1 − 1/(N+1) → 1.',why:'Decompose: A/k+B/(k+1)=1/(k(k+1)) gives A=1, B=−1.',distractors:['1/(k+1)−1/k','1/k+1/(k+1)','1/k²']},
+  {stepIdx:2,before:'For k≥2: 1/k² < 1/(k(k−1)). The series Σ_{k=2}^∞ 1/(k(k−1)) = Σ(1/(k−1)−1/k) telescopes to ',answer:'1',after:'. So Σ_{k=1}^∞ 1/k² converges by the Comparison Test.',why:'Σ_{k=2}^N (1/(k−1)−1/k)=1−1/N→1.',distractors:['2','1/2','∞']}
+ ],
+ bad:["Σ1/(k(k+1)) diverges like the harmonic series since 1/(k(k+1))~1/k.",
+      "Σ1/k² converges since its terms decrease to 0.",
+      "Both series converge by the ratio test.",
+      "Σ1/(k(k+1))=1/2 by the formula for telescoping series.",
+      "Σ1/k² diverges because it is comparable to Σ1/k."],
+ hardBad:["Σ1/k² < 1 + Σ_{k=2}^∞ 1/(k(k−1)) = 1+1 = 2 gives Σ1/k² < 2; the actual value is π²/6 ≈ 1.645.",
+           "The comparison 1/k²<1/(k(k−1)) for k≥2 works since k²=k·k>k·(k−1)=k(k−1); dividing gives 1/k²<1/(k(k−1)).",
+           "The partial fraction 1/(k(k+1))=1/k−1/(k+1) is verified: [1/k−1/(k+1)]·k(k+1)=(k+1)−k=1 ✓."]},
+
+{name:"Harmonic series diverges",
+ cat:"Infinite Series",
+ hint:"Group terms: 1/2, then 1/3+1/4, then 1/5+...+1/8, etc. Each group sums to at least 1/2.",
+ stmt:"Prove that the harmonic series Σ_{n=1}^∞ 1/n diverges.",
+ ok:["Group terms: s₁=1, s₂=1+1/2, s₄=s₂+1/3+1/4>s₂+1/4+1/4=s₂+1/2, s₈>s₄+1/2, etc.",
+     "In general: s_{2^k} > 1 + k/2 for all k∈ℕ, so s_{2^k}→∞.",
+     "Since the partial sums are unbounded, the harmonic series diverges."],
+ why:["The grouping argument shows the partial sums grow without bound.",
+      "Each block 1/(2^{k−1}+1)+...+1/2^k contains 2^{k−1} terms each ≥1/2^k, so each block sums to at least 1/2.",
+      "Unbounded partial sums imply the sequence of partial sums does not converge."],
+ gaps:[
+  {stepIdx:0,before:'The block 1/(2^{k−1}+1)+...+1/2^k has 2^{k−1} terms each ≥1/2^k, so the block sums to at least ',answer:'1/2',after:' for each k≥1.',why:'Each of the 2^{k-1} terms is ≥1/2^k; total ≥2^{k-1}·1/2^k=1/2.',distractors:['1/k','1/2^k','1']},
+  {stepIdx:2,before:'Since partial sums s_{2^k} > 1+k/2 → ∞, the series ',answer:'diverges',after:'.',why:'Unbounded partial sums mean the limit is ∞, not a finite real number.',distractors:['converges to 2','converges to 1','converges slowly']}
+ ],
+ bad:["The harmonic series converges since 1/n→0.",
+      "The harmonic series converges by comparison with Σ1/n².",
+      "The harmonic series diverges because its terms are positive.",
+      "The harmonic series diverges by the ratio test: |a_{n+1}/aₙ|=n/(n+1)→1.",
+      "The Cauchy criterion cannot be applied to the harmonic series."],
+ hardBad:["The Cauchy criterion for divergence: the harmonic series would be Cauchy if for every ε>0 there existed N with |s_m−s_n|<ε for m>n≥N. But |s_{2n}−s_n|=Σ_{k=n+1}^{2n}1/k≥n·1/(2n)=1/2; taking ε=1/4 shows no N works.",
+           "The grouping 2^k doesn't converge in index very fast, but it shows partial sums grow at least as fast as k/2→∞.",
+           "The integral test also works: ∫_1^N (1/x)dx = ln N → ∞, and the series is comparable to the integral since 1/n is decreasing."]},
+
+{name:"Geometric series sum",
+ cat:"Infinite Series",
+ hint:"Use the geometric partial sum formula Σ_{k=0}^n z^k = (1−z^{n+1})/(1−z) and take n→∞.",
+ stmt:"For |z|<1, prove that Σ_{k=0}^∞ zᵏ converges and find its sum.",
+ ok:["The partial sum s_n = Σ_{k=0}^n zᵏ = (1−z^{n+1})/(1−z) by the geometric sum formula.",
+     "Since |z|<1, z^{n+1}→0 as n→∞ (as proved by Lemma 1.1 in the notes).",
+     "Therefore s_n → (1−0)/(1−z) = 1/(1−z), so Σ_{k=0}^∞ zᵏ = 1/(1−z)."],
+ why:["The partial sum formula is proved by induction or by the telescoping trick: (1−z)s_n=1−z^{n+1}.",
+      "|z|<1 guarantees z^{n+1}→0, which is the key step.",
+      "The ALT for sequences: s_n=(1−z^{n+1})/(1−z)→1/(1−z) since z^{n+1}→0 and (1−z)≠0."],
+ gaps:[
+  {stepIdx:0,before:'The partial sum formula: s_n = (1−z^{n+1})/(1−z). Proof: (1−z)s_n = 1+z+...+z^n − z−z²−...−z^{n+1} = ',answer:'1−z^{n+1}',after:'.',why:'Telescoping: all middle terms cancel.',distractors:['1','z^{n+1}−1','1+z^{n+1}']},
+  {stepIdx:2,before:'As n→∞: z^{n+1}→0 since |z|<1, so s_n → ',answer:'1/(1−z)',after:'.',why:'(1−0)/(1−z)=1/(1−z).',distractors:['1/(1+z)','z/(1−z)','∞']}
+ ],
+ bad:["Σzᵏ=1/(1−z) holds for all z≠1 by algebra.",
+      "The geometric series converges for |z|≤1.",
+      "Σzᵏ=1/(1+z) by summing the series from k=1.",
+      "The series converges since zᵏ→0.",
+      "Σzᵏ=z/(1−z) since the first term is z."],
+ hardBad:["For z=−1: |z|=1 so the formula does not apply; the series 1−1+1−1+... does not converge.",
+           "The partial sum formula s_n=(1−z^{n+1})/(1−z) requires z≠1. For z=1 the formula is 0/0; but the series 1+1+1+... obviously diverges.",
+           "The rate of convergence: |s_n−1/(1−z)| = |z|^{n+1}/|1−z| → 0 geometrically; the series converges at geometric rate |z|."]},
+
+{name:"Sequential criterion for continuity — application",
+ cat:"Continuity & Functional Limits",
+ hint:"To prove continuity, take any sequence xₙ→c and show f(xₙ)→f(c). To disprove, find one sequence that fails.",
+ stmt:"State the sequential criterion for continuity. Use it to show f(x)=x² is continuous at every c∈ℝ, and that g(x)=⌊x⌋ (floor) is not continuous at integers.",
+ ok:["Sequential criterion: f is continuous at c iff for every sequence xₙ→c, f(xₙ)→f(c).",
+     "For f(x)=x²: if xₙ→c then f(xₙ)=xₙ²→c²=f(c) by the ALT (product rule for limits). So f is continuous.",
+     "For g(x)=⌊x⌋ at c=n∈ℤ: take xₙ=n−1/k→n; then g(xₙ)=n−1 but g(n)=n≠n−1. The criterion fails, so g is not continuous at integers."],
+ why:["The sequential criterion converts the ε-δ definition into a sequences statement.",
+      "x²=x·x and the ALT product rule gives lim xₙ²=(lim xₙ)²=c².",
+      "The sequence approaching from below gives g(xₙ)=n−1≠n=g(n), violating the criterion."],
+ gaps:[
+  {stepIdx:1,before:'If xₙ→c then xₙ²→',answer:'c²',after:' by the ALT (product of limits). So f(x)=x² is continuous at every c.',why:'lim(xₙ·xₙ)=(lim xₙ)(lim xₙ)=c·c=c².',distractors:['c','2c','c+1']},
+  {stepIdx:2,before:'For g at integer n: take xₙ=n−1/k→n; g(xₙ)=',answer:'n−1',after:'≠n=g(n). So g is discontinuous at n.',why:'⌊n−1/k⌋=n−1 for all k≥1 since n−1<n−1/k<n.',distractors:['n','n+1','0']}
+ ],
+ bad:["f(x)=x² is continuous since polynomials are continuous.",
+      "g(x)=⌊x⌋ is not continuous since it is not differentiable.",
+      "g is continuous from the right at integers but not from the left.",
+      "The sequential criterion says: f is continuous iff it maps Cauchy sequences to Cauchy sequences.",
+      "f(x)=x² is not uniformly continuous so the criterion fails."],
+ hardBad:["The sequential criterion gives: f is NOT continuous at c iff there EXISTS a sequence xₙ→c with f(xₙ)↛f(c). For g: xₙ=n+1/k→n gives g(xₙ)=n=g(n) — this sequence does NOT witness discontinuity. Only the left-approach xₙ=n−1/k does.",
+           "The criterion applies to all sequences including xₙ=c for all n (constant sequence): f(c)→f(c) trivially. The interesting sequences are non-constant ones approaching c.",
+           "For g at a non-integer c: any sequence xₙ→c eventually satisfies ⌊xₙ⌋=⌊c⌋ (since c is not an integer), so g(xₙ)→g(c) and g is continuous at non-integers."]},
 
 ];
 
@@ -1528,42 +1884,80 @@ function rollingAcc(e){
   return e.history.filter(Boolean).length/e.history.length;
 }
 
-function masteryColor(e){
-  if(!e||e.seen===0)return'#475569';
+// ----------------------------------------------------------------
+// CATEGORY SCORING
+// Categories map to display labels
+// ----------------------------------------------------------------
+const CATS={
+  'Suprema & Completeness':'Suprema & Completeness',
+  'Sequence Convergence':'Sequence Convergence',
+  'Monotone & Bounded Sequences':'Monotone & Bounded',
+  'Subsequences & Bolzano–Weierstraß':'Subsequences & B–W',
+  'Cauchy Sequences':'Cauchy Sequences',
+  'Infinite Series':'Infinite Series',
+  'Continuity & Functional Limits':'Continuity',
+  'Differentiation & MVT':'Differentiation & MVT',
+};
+
+// Category score 0–100:
+// Weighted sum of per-question scores within the category.
+// Per-question score combines:
+//   - rolling accuracy (last 10): 50%
+//   - bag progress: 20%
+//   - streak (capped at 5): 30%
+// 100 only if: all questions in cat have acc=1.0, bag=3, streak≥5
+// AND they have answered the hardBad questions correctly multiple times.
+// Wrong answers on hard questions drag the score down harder.
+function qScore(e, q){
+  if(!e||e.seen===0) return 0;
   const acc=rollingAcc(e);
-  if(acc===null||acc===undefined)return'#475569';
-  const cc=e.consecutiveCorrect||0;
-  if(acc>=0.9&&cc>=5)return'#34D399';
-  if(acc>=0.7&&cc>=3)return'#60A5FA';
-  if(acc>=0.5)return'#F59E0B';
-  return'#EF4444';
-}
-function masteryPct(e){
-  if(!e||e.seen===0)return 0;
-  const acc=rollingAcc(e);
-  if(acc===null||acc===undefined)return 0;
+  if(acc===null) return 0;
   const bag=e.bag||1;
   const cc=e.consecutiveCorrect||0;
-  // 100% requires: acc=1.0 (last 10), bag=3, cc≥5 consecutive correct bags
   const bagProg=(bag-1)/2;
   const streakProg=Math.min(cc,5)/5;
-  return Math.round((acc*0.5+bagProg*0.2+streakProg*0.3)*100);
+  // Hard question bonus/penalty: if question has hardBad entries,
+  // it counts more and requires streak≥3 to reach high scores.
+  const hasHard=q&&q.hardBad&&q.hardBad.length>0;
+  const hardPenalty=hasHard&&cc<3?0.15:0;
+  return Math.max(0,Math.round((acc*0.5+bagProg*0.2+streakProg*0.3-hardPenalty)*100));
+}
+
+function catScore(cat){
+  const qs=Q.filter(q=>(q.cat||'Uncategorised')===cat);
+  if(qs.length===0)return{score:0,seen:0,total:qs.length};
+  const seen=qs.filter(q=>getQEntry(q).seen>0);
+  if(seen.length===0)return{score:0,seen:0,total:qs.length};
+  const avg=seen.reduce((s,q)=>s+qScore(getQEntry(q),q),0)/seen.length;
+  // Scale down if not all questions seen yet
+  const coverage=seen.length/qs.length;
+  return{score:Math.round(avg*coverage),seen:seen.length,total:qs.length};
+}
+
+function catColor(score){
+  if(score>=90)return'#34D399';
+  if(score>=70)return'#60A5FA';
+  if(score>=50)return'#F59E0B';
+  if(score>0)return'#EF4444';
+  return'#475569';
 }
 
 function renderMasteryPanel(){
   const panel=document.getElementById('mastery-panel'),list=document.getElementById('mastery-list');
   if(!panel||!list)return;
-  const sorted=[...Q].sort((a,b)=>masteryPct(getQEntry(a))-masteryPct(getQEntry(b)));
-  const toShow=masteryExpanded?sorted:sorted.slice(0,5);
-  const btn=panel.querySelector('.mastery-btn');
-  if(btn)btn.textContent=masteryExpanded?'Show less ▴':'Show all ▾';
-  list.innerHTML='';
-  toShow.forEach(q=>{const e=getQEntry(q),pct=masteryPct(e),col=masteryColor(e);
-    const acc=rollingAcc(e);
-    const label=e.seen===0?'New':acc===null?'—':Math.round(acc*100)+'%';
-    const wrap=document.createElement('div');wrap.className='mastery-bar-wrap';wrap.innerHTML=`<div class="mastery-name" title="${q.name}">${q.name}</div><div class="mastery-bar-bg"><div class="mastery-bar-fill" style="width:${pct}%;background:${col}"></div></div><div class="mastery-pct" style="color:${col}">${label}</div>`;list.appendChild(wrap);});
   const anySeen=Q.some(q=>getQEntry(q).seen>0);
   panel.style.display=anySeen?'block':'none';
+  if(!anySeen)return;
+  list.innerHTML='';
+  Object.entries(CATS).forEach(([cat,label])=>{
+    const {score,seen,total}=catScore(cat);
+    const col=catColor(score);
+    const sublabel=seen===0?'No questions seen yet':`${seen}/${total} questions seen`;
+    const wrap=document.createElement('div');
+    wrap.className='mastery-bar-wrap';
+    wrap.innerHTML=`<div class="mastery-name">${label}</div><div class="mastery-bar-bg"><div class="mastery-bar-fill" style="width:${score}%;background:${col}"></div></div><div class="mastery-pct" style="color:${col}">${seen===0?'—':score+'%'}</div><div style="font-size:11px;color:#64748B;margin-bottom:4px">${sublabel}</div>`;
+    list.appendChild(wrap);
+  });
 }
 function toggleMastery(){masteryExpanded=!masteryExpanded;renderMasteryPanel();}
 
@@ -1590,7 +1984,7 @@ function selMode(m){
   });
   const note=document.getElementById('home-note');
   const mn={mc:'Multi-choice',pick:'Pick & Order',match:'Term Match',gap:'Fill the gap',flaw:'Spot the Flaw',cex:'Counterexample',epn:'ε–N Builder'};
-  note.textContent='10 questions · '+(diff==='hard'?'Hard mode':'37 theorems')+' · '+(mn[m]||m);
+  note.textContent='10 questions · '+(diff==='hard'?'Hard mode':'50 theorems')+' · '+(mn[m]||m);
 }
 function selDiff(d){diff=d;document.getElementById('pill-norm').classList.toggle('on',d==='normal');document.getElementById('pill-hard').classList.toggle('on',d==='hard');selMode(mode);}
 
@@ -1932,7 +2326,7 @@ function resolveQ(ok,q){
   // Mastery toast
   const e=getQEntry(q);
   const prevBag=e.bag-(ok&&e.bagCorrect?1:0); // bag before this answer
-  if(ok&&e.consecutiveCorrect===3)showMasteryToast('🎯 '+q.name.split(' ')[0]+' mastered!');
+  if(ok&&e.consecutiveCorrect===5)showMasteryToast('🎯 '+q.name.split(' ')[0]+' mastered!');
 }
 
 function advance(){
