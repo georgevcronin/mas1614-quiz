@@ -442,9 +442,9 @@ const Q=[
       "Apply the [[nested|Nested Interval Property]] to construct the limit.",
       "Since (aₙ) is monotone, it is Cauchy — invoke the [[cauchy_crit|Cauchy Criterion]] directly.",
       "Apply [[bw|Bolzano–Weierstraß]] to get a convergent subsequence aₙₖ→L; monotonicity then forces aₙ→L."],
- hardBad:["Find s = sup{aₙ}; since (aₙ) is increasing, aₙ→s follows immediately without an ε–N argument.",
-           "Apply the [[completeness|Axiom of Completeness]] to find inf{aₙ}; use monotonicity to show aₙ→inf.",
-           "Use the [[cauchy_crit|Cauchy Criterion]]: boundedness implies (aₙ) is Cauchy, hence convergent."]},
+ hardBad:["The sup characterisation gives a_N>s−ε for our chosen ε>0, and monotonicity gives aₙ≥a_N, so aₙ∈(s−ε,s]. But why is aₙ≤s? This requires showing s is an upper bound for ALL terms, not just those before N.",
+            "The Archimedean Axiom alone suffices: since s−1/n<s=sup{aₙ}, some a_N>s−1/n; monotonicity then gives aₙ≥a_N>s−1/n for n≥N, so |aₙ−s|<1/n — but this only handles ε=1/n, not all ε>0.",
+            "For the decreasing case: if (aₙ) is decreasing and bounded below, set s=inf{aₙ}; the sup characterisation argument applies symmetrically with all inequalities reversed — in particular a_N<s+ε, not a_N>s−ε."]},
 
 {name:"Bolzano–Weierstraß Theorem",
  hint:"Bisect [−M,M] into two halves; at least one contains infinitely many terms — choose that half as I₁. Repeat to get nested closed intervals I₁⊇I₂⊇⋯ each of length M/2^(k−1). The Nested Interval Property gives x∈∩Iₖ, and |aₙₖ−x| ≤ length of Iₖ → 0.",
@@ -463,9 +463,9 @@ const Q=[
  bad:["Apply the [[mct|Monotone Convergence Theorem]] directly to (aₙ).",
       "Verify the [[cauchy_seq|Cauchy condition]] for the whole sequence.",
       "Use the [[completeness|Axiom of Completeness]] to find sup{aₙ} as the limit."],
- hardBad:["Bisect [−M,M]; select the half with the largest terms; apply [[nested|Nested Interval Property]].",
-           "Since (aₙ) is [[bounded|bounded]], it satisfies the [[cauchy_seq|Cauchy condition]] for large n, giving a convergent subsequence.",
-           "Apply [[completeness|Axiom of Completeness]] to {aₙ}; its supremum is the limit of a convergent subsequence."]},
+ hardBad:["At each bisection we need infinitely many terms in the chosen half, but we also need to choose nₖ>nₖ₋₁. Having infinitely many terms guarantees we can always find a new index beyond the previous — this step needs stating.",
+            "The bound |aₙₖ−x|≤|Iₖ| is correct since both aₙₖ and x lie in Iₖ. But |Iₖ|=2M/2^k (starting from I₁=[−M,M] of length 2M), not M/2^(k−1) — so |aₙₖ−x|≤2M/2^k→0.",
+            "The Nested Interval Property requires closed bounded intervals. Our Iₖ are closed by construction (each half includes its midpoint). If we used open intervals the intersection could be empty."]},
 
 {name:"Cauchy Criterion",
  hint:"(⇒) Choose N so |aₙ−a|<ε/2; triangle inequality gives |aₙ−aₘ|≤|aₙ−a|+|a−aₘ|<ε. (⇐) Show Cauchy implies bounded (take ε=1, bound all terms beyond N); apply B-W to get a convergent subsequence aₙₖ→a; then use the Cauchy condition to show the full sequence also → a.",
@@ -481,9 +481,9 @@ const Q=[
  bad:["Apply the [[mct|MCT]] after verifying boundedness.",
       "Use the [[nested|Nested Interval Property]] to construct the limit.",
       "Invoke the [[olt|Order Limit Theorem]] on pairs of terms."],
- hardBad:["(⇒) Choose N with |aₙ−a|<ε; then |aₙ−aₘ|<2ε — replace ε by ε/2 at the start.",
-           "(⇐) Cauchy ⟹ [[monotone|monotone]] for large n, so apply [[mct|MCT]] directly.",
-           "(⇐) Apply [[bw|B-W]] to the whole sequence, then note aₙ→a since Cauchy sequences are bounded."]},
+ hardBad:["(⇐) Once B-W gives aₙₖ→a, we need to show the full sequence aₙ→a. For n≥N: |aₙ−a|≤|aₙ−aₙₖ|+|aₙₖ−a|; the first term uses the Cauchy condition (take m=nₖ with nₖ≥N and nₖ large enough), the second uses aₙₖ→a. Both must be made <ε/2.",
+            "(⇒) The forward direction needs N to work for all pairs n,m≥N simultaneously. Finding N with |aₙ−a|<ε/2 gives |aₙ−aₘ|≤|aₙ−a|+|a−aₘ|<ε/2+ε/2=ε — this N works for all pairs, not just a fixed m.",
+            "(⇐) The proof that Cauchy implies bounded: given ε=1 find N₁ with |aₙ−aₘ|<1 for n,m≥N₁; taking m=N₁ gives |aₙ|<|a_{N₁}|+1 for n≥N₁; the full bound is M=max{|a₁|,…,|a_{N₁}|,|a_{N₁}|+1}."]},
 
 {name:"Intermediate Value Theorem",
  hint:"Let A = {x∈[a,b] : f(x)≤y}. It's non-empty (a∈A) and bounded above (by b), so s=sup A exists. Take sequences approaching s from below (showing f(s)≤y via OLT) and from above (showing f(s)≥y via OLT). Both inequalities force f(s)=y.",
@@ -503,9 +503,9 @@ const Q=[
   {stepIdx:0,before:'Define s = ',answer:'sup{x∈[a,b] : f(x)≤y}',after:', which exists by the Axiom of Completeness.',why:'This set is non-empty (contains a) and bounded above (by b), so its supremum exists and is our candidate c.',distractors:['inf{x∈[a,b] : f(x)≥y}','sup{f(x) : x∈[a,b]}','max{x∈[a,b] : f(x)=y}']},
   {stepIdx:1,before:'Use continuity of f at s to show f(s)≤y and f(s)≥y separately, via sequences approaching s ',answer:'from each side',after:'.',why:'Approaching from below gives f(s)≤y via the Order Limit Theorem; approaching from above gives f(s)≥y.',distractors:['from below only','using the EVT','via a Cauchy argument']}
  ],
- hardBad:["Define s = inf{x∈[a,b]:f(x)≥y} and show f(s)=y by continuity from each side.",
-           "Since f is continuous on [a,b], apply [[evt|EVT]] to get min and max; y lies between them so is attained.",
-           "Use [[nested|Nested Interval Property]]: bisect [a,b], keep the half where f changes sign, iterate."]},
+ hardBad:["The 'from below' argument: take xₙ∈A with xₙ↑s; then f(xₙ)≤y for all n, and continuity gives f(s)=lim f(xₙ)≤y. The 'from above' argument: we need yₙ↓s with f(yₙ)>y — but why do such yₙ exist? Because s=sup A means yₙ=s+1/n is not in A (for n large), so f(yₙ)>y.",
+            "If f(s)<y, then by continuity f(x)<y in a neighbourhood of s, meaning s is not the supremum of A — contradicting s=sup A. This contradiction argument avoids constructing explicit sequences.",
+            "The set A={x∈[a,b]:f(x)≤y} is closed (preimage of (−∞,y] under continuous f), so sup A∈A, giving f(s)≤y directly. The 'from above' argument then gives f(s)≥y. But this requires knowing A is closed, which itself uses continuity."]},
 
 {name:"Extreme Value Theorem",
  hint:"First show f is bounded: if not, pick xₙ with |f(xₙ)|>n; B-W gives xₙₖ→x₀∈[a,b]; continuity forces f(xₙₖ)→f(x₀), contradicting |f(xₙₖ)|→∞. So c=inf f([a,b]) exists. Build a minimising sequence xₙ with f(xₙ)→c; B-W gives xₙₖ→x₀; continuity gives f(x₀)=c.",
@@ -526,9 +526,9 @@ const Q=[
   {stepIdx:1,before:'Choose xₙ∈[a,b] with f(xₙ)→c; Bolzano–Weierstraß yields a subsequence ',answer:'xₙₖ→x₀∈[a,b]',after:'.',why:'B-W applied to the bounded sequence (xₙ) gives a convergent subsequence with limit in [a,b].',distractors:['f(xₙₖ)→c directly','xₙₖ→c','xₙₖ→a or xₙₖ→b']},
   {stepIdx:2,before:'Continuity gives f(xₙₖ)→f(x₀); ',answer:'uniqueness of limits',after:' forces f(x₀)=c.',why:'The subsequence f(xₙₖ) converges to both f(x₀) (by continuity) and c (by construction), so they are equal.',distractors:['the Order Limit Theorem','the Axiom of Completeness','the Algebraic Limit Theorem']}
  ],
- hardBad:["Show f is bounded using [[completeness|completeness]] directly; then apply [[mct|MCT]] to the minimising sequence.",
-           "Since [a,b] is closed and bounded, apply [[mct|MCT]] to get the monotone subsequence converging to x₀∈[a,b].",
-           "Apply [[bw|B-W]] directly to (f(xₙ)) to get f(xₙₖ)→c, then x₀=lim xₙₖ satisfies f(x₀)=c."]},
+ hardBad:["The boundedness contradiction: if |f(xₙ)|>n pick xₙₖ→x₀ by B-W; continuity gives f(xₙₖ)→f(x₀); but a convergent sequence is bounded, so |f(xₙₖ)| is bounded — contradicting |f(xₙₖ)|>nₖ→∞.",
+            "After establishing c=inf f([a,b]), the minimising sequence f(xₙ)→c has (xₙ)⊂[a,b] bounded, so B-W gives xₙₖ→x₀∈[a,b]. Continuity of f at x₀ (not just on (a,b)) is needed: f(x₀)=lim f(xₙₖ)=c.",
+            "Boundedness of f requires the closed interval [a,b]: on an open interval (a,b) a continuous function can be unbounded (e.g. 1/(x−a) on (a,b)). The proof specifically uses that the B-W limit x₀ lies in the closed [a,b]."]},
 
 {name:"Mean Value Theorem",
  hint:"Define g(x)=f(x)−[f(b)−f(a)]/(b−a)·(x−a). This subtracts the secant line, making g(a)=g(b)=0. Apply Rolle's Theorem to g: it's continuous on [a,b], differentiable on (a,b), and g(a)=g(b). Rolle gives c with g′(c)=0, and computing g′(c) recovers the MVT formula.",
@@ -549,9 +549,9 @@ const Q=[
   {stepIdx:1,before:"Rolle's Theorem yields c∈(a,b) with ",answer:'g′(c)=0',after:'.',why:"Rolle's Theorem applies to g since g is continuous on [a,b], differentiable on (a,b), and g(a)=g(b).",distractors:['g(c)=0','g′(c)=[g(b)−g(a)]/(b−a)','f′(c)=0']},
   {stepIdx:2,before:'Compute g′(c) = f′(c) − [f(b)−f(a)]/(b−a) = 0, recovering ',answer:'the MVT formula',after:'.',why:"Setting g′(c)=0 and rearranging gives the Mean Value Theorem directly.",distractors:["Rolle's Theorem",'the chain rule','the Fundamental Theorem']}
  ],
- hardBad:["Define g(x)=f(x)−f(a)−[f(b)−f(a)]/(b−a)·x and note g(0)=g(1); apply [[rolle|Rolle]].",
-           "MVT follows directly from [[rolle|Rolle]] applied to f itself, since f(a)=f(b).",
-           "By [[evt|EVT]], f attains its max at c∈(a,b); differentiating gives f′(c)=[f(b)−f(a)]/(b−a)."]},
+ hardBad:["g(x)=f(x)−[f(b)−f(a)]/(b−a)·(x−a) satisfies g(a)=f(a)−0=f(a) and g(b)=f(b)−[f(b)−f(a)]=f(a). So g(a)=g(b)=f(a) — not necessarily 0, but Rolle only requires g(a)=g(b), which holds.",
+            "g′(c)=f′(c)−[f(b)−f(a)]/(b−a). Setting this to 0 gives f′(c)=[f(b)−f(a)]/(b−a). The slope [f(b)−f(a)]/(b−a) could be positive, negative, or zero depending on f — MVT makes no claim about its sign.",
+            "Rolle requires g continuous on [a,b] and differentiable on (a,b). Both follow from the MVT hypotheses on f; subtracting a linear function preserves both properties. This must be stated explicitly."]},
 
 {name:"Rolle's Theorem",
  hint:"Apply EVT to get the global max at x₁ and min at x₀. Case 1: both extrema are at endpoints — since f(a)=f(b), f must be constant, so f′≡0. Case 2: an extremum is at an interior point c — show both one-sided difference quotients force f′(c)≥0 and f′(c)≤0, hence f′(c)=0.",
@@ -572,9 +572,9 @@ const Q=[
   {stepIdx:1,before:'If both extrema lie at endpoints, f is ',answer:'constant',after:' so f′≡0 on (a,b).',why:'If f never exceeds its endpoint values and f(a)=f(b), the function must be flat throughout.',distractors:['linear','bounded','monotone']},
   {stepIdx:2,before:'If an extremum is interior, ',answer:'differentiability',after:' at that point forces f′(c)=0.',why:'At an interior local extremum, one-sided difference quotients have opposite signs, forcing the derivative to zero.',distractors:['continuity','boundedness','monotonicity']}
  ],
- hardBad:["[[evt|EVT]] gives extrema; since f(a)=f(b) both must be interior, so f′=0 at both.",
-           "[[ivt|IVT]] applied to f gives c with f(c) between f(a) and f(b); differentiating gives f′(c)=0.",
-           "Apply [[mct|MCT]] to the difference quotients to show they converge to 0."]},
+ hardBad:["EVT gives a global max at x₁ and global min at x₀. If f is non-constant, these are distinct values. Since f(a)=f(b), the max and min cannot both equal f(a)=f(b) unless f is constant. So at least one extremum is interior.",
+            "At an interior maximum c: for h>0, f(c+h)≤f(c) so [f(c+h)−f(c)]/h≤0; letting h→0⁺ gives the right derivative ≤0. For h<0: f(c+h)≤f(c) so [f(c+h)−f(c)]/h≥0; letting h→0⁻ gives left derivative ≥0. Differentiability forces both to equal f′(c), so f′(c)=0.",
+            "The case split: if f is constant then f′≡0. If f is non-constant, the max and min are different. At least one must be interior (since the max and min cannot both occur only at endpoints a and b if their values differ). The interior extremum gives f′(c)=0."]},
 
 {name:"Comparison Test for Series",
  hint:"Apply the Cauchy Criterion to Σ|bₙ| (which converges): get N with tail Σ|bₙ| from l to k < ε for all k≥l≥N. Then use |aₙ|≤|bₙ| and the triangle inequality to chain: |Σaₙ from l to k| ≤ Σ|aₙ| ≤ Σ|bₙ| < ε. This verifies the Cauchy condition for Σaₙ.",
@@ -594,9 +594,9 @@ const Q=[
   {stepIdx:0,before:'Apply the Cauchy Criterion for Series to Σ|bₙ|: find N such that the tail sum Σ|bₙ| from n=l to k is less than ε, for all ',answer:'k≥l≥N',after:'.',why:'The Cauchy Criterion controls tails: for any ε>0 we find N beyond which all tail sums are small.',distractors:['l≥k≥N','k≥N≥l','n≥N']},
   {stepIdx:1,before:'Use |aₙ|≤|bₙ| and the triangle inequality: the tail |Σaₙ from l to k| ≤ ',answer:'Σ|aₙ| from l to k ≤ Σ|bₙ| from l to k',after:' < ε.',why:'The domination condition and triangle inequality chain together to transfer the tail bound from Σ|bₙ| to |Σaₙ|.',distractors:['Σ|bₙ| from l to k directly','Σaₙ · |aₙ|','max{|aₙ|} · (k−l)']}
  ],
- hardBad:["Apply [[cauchy_series|Cauchy Criterion]] to Σaₙ directly and use |aₙ|≤|bₙ| to bound each term.",
-           "Since Σ|bₙ| converges, |bₙ|→0, so |aₙ|→0; the nth-term test in reverse gives convergence.",
-           "Since Σ|aₙ| ≤ Σ|bₙ| term-by-term, partial sums of Σ|aₙ| are bounded and increasing; [[mct|MCT]] applies."]},
+ hardBad:["The partial sums of Σ|aₙ| are increasing (each term |aₙ|≥0) and bounded above by Σ|bₙ|<∞; MCT then gives convergence of Σ|aₙ| — this is a valid alternative proof, but MCT only applies to monotone sequences.",
+            "The Comparison Test requires 0≤|aₙ|≤|bₙ|; the hypothesis is |aₙ|≤|bₙ| with |aₙ|≥0 (absolute values). The key step |Σaₙ|≤Σ|aₙ|≤Σ|bₙ| uses triangle inequality then domination; establishing Σ|aₙ|<∞ requires the Cauchy argument on Σ|aₙ| not on Σaₙ.",
+            "Applying the Cauchy criterion directly to Σaₙ (not Σ|aₙ|) would give ordinary convergence; absolute convergence requires running the criterion on Σ|aₙ|. Since |aₙ|≤|bₙ|, the Cauchy criterion for Σ|bₙ| controls tails of Σ|aₙ|."]},
 
 {name:"Alternating Series Test",
  hint:"Split into even and odd partial sums. Even sums s₂ₖ are increasing because s₂ₖ₊₂−s₂ₖ=a₂ₖ₊₁−a₂ₖ₊₂≥0 (decreasing sequence). They're bounded above by a₁. So MCT gives s₂ₖ→S. Odd sums: s₂ₖ₊₁=s₂ₖ+a₂ₖ₊₁→S+0=S since aₙ→0. Both subsequences → S, so sₙ→S.",
@@ -617,9 +617,9 @@ const Q=[
       "Use the [[comparison|Comparison Test]] with the harmonic series.",
       "Since aₙ→0, the n-th term test guarantees convergence.",
       "Apply [[abs_conv|Absolute Convergence]]: Σ|aₙ|=Σaₙ converges since aₙ is decreasing to 0."],
- hardBad:["Show odd partial sums are decreasing and bounded below; apply [[mct|MCT]] to get S; then s₂ₖ→S since a₂ₖ→0.",
-           "Apply the [[cauchy_series|Cauchy Criterion]]: |s₂ₖ₊₁−s₂ₖ|=a₂ₖ₊₁→0, so (sₙ) is Cauchy.",
-           "Both (s₂ₖ) and (s₂ₖ₊₁) are monotone and bounded; [[mct|MCT]] gives limits S₁,S₂; |S₁−S₂|=lim a₂ₖ₊₁=0."]},
+ hardBad:["Odd partial sums s₂ₖ₊₁ are decreasing: s₂ₖ₊₃−s₂ₖ₊₁=a₂ₖ₊₂−a₂ₖ₊₃... wait: s₂ₖ₊₃=s₂ₖ₊₁−a₂ₖ₊₂+a₂ₖ₊₃, so s₂ₖ₊₃−s₂ₖ₊₁=−(a₂ₖ₊₂−a₂ₖ₊₃)≤0 since aₙ decreasing. So odd sums decrease, bounded below by 0.",
+            "Using the Cauchy criterion: for m>n, |sₘ−sₙ|≤aₙ₊₁ (standard alternating series estimate). But proving this estimate requires the even/odd argument — so it is circular to use it as an alternative.",
+            "If both (s₂ₖ) and (s₂ₖ₊₁) converge by MCT to limits S_e and S_o respectively, then |S_e−S_o|=lim|s₂ₖ−s₂ₖ₊₁|=lim a₂ₖ₊₁=0, so S_e=S_o=S. This is a valid complete proof, just longer."]},
 
 {name:"Absolute Convergence implies Convergence",
  hint:"Since Σ|aₙ| converges, it satisfies the Cauchy criterion: find N with Σ|aₙ| from l to k < ε. The triangle inequality gives |Σaₙ from l to k| ≤ Σ|aₙ| from l to k < ε. This is exactly the Cauchy criterion for Σaₙ, so Σaₙ converges.",
@@ -637,9 +637,9 @@ const Q=[
   {stepIdx:0,before:'Apply the Cauchy Criterion for Series to Σ|aₙ|: find N with the tail sum Σ|aₙ| from n=l to k less than ε, for all ',answer:'k≥l≥N',after:'.',why:'We start with what we know: the Cauchy condition for Σ|aₙ|, which controls tails.',distractors:['l≥k≥N','n,m≥N','k≥N']},
   {stepIdx:1,before:'Apply the triangle inequality: ',answer:'|Σaₙ from l to k|',after:' ≤ Σ|aₙ| from l to k < ε.',why:'The triangle inequality converts the tail bound on Σ|aₙ| into a bound on |Σaₙ|.',distractors:['Σ|aₙ| from l to k','Σaₙ from l to k','max|aₙ|·(k−l)']}
  ],
- hardBad:["Σ|aₙ|<∞ means each partial sum Sₙ of Σaₙ satisfies Sₙ≤Σ|aₙ|; by [[mct|MCT]] Sₙ converges.",
-           "|Σaₙ| ≤ Σ|aₙ| < ∞ by the triangle inequality, so Σaₙ converges.",
-           "Since Σ|aₙ| converges, aₙ→0; then apply [[cauchy_series|Cauchy Criterion]] using |aₙ|<ε for large n."]},
+ hardBad:["MCT cannot be applied to partial sums of Σaₙ directly when aₙ has mixed signs, since partial sums are not monotone. The Cauchy criterion avoids this by bounding |tail|, not the tail itself.",
+            "The bound |Σaₙ from l to k|≤Σ|aₙ| from l to k: the left side is the absolute value of a signed sum; the right side is a sum of absolute values. The triangle inequality makes this valid, but note the left side controls Σaₙ, not Σ|aₙ|.",
+            "Writing aₙ=aₙ⁺−aₙ⁻ with aₙ⁺=max(aₙ,0) and aₙ⁻=max(−aₙ,0): both 0≤aₙ⁺≤|aₙ| and 0≤aₙ⁻≤|aₙ|, so Comparison gives Σaₙ⁺<∞ and Σaₙ⁻<∞, hence Σaₙ converges — a valid alternative proof."]},
 
 {name:"Limit of (8n+5)/(4n+3)",
  hint:"Compute |(8n+5)/(4n+3)−2| = |8n+5−8n−6|/|4n+3| = 1/(4n+3). Since 4n+3>4n, this is less than 1/(4n). To make 1/(4n)<ε you need n>1/(4ε), so choose N>1/(4ε) via the Archimedean Axiom.",
@@ -657,9 +657,9 @@ const Q=[
  bad:["Compute the limit using L'Hôpital's rule on the rational function.",
       "Since (8n+5)/(4n+3) is monotone and bounded, apply [[mct|MCT]] to conclude convergence to 2.",
       "Apply the [[alg_lim|Algebraic Limit Theorem]] to the sequences (8n+5) and (4n+3) separately, then divide."],
- hardBad:["Given ε>0, choose N > 1/ε; then for n≥N: |(8n+5)/(4n+3)−2|=1/(4n+3) < 1/N < ε.",
-           "Given ε>0, note |(8n+5)/(4n+3)−2|=1/(4n+3) < 1/n; choose N>1/ε so 1/n<ε for n≥N.",
-           "Apply [[alg_lim|ALT]]: (8n+5)/(4n+3) = 8/4 + (5/n)/(4+3/n) → 2+0/4 = 2; no separate ε–N needed."]},
+ hardBad:["Choosing N>1/(4ε) gives 4N>1/ε, so 4n≥4N>1/ε, so 1/(4n)<ε. Then 1/(4n+3)<1/(4n)<ε for n≥N. The bound |(8n+5)/(4n+3)−2|=1/(4n+3) must be verified: 8n+5−2(4n+3)=8n+5−8n−6=−1, so the distance is 1/(4n+3). ✓",
+            "The exact N needed: 1/(4n+3)<ε iff 4n+3>1/ε iff n>(1/ε−3)/4. For ε≤1/3 this is positive; for ε>1/3 any N≥1 works. Choosing N>1/(4ε) handles all cases since 4N>1/ε means 4n+3≥4N+3>1/ε.",
+            "N>1/ε would give 1/N<ε, and 1/(4n+3)<1/n≤1/N<ε for n≥N. This also works but gives a weaker (larger) N than necessary — N>1/(4ε) is sharper."]},
 
 {name:"Algebraic Limit Theorem — sum",
  hint:"You're combining two errors, so budget ε/2 each. Find N₁ with |aₙ−a|<ε/2 for n≥N₁, and N₂ with |bₙ−b|<ε/2 for n≥N₂. Take N=max{N₁,N₂}. For n≥N, apply the triangle inequality: |(aₙ+bₙ)−(a+b)| ≤ |aₙ−a|+|bₙ−b| < ε/2+ε/2=ε.",
@@ -677,9 +677,9 @@ const Q=[
  bad:["Apply the [[olt|Order Limit Theorem]] to the sum sequence.",
       "Use [[mct|MCT]] after verifying the sum is bounded and monotone.",
       "Extract a convergent subsequence via [[bw|Bolzano–Weierstraß]] and pass to the limit."],
- hardBad:["Find N with |aₙ−a|<ε and |bₙ−b|<ε for n≥N; then |(aₙ+bₙ)−(a+b)|<2ε — replace ε by ε/2.",
-           "Find N₁,N₂ for ε/2; take N=N₁+N₂; then both conditions hold for n≥N.",
-           "Find N₁,N₂ for ε/2; take N=min{N₁,N₂}; the [[tri_ineq|triangle inequality]] gives ε/2+ε/2=ε."]},
+ hardBad:["If we instead take N₁ for ε (not ε/2), the bound gives |(aₙ+bₙ)−(a+b)|<2ε. To conclude <ε we must either halve ε before finding N, or restart the argument with ε/2 — the ε/2 split at the beginning is the standard fix.",
+            "The triangle inequality step: |(aₙ+bₙ)−(a+b)|=|(aₙ−a)+(bₙ−b)|≤|aₙ−a|+|bₙ−b|. This holds for all real numbers; combining it with the bounds <ε/2 gives the total <ε.",
+            "N=max{N₁,N₂} ensures n≥N implies BOTH n≥N₁ and n≥N₂. Using N=N₁·N₂ or N=N₁+N₂ would also guarantee both, but max is the tightest and most natural choice."]},
 
 {name:"cos(nπ/2) diverges",
  hint:"The sequence cycles 1,0,−1,0,1,… with period 4. Pick n=4k: cos(2kπ)=1, so this subsequence → 1. Pick n=4k+2: cos(kπ+π)=−1, so this subsequence → −1. Since a convergent sequence has a unique limit, two subsequences with different limits proves divergence.",
@@ -697,9 +697,9 @@ const Q=[
  bad:["Show the sequence is not monotone, hence not convergent.",
       "Show the sequence is not bounded, hence not convergent.",
       "Apply the [[cauchy_crit|Cauchy Criterion]]: the sequence fails the Cauchy condition."],
- hardBad:["The sequence is bounded, so by [[bw|B-W]] it has a convergent subsequence; but no subsequence converges, so it diverges.",
-           "Compute |cos((n+1)π/2)−cos(nπ/2)| = |sin(nπ/2)|, which does not tend to 0; so the Cauchy condition fails, proving divergence.",
-           "Show the sequence is not [[monotone|monotone]] and not bounded below by −1, so it cannot converge."]},
+ hardBad:["B-W guarantees a convergent subsequence exists. Here the subsequences n=4k and n=4k+2 both converge (to 1 and −1 respectively). Having TWO convergent subsequences with DIFFERENT limits proves divergence.",
+            "A sequence converges iff every subsequence converges to the same limit. The contrapositive: if some subsequence converges to a different limit, or two subsequences converge to different limits, the sequence diverges.",
+            "The subsequence n=4k gives cos(2kπ)=1; n=4k+2 gives cos(kπ+π)=cos((2k+1)π)=−1. The calculation cos((4k+2)π/2)=cos(2kπ+π)=cos(π)·cos(2kπ)−sin(π)·sin(2kπ)=(−1)·1−0=−1."]},
 
 {name:"Bounded sequence: subsequence criterion",
  hint:"Suppose aₙ ↛ a. Then ∃ε₀>0 such that |aₙ−a|≥ε₀ for infinitely many n — extract these as a subsequence (aₙₖ) with |aₙₖ−a|≥ε₀ for all k. Since (aₙ) is bounded, so is (aₙₖ). Apply B-W to get a further convergent sub-subsequence. By hypothesis it must → a, contradicting the ε₀-gap.",
@@ -717,9 +717,9 @@ const Q=[
  bad:["Since (aₙ) is bounded and monotone, apply [[mct|MCT]] to conclude aₙ→a.",
       "Apply the [[cauchy_crit|Cauchy Criterion]]: the subsequence condition implies (aₙ) is Cauchy.",
       "Use the [[olt|Order Limit Theorem]] on (aₙ−a) to conclude aₙ→a."],
- hardBad:["Suppose aₙ↛a; then ∃ε₀>0 and a subsequence (aₙₖ) with |aₙₖ−a|≥ε₀; since every convergent subsequence→a, (aₙₖ) diverges; but (aₙₖ) is bounded, contradicting [[bw|B-W]].",
-           "Every convergent subsequence→a; the whole sequence (aₙ) is itself a subsequence, so if it converges it converges to a; assume convergence by hypothesis.",
-           "By hypothesis all convergent subsequences→a; since (aₙ) is bounded, [[bw|B-W]] gives aₙₖ→a for some k; hence the whole sequence→a."]},
+ hardBad:["The negation of aₙ→a is: ∃ε₀>0 such that |aₙ−a|≥ε₀ for INFINITELY MANY n. We extract these as a subsequence (aₙₖ) — the indices nₖ are chosen in increasing order from the infinitely many bad indices.",
+            "B-W applied to (aₙₖ): it is bounded (as a subsequence of the bounded (aₙ)), so B-W gives a further convergent sub-subsequence (aₙₖⱼ)→L. By hypothesis every convergent subsequence of (aₙ) tends to a, so L=a. But |aₙₖⱼ−a|≥ε₀>0 for all j — contradiction.",
+            "The hypothesis is 'every subsequence of (aₙ) that converges tends to a'. We only apply this once: to the sub-subsequence (aₙₖⱼ). It is crucial that (aₙₖⱼ) is a subsequence of (aₙ), not just of (aₙₖ)."]},
 
 {name:"Series convergence: Σ sin(π/4)ⁿ/n",
  hint:"Note sin(π/4)=√2/2≈0.707, which is strictly less than 1. So |sin(π/4)ⁿ/n| = (√2/2)ⁿ/n ≤ (√2/2)ⁿ (dropping the 1/n factor since 1/n≤1). The right-hand side is a geometric series with ratio √2/2<1, which converges. Apply the Comparison Test.",
@@ -737,9 +737,9 @@ const Q=[
  bad:["The terms sin(π/4)ⁿ/n → 0, so by the n-th term test the series converges.",
       "Apply the [[alt_series|Alternating Series Test]] since sin(π/4)ⁿ/n decreases to 0.",
       "The series diverges because 1/n diverges and sin(π/4)ⁿ ≥ sin(π/4) > 0."],
- hardBad:["Note |aₙ|=(√2/2)ⁿ/n; compare with (√2/2)ⁿ/n² which converges since Σ1/n² converges; apply [[comparison|Comparison Test]].",
-           "Apply the Ratio Test: |aₙ₊₁/aₙ|=(√2/2)·n/(n+1)→√2/2 < 1, so the series converges absolutely.",
-           "Since sin(π/4)=√2/2 < 1, the terms sin(π/4)ⁿ/n → 0 faster than 1/n; the comparison with 1/n shows convergence."]},
+ hardBad:["The bound (√2/2)ⁿ/n ≤ (√2/2)ⁿ holds since 1/n≤1 for n≥1. So Σ(√2/2)ⁿ/n ≤ Σ(√2/2)ⁿ < ∞ — this is Comparison with a geometric series. Dropping 1/n makes the bound LARGER (looser), which is the correct direction for Comparison.",
+            "Comparing (√2/2)ⁿ/n with (√2/2)ⁿ/n² goes the WRONG way: (√2/2)ⁿ/n ≥ (√2/2)ⁿ/n² since 1/n≥1/n². A dominating convergent series must be LARGER than the series being bounded.",
+            "Ratio test: |aₙ₊₁/aₙ|=(√2/2)^(n+1)/(n+1) · n/(√2/2)ⁿ = (√2/2)·n/(n+1) → √2/2 < 1. Ratio test gives absolute convergence directly, without needing to find a comparison series."]},
 
 {name:"Series divergence: Σ cos(π/n²)",
  hint:"Before reaching for comparison tests, ask: what does the general term approach as n→∞? If it does not go to zero, there is a one-line test that settles it immediately.",
@@ -757,9 +757,9 @@ const Q=[
  bad:["Compare cos(π/n²) with 1/n² using the Comparison Test; since Σ1/n² converges, so does this series.",
       "Use the Alternating Series Test since cos(π/n²) is eventually decreasing.",
       "Apply the Ratio Test: |aₙ₊₁/aₙ|→1, so the test is inconclusive — conclude by another method."],
- hardBad:["Since cos(π/n²)≈1−π²/(2n⁴) for large n, the terms decrease to 0 like 1/n⁴; by Comparison with Σ1/n⁴ the series converges.",
-           "cos(π/n²) ≤ 1 for all n, so by the Comparison Test with the divergent series Σ1 the original series may diverge.",
-           "The terms cos(π/n²) are eventually less than 1; compare with Σcos(π/n) which diverges; hence this series diverges."]},
+ hardBad:["The Taylor expansion cos(π/n²)=1−π²/(2n⁴)+O(1/n⁸) shows the terms APPROACH 1 (from below) as n→∞. The deviation from 1 is ~π²/(2n⁴)→0, but the terms themselves→1≠0. The n-th term test (aₙ↛0) gives divergence.",
+            "Comparison with Σ1: for large n, cos(π/n²)>1/2 (since cos(x)>1/2 for |x|<π/3, and π/n²<π/3 for n≥2). So the partial sums exceed N/2→∞, confirming divergence — but the n-th term test is shorter.",
+            "One might attempt the limit comparison test with Σ1: lim cos(π/n²)/1 = 1 ≠ 0, so both series diverge or both converge together. Since Σ1 diverges, so does Σcos(π/n²). This is valid but overkill."]},
 
 {name:"If Σaₙ converges (aₙ>0) then Σaₙ² converges",
  hint:"Since Σaₙ converges, aₙ→0 by the n-th term test. So ∃N with aₙ<1 for all n≥N. For such n, squaring a number in (0,1) makes it smaller: aₙ²=aₙ·aₙ < aₙ·1=aₙ. Now 0≤aₙ²≤aₙ for large n, and Σaₙ converges, so the Comparison Test gives Σaₙ² converges.",
@@ -778,9 +778,9 @@ const Q=[
  bad:["Apply the Ratio Test to Σaₙ².",
       "Since Σaₙ converges absolutely, so does Σaₙ² by the Absolute Convergence theorem.",
       "The partial sums of Σaₙ² are bounded by (Σaₙ)²; since Σaₙ converges, so does Σaₙ²."],
- hardBad:["Since Σaₙ converges, by Cauchy Criterion the tails Σaₙ<ε; squaring: Σaₙ²<ε² so Cauchy holds.",
-           "For large n, aₙ<1, so aₙ²<aₙ; now Σaₙ converges and 0<aₙ²<aₙ, so [[mct|MCT]] applies to the partial sums.",
-           "Σaₙ converges ⟹ aₙ→0 ⟹ aₙ²→0 ⟹ Σaₙ² converges by the converse of the n-th term test."]},
+ hardBad:["The Cauchy criterion for Σaₙ gives: |Σaₙ from l to k|<ε for n,m≥N. This bounds |tails of Σaₙ| but NOT tails of Σaₙ². Squaring a partial sum ≠ partial sum of squares: (a+b)²≠a²+b² in general.",
+            "Since Σaₙ converges, aₙ→0, so ∃N with aₙ<1 for n≥N. For n≥N: aₙ²=aₙ·aₙ<aₙ·1=aₙ. The Comparison Test applies: 0≤aₙ²≤aₙ for n≥N and Σaₙ converges, so Σaₙ² converges.",
+            "The limit comparison test: lim aₙ²/aₙ = lim aₙ = 0. A limit-comparison with limit 0 (not 1) says: if Σaₙ converges and lim bₙ/aₙ=0 with bₙ≥0, then Σbₙ converges. Here bₙ=aₙ² and this holds."]},
 
 {name:"IVT application: f(c)=f(c−1)",
  hint:"Define g(x)=f(x)−f(x−1) on [0,1]. Compute g(0)+g(1)=(f(0)−f(−1))+(f(1)−f(0))=f(1)−f(−1)=0. So g(0)=−g(1), meaning they have opposite signs (or one is zero). IVT then gives c∈[0,1] with g(c)=0, i.e. f(c)=f(c−1).",
@@ -798,9 +798,9 @@ const Q=[
  bad:["Apply the [[evt|EVT]] to f on [−1,1] to find extrema; use f(−1)=f(1) to locate c.",
       "Since f is continuous and f(−1)=f(1), apply Rolle's Theorem to f to find c with f′(c)=0.",
       "Define g(x)=f(x+1)−f(x) on [−1,0] and apply IVT to find a zero."],
- hardBad:["Define g(x)=f(x)−f(x−1); compute g(0)=f(0)−f(−1) and g(1)=f(1)−f(0); note |g(0)|+|g(1)|=0 so g(0)=g(1)=0.",
-           "Define g(x)=f(x)−f(x−1) on [0,1]; g(0)·g(1)=(f(0)−f(−1))(f(1)−f(0)) ≤ 0; apply [[ivt|IVT]] if the product is negative.",
-           "Define g(x)=f(x−1)−f(x) on [0,1]; g(0)+g(1)=f(−1)−f(1)=0; same conclusion."]},
+ hardBad:["g(0)+g(1)=(f(0)−f(−1))+(f(1)−f(0))=f(1)−f(−1)=0. So g(1)=−g(0). If g(0)=0 we are done with c=0. If g(0)≠0, then g(0) and g(1) have strictly opposite signs; IVT gives c∈(0,1) with g(c)=0.",
+            "The IVT applies to g:[0,1]→ℝ since g is continuous (f is continuous on [−1,1] and x−1∈[−1,0] for x∈[0,1], so both f(x) and f(x−1) are well-defined and continuous).",
+            "g(c)=0 means f(c)=f(c−1). For c∈[0,1], c−1∈[−1,0]⊂[−1,1], so both c and c−1 lie in the domain of f. The conclusion f(c)=f(c−1) is exactly what was required."]},
 
 {name:"sup(A∪B) = max{sup A, sup B}",
  hint:"Let M=max{sup A, sup B}. Every x∈A∪B satisfies x≤sup A≤M or x≤sup B≤M, so M is an upper bound. To show it's the least: if U<M, WLOG M=sup A, then U<sup A, so U is not an upper bound for A — hence not for A∪B either. So sup(A∪B)=M.",
@@ -818,9 +818,9 @@ const Q=[
  bad:["Since sup A ≤ sup(A∪B) and sup B ≤ sup(A∪B), and the union cannot exceed max{sup A, sup B}, the equality follows.",
       "Take any x∈A∪B; x≤max{sup A, sup B}; since this bound is achieved, it is the supremum.",
       "Apply the Axiom of Completeness separately to A and B, then take the max of the two suprema."],
- hardBad:["M bounds A∪B; for any ε>0 there exist a∈A with a>sup A−ε and b∈B with b>sup B−ε; the larger is in A∪B and within ε of M.",
-           "M is an upper bound; note sup A and sup B are elements of A∪B so M is attained; hence it is the supremum.",
-           "For any ε>0, WLOG M=sup A; then ∃a∈A with a>M−ε; since a∈A∪B, sup(A∪B)≥M−ε; letting ε→0 gives the result."]},
+ hardBad:["M=max{sup A,sup B} is an upper bound for A∪B since every x∈A satisfies x≤sup A≤M and every x∈B satisfies x≤sup B≤M. To show M is the LEAST upper bound: if U<M, WLOG M=sup A, then U<sup A means U fails to bound A, hence fails to bound A∪B.",
+            "If sup A=sup B=M the argument is symmetric. If sup A>sup B then M=sup A; the key is showing U<sup A is not an upper bound for A — this uses the definition of sup A as the LEAST upper bound of A.",
+            "The formula fails if A or B is empty: sup ∅ is conventionally −∞, and max{sup A,−∞}=sup A. The result sup(A∪∅)=sup A is still correct in this convention."]},
 
 {name:"Verifying (3n+7)/(5n) is Cauchy",
  hint:"Write aₙ=3/5+7/(5n). Then |aₙ−aₘ|=|7/(5n)−7/(5m)|=7|m−n|/(5nm). Since |m−n|≤max{m,n} and nm≥min{m,n}·min{m,n}, you get |aₙ−aₘ|≤7/(5·min{n,m})≤7/(5N) for n,m≥N. Choose N>7/(5ε) by the Archimedean Axiom.",
@@ -838,9 +838,9 @@ const Q=[
  bad:["Since aₙ=(3n+7)/(5n) is monotone decreasing and bounded below by 3/5, [[mct|MCT]] gives convergence, hence it is Cauchy.",
       "Compute lim aₙ=3/5 first; then use the triangle inequality: |aₙ−aₘ|≤|aₙ−3/5|+|3/5−aₘ| < ε.",
       "Apply the Cauchy Criterion: since aₙ converges (to 3/5), it is automatically Cauchy."],
- hardBad:["Write |aₙ−aₘ|=7|m−n|/(5nm)≤7(n+m)/(5nm)=7/5·(1/n+1/m)≤14/(5N) for n,m≥N; choose N>14/(5ε).",
-           "|aₙ−aₘ|=7|m−n|/(5nm)≤7n/(5n·n)=7/(5n) for m≥n; choose N>7/(5ε) so for n,m≥N: |aₙ−aₘ|≤7/(5n)≤7/(5N)<ε.",
-           "|aₙ−aₘ|=7|m−n|/(5nm); bound |m−n|≤m+n≤2max{m,n}; so |aₙ−aₘ|≤14/(5N); choose N>14/(5ε)."]},
+ hardBad:["The bound |aₙ−aₘ|=7|m−n|/(5nm)≤7/(5·min{n,m}) uses |m−n|≤max{m,n}≤nm/min{m,n} — the last step needs min{m,n}≥1. For n,m≥N: 7/(5·min{n,m})≤7/(5N), so choose N>7/(5ε).",
+            "The triangle inequality route: |aₙ−aₘ|≤|aₙ−3/5|+|3/5−aₘ|=7/(5n)+7/(5m)≤14/(5N) for n,m≥N; choose N>14/(5ε). This gives a constant twice as large but is equally valid.",
+            "Direct computation: aₙ=3/5+7/(5n), so aₙ−aₘ=7/(5n)−7/(5m)=7(m−n)/(5nm). Taking absolute values: |aₙ−aₘ|=7|m−n|/(5nm). The factoring step requires aₙ to be written in this form first."]},
 
 {name:"Cauchy functional equation: f(nx)=nf(x)",
  hint:"Base case n=1: f(1·x)=f(x)=1·f(x). Inductive step: assume f(kx)=kf(x). Then f((k+1)x)=f(kx+x)=f(kx)+f(x) (by the functional equation) =kf(x)+f(x) (by hypothesis) =(k+1)f(x). Conclude by induction.",
@@ -857,9 +857,9 @@ const Q=[
  bad:["Set y=x: f(2x)=2f(x); by repeated doubling f(2ⁿx)=2ⁿf(x); extend to all n by density of dyadic rationals.",
       "Apply the Algebraic Limit Theorem to the sequence (f(x),f(x)+f(x),…) to conclude f(nx)=nf(x).",
       "Since f is additive, it is linear; linear functions satisfy f(nx)=nf(x) by definition."],
- hardBad:["Set y=x: f(2x)=2f(x). Set y=2x: f(3x)=f(2x)+f(x)=3f(x). Repeat n times to get f(nx)=nf(x).",
-           "Apply f(x+y)=f(x)+f(y) with y=(n−1)x: f(nx)=f(x)+f((n−1)x); by strong induction on n, get f(nx)=nf(x).",
-           "Use f(x+y)=f(x)+f(y) with x=y=t/2: f(t)=2f(t/2); generalise to f(nx)=nf(x) by applying this n times."]},
+ hardBad:["Strong induction: assume f(kx)=kf(x) for all k≤n. Then f((n+1)x)=f(nx+x)=f(nx)+f(x)=nf(x)+f(x)=(n+1)f(x). Strong induction works but is unnecessary — simple induction is sufficient here.",
+            "The step f(kx+x)=f(kx)+f(x) applies the functional equation with first argument kx and second argument x; this requires kx and x to be in the domain where f(x+y)=f(x)+f(y) holds.",
+            "The base case n=0 gives f(0)=0·f(x)=0; this requires f(0)=0, which follows from f(0)=f(0+0)=f(0)+f(0), giving f(0)=0. For n∈ℕ={1,2,3,…} the base case is n=1: f(x)=1·f(x). ✓"]},
 
 {name:"MVT application: bounding f(0) given f′≤2",
  hint:"Apply the MVT on [−7,0]: ∃c∈(−7,0) with f′(c)=[f(0)−f(−7)]/(0−(−7))=[f(0)+3]/7. Since f′(c)≤2, we get [f(0)+3]/7≤2, so f(0)+3≤14, giving f(0)≤11. Check sharpness: f(x)=2x+11 achieves f(−7)=−3, f′=2≤2, f(0)=11.",
@@ -877,9 +877,9 @@ const Q=[
  bad:["Since f′(x)≤2 for all x, the maximum rate of change is 2; integrating gives f(0)≤f(−7)+14=11.",
       "By Rolle's Theorem, ∃c with f′(c)=0; since f′(c)≤2, f(0)≤f(−7)+2·7=11.",
       "The IVT applied to f′ on [−7,0] gives a point where f′=2; integrating gives f(0)=11."],
- hardBad:["By the MVT, f(0)−f(−7)=f′(c)·7≤2·7=14; so f(0)≤−3+14=11. ✓",
-           "Since f′(x)≤2, f(0)=f(−7)+∫f′(x)dx ≤ −3+14=11.",
-           "f′(c)=[f(0)+3]/7; since f′(c)≤2 and c∈(−7,0), we get f(0)≤11 only if c is chosen optimally."]},
+ hardBad:["MVT: f(0)=f(−7)+f′(c)·7 for some c∈(−7,0). Since f(−7)=−3 and f′(c)≤2: f(0)=−3+7f′(c)≤−3+14=11. The bound is tight: f(x)=2x+11 achieves f(−7)=−3, f(0)=11, f′≡2≤2.",
+            "The MVT gives f′(c)=[f(0)−f(−7)]/(0−(−7))=[f(0)+3]/7 for some c∈(−7,0). Since f′(c)≤2: [f(0)+3]/7≤2, so f(0)≤11. The point c is guaranteed to exist in the OPEN interval (−7,0).",
+            "Lower bound on f(0): MVT also gives f(0)≥f(−7)+7·inf f′. Without a lower bound on f′, we can only conclude f(0)≤11. The problem asks for an upper bound, so the lower bound direction is not needed."]},
 
 {name:"At most one fixed point if f′≠1",
  hint:"Suppose f(p)=p and f(q)=q with p≠q. Define h(x)=f(x)−x; then h(p)=0=h(q). Apply MVT to h on [p,q]: ∃c with h′(c)=[h(q)−h(p)]/(q−p)=0. But h′(c)=f′(c)−1=0 means f′(c)=1, contradicting f′(x)≠1 for all x.",
@@ -897,9 +897,9 @@ const Q=[
  bad:["Since f′(x)≠1, f is strictly monotone, hence injective, hence at most one fixed point.",
       "Fixed points satisfy f(x)=x; differentiating gives f′(x)=1, contradicting the hypothesis.",
       "Apply IVT to h(x)=f(x)−x to find c with f(c)=c; then h′=0 forces f′(c)=1 — contradiction."],
- hardBad:["If f(p)=p and f(q)=q, by IVT applied to f(x)−x there is some c between p and q with f(c)=c; but h′(c)=0 gives f′(c)=1 — impossible.",
-           "Since f′(x)≠1, f(x)−x is strictly monotone; a strictly monotone function vanishes at most once.",
-           "Suppose two fixed points p<q; by Rolle on h(x)=f(x)−x using h(p)=0=h(q), ∃c with h′(c)=f′(c)−1=0, so f′(c)=1 — contradiction."]},
+ hardBad:["h(x)=f(x)−x is differentiable (as f is differentiable); h(p)=f(p)−p=0 and h(q)=f(q)−q=0. MVT on [p,q] gives c∈(p,q) with h′(c)=0. But h′(c)=f′(c)−1=0 means f′(c)=1 — contradicting f′(x)≠1 everywhere.",
+            "The IVT applied to h=f−id: h(p)=0=h(q) tells us h has two zeros, not that h changes sign between them. MVT is the right tool (gives h′(c)=0), not IVT (which would require h(p) and h(q) to have opposite signs).",
+            "MVT requires h continuous on [p,q] and differentiable on (p,q). h=f−id inherits these from f. The conclusion c∈(p,q) (OPEN interval) is important: the contradiction f′(c)=1 must occur at an interior point."]},
 
 {name:"Order Limit Theorem",
  hint:"Suppose a<0. Take ε=|a|>0 in the definition of convergence: ∃N with |a_N−a|<|a|. This means a_N lies in the interval (a−|a|, a+|a|)=(2a, 0), so a_N<0. But a_N≥0 by hypothesis — contradiction. So a≥0.",
@@ -918,9 +918,9 @@ const Q=[
  bad:["Apply [[mct|MCT]] to (aₙ) to find the limit, then verify it's ≥0.",
       "Squeeze (aₙ) between 0 and a sequence tending to a.",
       "Apply the [[alg_lim|Algebraic Limit Theorem]] to (aₙ) and the constant sequence (0)."],
- hardBad:["Suppose a<0; take ε=|a|/2; find N with |a_N−a|<|a|/2; then a_N<a+|a|/2=a/2<0 — contradiction.",
-           "Suppose a<0; then since aₙ→a there exists N with aₙ<0 for all n>N, contradicting aₙ≥0.",
-           "Suppose a<0; take ε=|a|; then |a_N−a|<|a| gives a−|a|<a_N<a+|a|=0, so a_N<0."]},
+ hardBad:["Taking ε=|a|: find N with |a_N−a|<|a|. Then a_N<a+|a|=a+(−a)=0 (using a<0 so |a|=−a). So a_N<0, contradicting a_N≥0.",
+            "Taking ε=|a|/2 also works: |a_N−a|<|a|/2 gives a_N<a+|a|/2. Since a<0: a+|a|/2=a−a/2=a/2<0. So a_N<a/2<0 — contradiction. Both ε=|a| and ε=|a|/2 give valid contradictions.",
+            "The contradiction requires a_N<0, which contradicts the hypothesis aₙ≥0. The ε must be chosen so that a+ε<0, i.e. ε<|a|. Both ε=|a| and ε=|a|/2 satisfy this (with equality for |a|, giving a+|a|=0 which is ≤0 not <0 — so ε=|a|/2 is safer)."]},
 
 {name:"Convergence of 1/√n → 0",
  hint:"You need 1/√n<ε, which rearranges to n>1/ε². By the Archimedean Axiom, choose N∈ℕ with N>1/ε². Then for all n≥N: n≥N>1/ε², so ε²>1/n, so ε>1/√n. Since 1/√n>0, we get |1/√n−0|=1/√n<ε.",
@@ -938,9 +938,9 @@ const Q=[
  bad:["Since 1/n→0 and 1/√n ≤ 1/n for large n, the Comparison Test gives convergence.",
       "1/√n is decreasing and bounded below by 0, so MCT gives convergence (but not necessarily to 0).",
       "By the Cauchy Criterion: |1/√n−1/√m|<ε for large n,m by direct computation."],
- hardBad:["Choose N>1/ε; then for n≥N: 1/√n≤1/√N<1/√(1/ε)=√ε, so 1/√n<√ε — but we need <ε, not <√ε.",
-           "By the Archimedean Axiom find N>1/ε; for n≥N: 1/n≤1/N<ε, so 1/√n≤1/n<ε.",
-           "The sequence (1/√n) is decreasing and bounded below by 0; MCT gives limit l≥0; subsequence n=k² gives 1/k→0=l."]},
+ hardBad:["Choosing N>1/ε² is correct. Choosing N>1/ε instead: n≥N>1/ε gives 1/√n<1/√(1/ε)=√ε. Since √ε>ε for ε<1, this only proves 1/√n<√ε, not 1/√n<ε. So N>1/ε is insufficient.",
+            "The correct chain: n>1/ε² ⟹ ε²>1/n ⟹ ε>1/√n (taking square roots, valid since both sides positive). Each step uses positivity: ε>0, n≥1.",
+            "For ε≥1 the result is trivial (1/√n≤1≤ε for all n≥1), so we only need to handle ε∈(0,1). In this range N>1/ε² is positive and the Archimedean Axiom applies."]},
 
 {name:"Differentiable implies Continuous",
  hint:"Write f(x)−f(x₀) = [(f(x)−f(x₀))/(x−x₀)] · (x−x₀). As x→x₀: the first factor → f′(x₀) by differentiability (finite limit), and the second factor → 0. By the Algebraic Limit Theorem for products, the product → f′(x₀)·0=0. So f(x)→f(x₀), which is continuity.",
@@ -958,9 +958,9 @@ const Q=[
  bad:["Since f is differentiable, it satisfies the Cauchy Criterion on any interval; Cauchy implies continuous.",
       "Differentiability means f can be approximated by a linear function near x₀; linear functions are continuous.",
       "Apply the EVT to an interval around x₀ to show f is bounded; bounded implies continuous."],
- hardBad:["f(x)−f(x₀)=f′(x₀)(x−x₀)+r(x)(x−x₀) where r(x)→0; both terms→0 as x→x₀, so f(x)→f(x₀).",
-           "lim_{x→x₀}[f(x)−f(x₀)]/(x−x₀)=f′(x₀) exists; therefore lim[f(x)−f(x₀)]=f′(x₀)·lim(x−x₀)=f′(x₀)·0=0.",
-           "The difference quotient is bounded near x₀ (since it has a limit); bounded times (x−x₀)→0 gives f(x)−f(x₀)→0."]},
+ hardBad:["The factoring f(x)−f(x₀)=[f(x)−f(x₀)]/(x−x₀)·(x−x₀) requires x≠x₀; the case x=x₀ gives f(x₀)−f(x₀)=0 trivially. The limit is taken as x→x₀ (with x≠x₀), which is standard in the definition of differentiability.",
+            "ALT for products: lim(g·h)=(lim g)·(lim h) requires BOTH limits to exist. Here lim[f(x)−f(x₀)]/(x−x₀)=f′(x₀) exists (given differentiability) and lim(x−x₀)=0 (trivial). So both limits exist and ALT applies.",
+            "The conclusion f(x)→f(x₀) as x→x₀ is the ε-δ definition of continuity at x₀. The proof shows that differentiability (existence of f′(x₀)) implies this limit, hence continuity."]},
 
 // -- TRUE/FALSE BLOCKS ----------------------------------------
 {name:"True/false: convergent sequences and their value sets",
@@ -1081,9 +1081,9 @@ const Q=[
       "By the [[cauchy_crit|Cauchy Criterion]]: |aₙ−aₘ|=|5/(3n+2)−5/(3m+2)| → 0 so (aₙ) is Cauchy.",
       "Squeeze (aₙ) between (6n−1)/(3n+2)−1/(3n) and (6n−1)/(3n+2)+1/(3n), both → 2.",
       "Compute the limit by L'Hôpital's rule on the rational function."],
- hardBad:["Choose N>5/ε; for n≥N: 5/(3n+2)<5/(3N)<5/(3·5/ε)=ε/3 — this gives ε/3, not ε.",
-           "Choose N>5/(3ε) and note 5/(3n+2)<5/(3n)<5/(3N)<ε — but 5/(3n)<5/(3N) requires n>N only, so the step is valid.",
-           "Divide by n: (6−1/n)/(3+2/n)→6/3=2; this shows the limit is 2 informally but is not the ε–N argument."]},
+ hardBad:["Choosing N>5/(3ε) gives 5/(3N)<ε. For n≥N: 5/(3n+2)≤5/(3n)≤5/(3N)<ε. The bound 5/(3n+2)≤5/(3n) uses 3n+2>3n — valid for all n. So the chain is: 5/(3n+2)<5/(3n)≤5/(3N)<ε.",
+            "Choosing N>5/ε (instead of 5/(3ε)) gives 5/N<ε and 5/(3n+2)<5/n≤5/N<ε for n≥N. This is valid but with a constant 3 times worse than necessary — N>5/(3ε) is the sharp choice.",
+            "The error |(6n−1)/(3n+2)−2|=(1)/(3n+2): numerator is |6n−1−6n−4|=|−5|=5, giving 5/(3n+2). The bound 5/(3n+2)<5/(3n) is valid since 3n+2>3n."]},
 
 {name:"Convergence of n/(n²+1)",
  hint:"Find a simple upper bound for n/(n²+1) that goes to zero. What does n/(n²+1) simplify to approximately for large n?",
@@ -1102,9 +1102,9 @@ const Q=[
       "Apply the [[cauchy_crit|Cauchy Criterion]]: |aₙ−aₘ|→0 for large n,m.",
       "n/(n²+1) → 0 by L'Hôpital's rule applied to x/(x²+1).",
       "Squeeze between 0 and 1/n²; both → 0, so the limit is 0."],
- hardBad:["Bound n/(n²+1) < n/(n²)=1/n; choose N>1/ε²; then 1/n<1/N<ε² — this gives ε² not ε.",
-           "Use the comparison 1/(n+1)<n/(n²+1)<1/n; since 1/(n+1)→0 and 1/n→0, squeeze theorem gives aₙ→0.",
-           "Note n/(n²+1)<1/(n−1) for n≥2; choose N>1/ε+1 to complete the ε–N argument."]},
+ hardBad:["Choosing N>1/ε² gives 1/N<ε². For n≥N: 1/n≤1/N<ε², so 1/√n<ε. The bound n/(n²+1)<1/n then gives n/(n²+1)<1/√n<ε — but 1/√n<ε is the intermediate step, not the final bound. We need n/(n²+1)<ε directly.",
+            "Correct: N>1/ε gives 1/N<ε. For n≥N: n/(n²+1)<1/n≤1/N<ε. The chain uses n/(n²+1)<1/n (since n²+1>n²) and 1/n≤1/N (since n≥N). No square root needed.",
+            "Choosing N>1/ε² and using n/(n²+1)<1/n≤1/N<ε² gives convergence to 0 with error ε² — this proves the sequence is eventually within ε² of 0, not within ε. To get within ε, use N>1/ε."]},
 
 {name:"OLT: if aₙ→a and bₙ→b with aₙ≤bₙ, then a≤b",
  hint:"Apply the Order Limit Theorem to the sequence (bₙ−aₙ). What do you know about its terms and its limit?",
@@ -1123,9 +1123,9 @@ const Q=[
       "Use the [[cauchy_crit|Cauchy Criterion]] on (bₙ−aₙ) to show it converges to something non-negative.",
       "Since aₙ≤bₙ for all n, taking the limit of both sides directly gives a≤b by definition of convergence.",
       "Apply the [[alg_lim|ALT]] to show aₙ/bₙ→a/b; since aₙ/bₙ≤1, we get a/b≤1, so a≤b."],
- hardBad:["Let ε=(a−b)/2 if a>b; find N with |aₙ−a|<ε and |bₙ−b|<ε; then aₙ>a−ε=b+ε>bₙ — contradicts aₙ≤bₙ.",
-           "Taking limits preserves weak inequalities by continuity of the limit operation — cite this as a theorem.",
-           "Apply OLT to (aₙ) directly: since aₙ→a and aₙ≤bₙ→b, the OLT gives a≤b at once."]},
+ hardBad:["Define cₙ=bₙ−aₙ≥0; ALT gives cₙ→b−a; OLT applied to (cₙ) gives b−a≥0, i.e. a≤b. This is the standard proof. The contradiction approach in the hardBad requires more work.",
+            "Contradiction approach: suppose a>b. Let ε=(a−b)/2>0. Find N₁ with |aₙ−a|<ε for n≥N₁ and N₂ with |bₙ−b|<ε for n≥N₂. For n≥max{N₁,N₂}: aₙ>a−ε=b+ε and bₙ<b+ε, so aₙ>bₙ — contradicting aₙ≤bₙ.",
+            "The OLT route (via cₙ=bₙ−aₙ) is cleaner: it reduces the two-sequence problem to the one-sequence statement 'non-negative sequence has non-negative limit'. The contradiction route is longer but avoids introducing an auxiliary sequence."]},
 
 {name:"Sandwich/Squeeze Theorem",
  hint:"If aₙ≤cₙ≤bₙ and both aₙ and bₙ converge to the same limit L, what can you say about |cₙ−L|?",
@@ -1144,9 +1144,9 @@ const Q=[
       "cₙ is bounded, so [[bw|Bolzano–Weierstraß]] gives a convergent subsequence; monotone methods give the rest.",
       "Apply [[mct|MCT]] to (cₙ−aₙ)≥0 and (bₙ−cₙ)≥0 to conclude cₙ→L.",
       "The [[alg_lim|Algebraic Limit Theorem]] gives cₙ→L since cₙ=(aₙ+bₙ)/2 approximately."],
- hardBad:["Since L−ε<aₙ≤cₙ for n≥N₁, we get cₙ>L−ε; separately bₙ≤cₙ gives cₙ<L+ε — but note cₙ≤bₙ, not cₙ≥bₙ.",
-           "Apply OLT to (cₙ−aₙ)≥0: its limit is L−L=0≥0 ✓; similarly (bₙ−cₙ)≥0 has limit 0; these two together give cₙ→L.",
-           "Find N so |aₙ−L|<ε/2 and |bₙ−L|<ε/2; then |cₙ−L|≤max(|aₙ−L|,|bₙ−L|)<ε/2<ε."]},
+ hardBad:["For n≥N=max{N₁,N₂}: aₙ>L−ε (from |aₙ−L|<ε) and bₙ<L+ε (from |bₙ−L|<ε). Since aₙ≤cₙ≤bₙ: L−ε<aₙ≤cₙ≤bₙ<L+ε, giving |cₙ−L|<ε.",
+            "The bound L−ε<aₙ uses |aₙ−L|<ε, which gives aₙ>L−ε AND aₙ<L+ε. Only the lower bound L−ε<aₙ is used to control cₙ from below; the upper bound is provided by bₙ<L+ε.",
+            "The squeeze: cₙ is sandwiched between aₙ (which is >L−ε) and bₙ (which is <L+ε). Both bounds must hold simultaneously — hence taking N=max{N₁,N₂} to activate both bounds at once."]},
 
 {name:"Convergence of rⁿ for |r|<1",
  hint:"For the ε–N argument, you need rⁿ<ε. Take logarithms: n·log|r|<log ε, so n > log ε / log|r|. For r=0, treat separately.",
@@ -1165,9 +1165,9 @@ const Q=[
       "Apply the [[cauchy_crit|Cauchy Criterion]]: |rⁿ−rᵐ|=|r|ᵐ|rⁿ⁻ᵐ−1|→0.",
       "Use the [[comparison|Comparison Test]] with 1/n to show rⁿ→0.",
       "rⁿ→0 follows immediately from the definition of |r|<1."],
- hardBad:["Since |r|<1, we have |r|ⁿ≤|r|ⁿ for all n; choose N so |r|ᴺ<ε; then for n≥N: |r|ⁿ≤|r|ᴺ<ε — valid, and simpler.",
-           "Write |r|=1/(1+p) with p>0; then |r|ⁿ=1/(1+p)ⁿ≤1/(1+np) by Bernoulli; choose N>1/(pε).",
-           "Since |r|<1, |r|ⁿ is the geometric sequence; its partial sums converge by the geometric series formula, so the terms go to 0."]},
+ hardBad:["Choosing N with |r|ᴺ<ε: for n≥N, |r|ⁿ=|r|ᴺ·|r|^(n−N)≤|r|ᴺ<ε (since |r|≤1 means |r|^(n−N)≤1). This avoids logarithms but requires knowing |r|<1 gives |r|^(n−N)≤1.",
+            "The log approach: |r|ⁿ<ε iff n·log|r|<log ε; since log|r|<0, dividing flips the inequality: n>log ε/log|r|. The Archimedean Axiom gives N>log ε/log|r|; for n≥N the inequality holds.",
+            "Bernoulli approach: write |r|=1/(1+p) with p>0; then |r|ⁿ=1/(1+p)ⁿ≤1/(1+np)≤1/(np); choose N>1/(pε). This is valid but requires the Bernoulli inequality (1+p)ⁿ≥1+np."]},
 
 {name:"Absolute Convergence: if Σaₙ² and Σbₙ² converge, so does Σaₙbₙ",
  hint:"The key inequality is |aₙbₙ| ≤ (aₙ²+bₙ²)/2 — this is AM–GM. Then the right side is dominated by a convergent series.",
@@ -1186,9 +1186,9 @@ const Q=[
       "Since Σaₙ² and Σbₙ² converge, aₙ→0 and bₙ→0; apply the n-th term test to Σ|aₙbₙ|.",
       "Σ|aₙbₙ| ≤ Σaₙ² by the AM–GM inequality — this gives the bound directly.",
       "Write aₙbₙ=(aₙ+bₙ)²/4−(aₙ−bₙ)²/4; both terms are dominated by convergent series."],
- hardBad:["By AM–GM, |aₙbₙ|≤(aₙ²+bₙ²)/2; since Σaₙ²<∞ and Σbₙ²<∞, their sum Σ(aₙ²+bₙ²)<∞; apply Comparison Test.",
-           "Since aₙ→0 and bₙ→0, eventually |aₙbₙ|<aₙ²; the Comparison Test with Σaₙ² gives convergence.",
-           "Apply Cauchy-Schwarz to partial sums: (Σaₙbₙ from 1 to N)²≤(Σaₙ² from 1 to N)·(Σbₙ² from 1 to N)→finite."]},
+ hardBad:["AM-GM: for reals a,b: 2|ab|≤a²+b² follows from (|a|−|b|)²≥0, expanding: a²−2|a||b|+b²≥0. Dividing by 2: |ab|=|a||b|≤(a²+b²)/2. This is the AM-GM inequality for two terms.",
+            "The Comparison Test applies: 0≤|aₙbₙ|≤(aₙ²+bₙ²)/2, and Σ(aₙ²+bₙ²)/2=(Σaₙ²+Σbₙ²)/2<∞ by the ALT. So Σ|aₙbₙ| converges by Comparison.",
+            "Alternative: Cauchy-Schwarz gives (Σ|aₙbₙ| from 1 to N)²≤(Σaₙ² from 1 to N)(Σbₙ² from 1 to N)≤(Σaₙ²)(Σbₙ²)<∞. So partial sums of Σ|aₙbₙ| are bounded; since they are increasing (terms ≥0), MCT gives convergence."]},
 
 ];
 
@@ -1337,8 +1337,12 @@ let masteryExpanded=false;
 //   seen         : total appearances (all time)
 // ---------------------------------------------------------------
 function qKey(q){return q.name.replace(/\s+/g,'_').replace(/[^a-zA-Z0-9_]/g,'').slice(0,40);}
-function loadQData(){try{const raw=localStorage.getItem('mas_qdata');if(raw)qData=JSON.parse(raw);}catch(e){qData={};}}
-function saveQData(){try{localStorage.setItem('mas_qdata',JSON.stringify(qData));}catch(e){}}
+function loadQData(){
+  try{const raw=localStorage.getItem('mas_qdata');if(raw)qData=JSON.parse(raw);}catch(e){qData={};}
+  // Eagerly migrate all entries so mastery panel always sees new format
+  Q.forEach(q=>getQEntry(q));
+  saveQData();
+}function saveQData(){try{localStorage.setItem('mas_qdata',JSON.stringify(qData));}catch(e){}}
 function getQEntry(q){
   const k=qKey(q);
   if(!qData[k])qData[k]={bag:1,bagCorrect:false,consecutiveCorrect:0,history:[],seen:0};
@@ -1353,13 +1357,12 @@ function getQEntry(q){
     e.consecutiveCorrect=acc>=0.8?2:acc>=0.6?1:0;
     // Reconstruct bag from accuracy
     e.bag=acc>=0.85?3:acc>=0.7?2:1;
-    // Reconstruct synthetic history (last 10 slots filled at old accuracy ratio)
+    // Synthetic history: interleave true/false at old accuracy ratio
     if(!Array.isArray(e.history)||e.history.length===0){
       const slots=Math.min(oldSeen,10);
       const trueCount=Math.round(acc*slots);
+      // Interleave: spread trues evenly to avoid clumping
       e.history=Array(slots).fill(false).map((_,i)=>i<trueCount);
-      // Shuffle so it's not all trues then all falses
-      for(let i=e.history.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[e.history[i],e.history[j]]=[e.history[j],e.history[i]];}
     }
     e.bagCorrect=false;
     // Keep seen, drop old fields
@@ -1396,16 +1399,17 @@ function updateQData(q,correct){
 }
 
 // Exponential selection weight.
-// Questions answered correctly multiple times consecutively become exponentially rarer.
-// consecutiveCorrect=0 → weight 1.0 (full)
+// consecutiveCorrect=0 → weight 1.0
 // consecutiveCorrect=1 → weight 0.25
 // consecutiveCorrect=2 → weight 0.0625
-// consecutiveCorrect=3 → weight ~0.016  (nearly impossible)
-// Base 0.25 per streak level.
+// consecutiveCorrect=3 → weight ~0.016
+// consecutiveCorrect=4 → weight ~0.004
+// consecutiveCorrect=5 → weight ~0.001  (virtually never asked)
 function qWeight(e){
-  if(e.bag>3)return 0; // retired
+  if(e.bag>3)return 0;
   const base=0.25;
-  return Math.pow(base,e.consecutiveCorrect);
+  const streak=Math.pow(base,e.consecutiveCorrect);
+  return e.seen===0 ? streak+100 : streak;
 }
 
 // Build a session: always fill from the earliest bag that has unsatisfied questions first.
@@ -1458,18 +1462,23 @@ function rollingAcc(e){
 function masteryColor(e){
   if(!e||e.seen===0)return'#475569';
   const acc=rollingAcc(e);
-  if(acc===null)return'#475569';
-  if(acc>=0.8&&e.consecutiveCorrect>=2)return'#34D399';
+  if(acc===null||acc===undefined)return'#475569';
+  const cc=e.consecutiveCorrect||0;
+  if(acc>=0.9&&cc>=5)return'#34D399';
+  if(acc>=0.7&&cc>=3)return'#60A5FA';
   if(acc>=0.5)return'#F59E0B';
   return'#EF4444';
 }
 function masteryPct(e){
   if(!e||e.seen===0)return 0;
   const acc=rollingAcc(e);
-  if(acc===null)return 0;
-  // weight acc 70%, bag progress 30%
-  const bagProg=(e.bag-1)/2; // 0, 0.5, 1
-  return Math.round((acc*0.7+bagProg*0.3)*100);
+  if(acc===null||acc===undefined)return 0;
+  const bag=e.bag||1;
+  const cc=e.consecutiveCorrect||0;
+  // 100% requires: acc=1.0 (last 10), bag=3, cc≥5 consecutive correct bags
+  const bagProg=(bag-1)/2;
+  const streakProg=Math.min(cc,5)/5;
+  return Math.round((acc*0.5+bagProg*0.2+streakProg*0.3)*100);
 }
 
 function renderMasteryPanel(){
