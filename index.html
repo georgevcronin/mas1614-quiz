@@ -231,7 +231,21 @@ button{font-family:inherit;-webkit-appearance:none;appearance:none}
 .match-progress{font-size:11px;color:#475569;font-weight:600;margin-bottom:.5rem}
 /* Gap fill mode */
 .gap-stmt{background:#1E293B;border:1px solid #334155;border-radius:14px;padding:1rem 1.25rem;margin-bottom:.75rem;font-size:14px;color:#94A3B8;line-height:2}
-.gap-blank{display:inline-block;background:rgba(107,159,228,.15);border:1.5px solid #6B9FE4;border-radius:6px;padding:2px 16px;color:#6B9FE4;font-weight:700;min-width:80px;text-align:center;vertical-align:middle}
+.gap-step-box{background:rgba(255,255,255,.04);border:1.5px solid rgba(255,255,255,.1);border-radius:12px;padding:14px 16px;font-size:15px;line-height:1.6;margin-bottom:14px;color:#E2E8F0}
+.epn-gap-row{margin-bottom:14px}
+.epn-gap-text{font-size:14px;color:#94A3B8;line-height:1.6;margin-bottom:6px}
+.epn-input-wrap{display:flex;gap:8px;align-items:center}
+.epn-input{flex:1;background:rgba(255,255,255,.06);border:1.5px solid rgba(255,255,255,.15);border-radius:10px;padding:10px 14px;color:#F1F5F9;font-size:15px;font-family:inherit;outline:none;-webkit-appearance:none}
+.epn-input:focus{border-color:#6B9FE4}
+.epn-input.correct{border-color:#34D399;background:rgba(52,211,153,.1);color:#34D399}
+.epn-input.wrong{border-color:#EF4444;background:rgba(239,68,68,.08);color:#FCA5A5}
+.epn-check-btn{background:#6B9FE4;color:#fff;border:none;border-radius:10px;padding:10px 16px;font-size:14px;font-weight:700;cursor:pointer;white-space:nowrap}
+.epn-answer-reveal{font-size:13px;color:#34D399;margin-top:4px;display:none}
+.flaw-opt,.cex-opt{width:100%;text-align:left;background:rgba(255,255,255,.05);border:1.5px solid rgba(255,255,255,.1);border-radius:12px;padding:13px 15px;margin-bottom:10px;color:#E2E8F0;font-size:14px;line-height:1.5;cursor:pointer;display:flex;gap:10px;align-items:flex-start}
+.flaw-opt .opt-letter,.cex-opt .opt-letter{background:rgba(255,255,255,.1);border-radius:6px;padding:2px 8px;font-weight:700;font-size:13px;flex-shrink:0;margin-top:1px}
+.flaw-opt.correct-ans,.cex-opt.correct-ans{border-color:#34D399;background:rgba(52,211,153,.12)}
+.flaw-opt.wrong-ans,.cex-opt.wrong-ans{border-color:#EF4444;background:rgba(239,68,68,.08)}
+.flaw-opt.dim-ans,.cex-opt.dim-ans{opacity:.4}
 .gap-blank.filled{background:rgba(52,211,153,.15);border-color:#34D399;color:#34D399}
 .gap-blank.wrong-fill{background:rgba(239,68,68,.12);border-color:#EF4444;color:#FCA5A5}
 </style>
@@ -252,6 +266,9 @@ button{font-family:inherit;-webkit-appearance:none;appearance:none}
     <button class="mode-pill" id="pill-ord" onclick="selMode('pick')">🔢 Pick &amp; Order</button>
     <button class="mode-pill" id="pill-match" onclick="selMode('match')">🔗 Term Match</button>
     <button class="mode-pill" id="pill-gap" onclick="selMode('gap')">✍️ Fill the gap</button>
+    <button class="mode-pill" id="pill-flaw" onclick="selMode('flaw')">🔍 Spot the Flaw</button>
+    <button class="mode-pill" id="pill-cex" onclick="selMode('cex')">⚡ Counterexample</button>
+    <button class="mode-pill" id="pill-epn" onclick="selMode('epn')">🧮 ε–N Builder</button>
   </div>
   <div class="diff-row">
     <button class="diff-pill on" id="pill-norm" onclick="selDiff('normal')">📘 Normal</button>
@@ -344,7 +361,59 @@ button{font-family:inherit;-webkit-appearance:none;appearance:none}
   </div>
 </div>
 
-<div id="s-result" class="scr">
+<!-- SPOT THE FLAW screen -->
+<div id="s-flaw" class="scr">
+  <div class="q-hdr">
+    <button class="back-btn" onclick="goHome()">←</button>
+    <div class="prog-bg"><div class="prog-fill" id="flaw-prog" style="width:0%"></div></div>
+    <div class="hdr-r"><div class="streak-pill">🔍<span id="flaw-score-disp">0/0</span></div></div>
+  </div>
+  <div class="q-body">
+    <div class="q-num" id="flaw-num"></div>
+    <div class="q-theorem" id="flaw-theorem"></div>
+    <div class="q-text" id="flaw-prompt">This proof step contains an error. What is wrong?</div>
+    <div class="gap-step-box" id="flaw-step"></div>
+    <div id="flaw-opts"></div>
+    <div class="fb" id="flaw-fb"><div class="fb-title" id="flaw-fbt"></div><div class="fb-body" id="flaw-fbb"></div></div>
+    <button class="go-btn" id="flaw-go-btn" style="display:none" onclick="flawNext()">Next →</button>
+  </div>
+</div>
+
+<!-- COUNTEREXAMPLE screen -->
+<div id="s-cex" class="scr">
+  <div class="q-hdr">
+    <button class="back-btn" onclick="goHome()">←</button>
+    <div class="prog-bg"><div class="prog-fill" id="cex-prog" style="width:0%"></div></div>
+    <div class="hdr-r"><div class="streak-pill">⚡<span id="cex-score-disp">0/0</span></div></div>
+  </div>
+  <div class="q-body">
+    <div class="q-num" id="cex-num"></div>
+    <div class="q-text" style="font-style:italic;color:#94A3B8;font-size:13px;margin-bottom:4px">Find a counterexample to:</div>
+    <div class="gap-step-box" id="cex-claim"></div>
+    <div id="cex-opts"></div>
+    <div class="fb" id="cex-fb"><div class="fb-title" id="cex-fbt"></div><div class="fb-body" id="cex-fbb"></div></div>
+    <button class="go-btn" id="cex-go-btn" style="display:none" onclick="cexNext()">Next →</button>
+  </div>
+</div>
+
+<!-- ε–N BUILDER screen -->
+<div id="s-epn" class="scr">
+  <div class="q-hdr">
+    <button class="back-btn" onclick="goHome()">←</button>
+    <div class="prog-bg"><div class="prog-fill" id="epn-prog" style="width:0%"></div></div>
+    <div class="hdr-r"><div class="streak-pill">🧮<span id="epn-score-disp">0/0</span></div></div>
+  </div>
+  <div class="q-body">
+    <div class="q-num" id="epn-num"></div>
+    <div class="q-theorem" id="epn-theorem"></div>
+    <div class="q-text" style="font-size:13px;color:#94A3B8;margin-bottom:6px">Type the missing expression:</div>
+    <div id="epn-skeleton"></div>
+    <div class="fb" id="epn-fb"><div class="fb-title" id="epn-fbt"></div><div class="fb-body" id="epn-fbb"></div></div>
+    <button class="go-btn" id="epn-go-btn" style="display:none" onclick="epnNext()">Next →</button>
+  </div>
+</div>
+
+
   <span class="res-icon" id="r-icon"></span>
   <div class="res-title" id="r-title"></div>
   <div class="res-sub" id="r-sub"></div>
@@ -1511,7 +1580,18 @@ function saveStats(){
   try{const p=(+localStorage.getItem('mas_p')||0)+1,b=Math.max(+localStorage.getItem('mas_b')||0,bstk),c=(+localStorage.getItem('mas_c')||0)+cor,t=(+localStorage.getItem('mas_t')||0)+tot;localStorage.setItem('mas_p',p);localStorage.setItem('mas_b',b);localStorage.setItem('mas_c',c);localStorage.setItem('mas_t',t);if(typeof window.firebasePush==='function')window.firebasePush();}catch(e){}
 }
 
-function selMode(m){mode=m;['mc','ord','match','gap'].forEach((v,i)=>{const keys=['mc','pick','match','gap'];document.getElementById('pill-'+v).classList.toggle('on',keys[i]===m||v===m.replace('pick','ord'));});document.getElementById('pill-mc').classList.toggle('on',m==='mc');document.getElementById('pill-ord').classList.toggle('on',m==='pick');document.getElementById('pill-match').classList.toggle('on',m==='match');document.getElementById('pill-gap').classList.toggle('on',m==='gap');const note=document.getElementById('home-note');const mn={mc:'Multi-choice',pick:'Pick & Order',match:'Term Match',gap:'Fill the gap'};note.textContent='10 questions · '+( diff==='hard'?'Hard mode':'32 theorems')+' · '+(mn[m]||m);}
+function selMode(m){
+  mode=m;
+  const allPills=['mc','ord','match','gap','flaw','cex','epn'];
+  const allKeys=['mc','pick','match','gap','flaw','cex','epn'];
+  allPills.forEach((v,i)=>{
+    const el=document.getElementById('pill-'+v);
+    if(el)el.classList.toggle('on',allKeys[i]===m);
+  });
+  const note=document.getElementById('home-note');
+  const mn={mc:'Multi-choice',pick:'Pick & Order',match:'Term Match',gap:'Fill the gap',flaw:'Spot the Flaw',cex:'Counterexample',epn:'ε–N Builder'};
+  note.textContent='10 questions · '+(diff==='hard'?'Hard mode':'37 theorems')+' · '+(mn[m]||m);
+}
 function selDiff(d){diff=d;document.getElementById('pill-norm').classList.toggle('on',d==='normal');document.getElementById('pill-hard').classList.toggle('on',d==='hard');selMode(mode);}
 
 function shuf(a){let b=[...a];for(let i=b.length-1;i>0;i--){const j=0|Math.random()*(i+1);[b[i],b[j]]=[b[j],b[i]];}return b;}
@@ -1521,6 +1601,9 @@ function toggleHint(){const b=document.getElementById('hint-box'),t=document.get
 
 function startQuiz(){
   if(mode==='match'){startMatch();return;}
+  if(mode==='flaw'){startFlaw();return;}
+  if(mode==='cex'){startCex();return;}
+  if(mode==='epn'){startEpn();return;}
   qs=selectQuestions(10);qi=0;hts=3;stk=0;bstk=0;cor=0;tot=0;done=false;sel=new Set();
   show('s-quiz');
   document.getElementById('hard-banner').classList.toggle('on',diff==='hard');
@@ -1958,10 +2041,378 @@ function openEntry(id){
   show('s-wiki-detail');
 }
 
-// ===============================================================
-// INIT
-// ===============================================================
-loadStats();
+// ================================================================
+// COUNTEREXAMPLE DATA
+// ================================================================
+const CEX_QS=[
+  {claim:"Every monotone sequence converges.",
+   correct:"aₙ = n (increasing, unbounded, diverges to ∞)",
+   wrong:["aₙ = 1/n (decreasing, bounded, converges to 0)","aₙ = (−1)ⁿ (bounded, not monotone, diverges)","aₙ = 1 − 1/n (increasing, bounded, converges to 1)"],
+   why:"Monotone sequences converge only if also bounded (MCT). aₙ=n is increasing but unbounded — a clean counterexample."},
+  {claim:"Every bounded sequence converges.",
+   correct:"aₙ = (−1)ⁿ (bounded by 1, but oscillates between ±1)",
+   wrong:["aₙ = 1/n (bounded and convergent)","aₙ = n/(n+1) (bounded and convergent)","aₙ = 0 for all n (trivially convergent)"],
+   why:"Boundedness alone is not enough — B-W gives a convergent subsequence, not convergence of the whole sequence."},
+  {claim:"If aₙ→0 then Σaₙ converges.",
+   correct:"aₙ = 1/n — harmonic series diverges despite aₙ→0",
+   wrong:["aₙ = 1/n² — converges (p-series, p=2>1)","aₙ = (1/2)ⁿ — geometric series, converges","aₙ = (−1)ⁿ/n — converges by AST"],
+   why:"aₙ→0 is necessary but not sufficient. The harmonic series Σ1/n is the standard counterexample."},
+  {claim:"If Σaₙ converges absolutely then Σaₙ² converges.",
+   correct:"This is actually TRUE — it is not a false statement",
+   wrong:["aₙ = 1/n² — both Σaₙ and Σaₙ² converge (not a counterexample)","aₙ = (−1)ⁿ/n — Σ|aₙ| diverges (not absolutely convergent)","aₙ = 1/n — Σaₙ diverges, so not a valid setup"],
+   why:"Absolute convergence implies aₙ→0, so eventually |aₙ|<1, giving aₙ²<|aₙ|. Comparison Test then gives Σaₙ² converges. This statement is TRUE — recognise it!"},
+  {claim:"A continuous function on (0,1) is bounded.",
+   correct:"f(x) = 1/x on (0,1) — continuous but unbounded as x→0⁺",
+   wrong:["f(x) = x on (0,1) — bounded and continuous","f(x) = sin(x) on (0,1) — bounded","f(x) = x² on (0,1) — bounded"],
+   why:"EVT requires a CLOSED bounded interval. On the open interval (0,1) continuity alone does not guarantee boundedness."},
+  {claim:"A continuous function on (0,1) attains its supremum.",
+   correct:"f(x) = x on (0,1) — sup = 1 but f(x) < 1 for all x ∈ (0,1)",
+   wrong:["f(x) = 1/2 on (0,1) — attains sup = 1/2 everywhere","f(x) = x² on [0,1] — attains sup on closed interval","f(x) = sin(πx) on (0,1) — attains max of 1 at x=1/2"],
+   why:"EVT requires a closed interval. On the open interval the supremum may not be attained — f(x)=x approaches but never reaches 1."},
+  {claim:"If f is differentiable on (a,b) then f′ is continuous on (a,b).",
+   correct:"f(x) = x²sin(1/x) for x≠0, f(0)=0 — differentiable everywhere but f′ is not continuous at 0",
+   wrong:["f(x) = x² — differentiable with continuous derivative","f(x) = |x| — not differentiable at 0 (not a valid setup)","f(x) = sin(x) — infinitely differentiable"],
+   why:"Differentiability does not imply continuity of the derivative. The function x²sin(1/x) is the standard counterexample."},
+  {claim:"If f(a) = f(b) then there exists c ∈ (a,b) with f′(c) = 0.",
+   correct:"f(x) = |x| on [−1,1] — f(−1)=f(1)=1, but f′ does not exist at 0 so Rolle cannot apply",
+   wrong:["f(x) = sin(x) on [0,2π] — satisfies Rolle's theorem","f(x) = x² on [−1,1] — Rolle applies at c=0","f(x) = cos(x) on [0,2π] — Rolle applies"],
+   why:"Rolle's theorem requires differentiability on (a,b). |x| is not differentiable at 0, so the conclusion can fail."},
+  {claim:"Every Cauchy sequence converges.",
+   correct:"This is TRUE in ℝ — there is no counterexample in ℝ",
+   wrong:["aₙ = 1/n — Cauchy and convergent (confirms, not contradicts)","aₙ = (−1)ⁿ — not Cauchy (|a_{n+1}−aₙ|=2 always)","aₙ = n — not Cauchy (differences grow)"],
+   why:"In ℝ, Cauchy ⟺ convergent. This is the Cauchy Criterion. There is no counterexample in ℝ — recognise complete metric spaces!"},
+  {claim:"If f and g are continuous at x₀ then f/g is continuous at x₀.",
+   correct:"g(x) = 0 at x₀ makes f/g undefined — e.g. f(x)=1, g(x)=x at x₀=0",
+   wrong:["f(x)=x², g(x)=x+1 at x₀=0 — g(0)=1≠0, so f/g is fine","f(x)=sin(x), g(x)=cos(x) at x₀=π/4 — g≠0 there","f(x)=1, g(x)=2 — both constant, ratio fine"],
+   why:"Division requires g(x₀)≠0. If g(x₀)=0 then f/g is undefined at x₀ and cannot be continuous there."},
+  {claim:"If Σaₙ and Σbₙ both diverge then Σ(aₙ+bₙ) diverges.",
+   correct:"aₙ = 1/n and bₙ = −1/n — both diverge but Σ(aₙ+bₙ) = Σ0 = 0 converges",
+   wrong:["aₙ = 1 and bₙ = 1 — sum 2, diverges","aₙ = n and bₙ = −n² — sum still diverges","aₙ = (−1)ⁿ and bₙ = (−1)ⁿ — sum 2(−1)ⁿ diverges"],
+   why:"Two divergent series can cancel: Σ1/n and Σ(−1/n) are both divergent, but their sum is Σ0=0."},
+  {claim:"If f′(x) > 0 for all x ∈ (a,b) then f is strictly increasing on [a,b].",
+   correct:"This is actually TRUE — it follows directly from the MVT",
+   wrong:["f(x) = x³ — increasing with f′=0 at x=0 (but f′>0 not satisfied)","f(x) = −x — decreasing (but f′=−1<0, not >0)","f(x) = sin(x) — not globally increasing (f′ changes sign)"],
+   why:"By MVT, for a<x<y<b: f(y)−f(x)=f′(c)(y−x)>0 since f′(c)>0 and y−x>0. So f is strictly increasing. This is TRUE."},
+];
+
+// ================================================================
+// SPOT THE FLAW MODE
+// ================================================================
+// Flaw questions: drawn from hardBad pool — each hardBad has 3 options,
+// one is "almost right but subtly wrong", others are related.
+// We generate flaw questions dynamically from hardBad entries.
+let flawQs,flawIdx,flawCorrect,flawTotal;
+
+function buildFlawQs(){
+  const pool=[];
+  Q.forEach(q=>{
+    if(!q.hardBad||q.hardBad.length<2)return;
+    // For each hardBad option, create a flaw question
+    // The "flawed step" is the hardBad. The "correct identification" is one of 4 flaw labels.
+    // We use 3 hardBad options per theorem: one is the question, others are distractors.
+    q.hardBad.forEach((flawed,idx)=>{
+      const others=q.hardBad.filter((_,i)=>i!==idx);
+      // Generate what's right as the correct answer label — drawn from ok[]
+      const correctStep=q.ok[Math.min(idx,q.ok.length-1)];
+      pool.push({theorem:q.name, flawed, correctStep, distractors:others.slice(0,2), q});
+    });
+  });
+  return shuf(pool).slice(0,10);
+}
+
+function startFlaw(){
+  flawQs=buildFlawQs();
+  flawIdx=0;flawCorrect=0;flawTotal=0;
+  show('s-flaw');
+  renderFlaw();
+}
+
+function renderFlaw(){
+  const item=flawQs[flawIdx];
+  const total=flawQs.length;
+  document.getElementById('flaw-num').textContent='Question '+(flawIdx+1)+' of '+total;
+  document.getElementById('flaw-prog').style.width=(flawIdx/total*100)+'%';
+  document.getElementById('flaw-score-disp').textContent=flawCorrect+'/'+flawIdx;
+  document.getElementById('flaw-theorem').textContent=item.theorem;
+  // Strip wiki links from flawed step for display
+  document.getElementById('flaw-step').textContent=item.flawed.replace(/\[\[.*?\|(.*?)\]\]/g,'$1');
+
+  document.getElementById('flaw-fb').className='fb';
+  document.getElementById('flaw-go-btn').style.display='none';
+
+  // Build 4 options: "This reasoning is actually correct" + 3 real flaws from q.ok
+  // Actually: present 4 candidate "what's wrong" descriptions
+  // Correct: the correct step that should replace this (drawn from ok[])
+  // Distractors: other hardBad options (also wrong, but different wrong)
+  // We label options A-D and ask "which of these correctly replaces this step?"
+  const opts=shuf([
+    {text:item.correctStep.replace(/\[\[.*?\|(.*?)\]\]/g,'$1'), correct:true},
+    ...item.distractors.slice(0,2).map(d=>({text:d.replace(/\[\[.*?\|(.*?)\]\]/g,'$1'),correct:false})),
+    {text:item.q.bad[0]||'Apply a different theorem entirely.',correct:false},
+  ]).slice(0,4);
+
+  const div=document.getElementById('flaw-opts');
+  div.innerHTML='';
+  const lets=['A','B','C','D'];
+  opts.forEach((opt,i)=>{
+    const btn=document.createElement('button');
+    btn.className='flaw-opt';
+    btn.innerHTML=`<span class="opt-letter">${lets[i]}</span><span>${opt.text}</span>`;
+    btn.onclick=()=>flawPick(btn,opt.correct,item,opts);
+    div.appendChild(btn);
+  });
+}
+
+function flawPick(btn,correct,item,opts){
+  document.querySelectorAll('.flaw-opt').forEach(b=>b.disabled=true);
+  flawTotal++;
+  const fb=document.getElementById('flaw-fb');
+  if(correct){
+    flawCorrect++;
+    btn.classList.add('correct-ans');
+    document.querySelectorAll('.flaw-opt').forEach(b=>{if(b!==btn)b.classList.add('dim-ans');});
+    fb.className='fb ok';
+    document.getElementById('flaw-fbt').textContent='✓ Correct!';
+    document.getElementById('flaw-fbb').textContent='That is the valid step that should replace the flawed reasoning.';
+  } else {
+    btn.classList.add('wrong-ans');
+    document.querySelectorAll('.flaw-opt').forEach(b=>{
+      const span=b.querySelector('span:last-child');
+      const matchOpt=opts.find(o=>o.text===span?.textContent);
+      if(matchOpt?.correct)b.classList.add('correct-ans');
+      else if(b!==btn)b.classList.add('dim-ans');
+    });
+    fb.className='fb bad';
+    document.getElementById('flaw-fbt').textContent='✗ Not quite';
+    document.getElementById('flaw-fbb').textContent='The highlighted option is the correct replacement for this flawed step.';
+  }
+  const goBtn=document.getElementById('flaw-go-btn');
+  goBtn.style.display='block';
+  goBtn.textContent=flawIdx+1<flawQs.length?'Next →':'See results →';
+  goBtn.className='go-btn '+(correct?'ok':'bad');
+}
+
+function flawNext(){
+  flawIdx++;
+  if(flawIdx>=flawQs.length){
+    const pct=Math.round(flawCorrect/flawTotal*100);
+    document.getElementById('r-icon').textContent=pct>=80?'🔍':'📚';
+    document.getElementById('r-title').textContent=pct>=80?'Sharp eye!':'Keep practising!';
+    document.getElementById('r-sub').textContent='Spot the Flaw: '+flawCorrect+'/'+flawTotal+' ('+pct+'%)';
+    document.getElementById('r-sc').textContent=flawCorrect+'/'+flawTotal;
+    document.getElementById('r-ss').textContent='—';
+    document.getElementById('r-sa').textContent=pct+'%';
+    show('s-result');return;
+  }
+  renderFlaw();
+}
+
+// ================================================================
+// COUNTEREXAMPLE MODE
+// ================================================================
+let cexQs,cexIdx,cexCorrect,cexTotal;
+
+function startCex(){
+  cexQs=shuf([...CEX_QS]).slice(0,10);
+  cexIdx=0;cexCorrect=0;cexTotal=0;
+  show('s-cex');
+  renderCex();
+}
+
+function renderCex(){
+  const item=cexQs[cexIdx];
+  const total=cexQs.length;
+  document.getElementById('cex-num').textContent='Question '+(cexIdx+1)+' of '+total;
+  document.getElementById('cex-prog').style.width=(cexIdx/total*100)+'%';
+  document.getElementById('cex-score-disp').textContent=cexCorrect+'/'+cexIdx;
+  document.getElementById('cex-claim').textContent=item.claim;
+  document.getElementById('cex-fb').className='fb';
+  document.getElementById('cex-go-btn').style.display='none';
+
+  const opts=shuf([{text:item.correct,correct:true},...item.wrong.map(w=>({text:w,correct:false}))]);
+  const lets=['A','B','C','D'];
+  const div=document.getElementById('cex-opts');
+  div.innerHTML='';
+  opts.forEach((opt,i)=>{
+    const btn=document.createElement('button');
+    btn.className='cex-opt';
+    btn.innerHTML=`<span class="opt-letter">${lets[i]}</span><span>${opt.text}</span>`;
+    btn.onclick=()=>cexPick(btn,opt.correct,item,opts);
+    div.appendChild(btn);
+  });
+}
+
+function cexPick(btn,correct,item,opts){
+  document.querySelectorAll('.cex-opt').forEach(b=>b.disabled=true);
+  cexTotal++;
+  const fb=document.getElementById('cex-fb');
+  if(correct){
+    cexCorrect++;
+    btn.classList.add('correct-ans');
+    document.querySelectorAll('.cex-opt').forEach(b=>{if(b!==btn)b.classList.add('dim-ans');});
+    fb.className='fb ok';
+    document.getElementById('cex-fbt').textContent='✓ Correct!';
+    document.getElementById('cex-fbb').textContent=item.why;
+  } else {
+    btn.classList.add('wrong-ans');
+    document.querySelectorAll('.cex-opt').forEach(b=>{
+      const span=b.querySelector('span:last-child');
+      const matchOpt=opts.find(o=>o.text===span?.textContent);
+      if(matchOpt?.correct)b.classList.add('correct-ans');
+      else if(b!==btn)b.classList.add('dim-ans');
+    });
+    fb.className='fb bad';
+    document.getElementById('cex-fbt').textContent='✗ Not quite';
+    document.getElementById('cex-fbb').textContent=item.why;
+  }
+  const goBtn=document.getElementById('cex-go-btn');
+  goBtn.style.display='block';
+  goBtn.textContent=cexIdx+1<cexQs.length?'Next →':'See results →';
+  goBtn.className='go-btn '+(correct?'ok':'bad');
+}
+
+function cexNext(){
+  cexIdx++;
+  if(cexIdx>=cexQs.length){
+    const pct=Math.round(cexCorrect/cexTotal*100);
+    document.getElementById('r-icon').textContent=pct>=80?'⚡':'📚';
+    document.getElementById('r-title').textContent=pct>=80?'Excellent!':'Keep at it!';
+    document.getElementById('r-sub').textContent='Counterexample: '+cexCorrect+'/'+cexTotal+' ('+pct+'%)';
+    document.getElementById('r-sc').textContent=cexCorrect+'/'+cexTotal;
+    document.getElementById('r-ss').textContent='—';
+    document.getElementById('r-sa').textContent=pct+'%';
+    show('s-result');return;
+  }
+  renderCex();
+}
+
+// ================================================================
+// ε–N BUILDER MODE  (free-text entry of proof blanks)
+// ================================================================
+let epnQs,epnIdx,epnCorrect,epnTotal,epnGaps,epnGapStates;
+
+function startEpn(){
+  // Use questions that have gaps[]
+  const eligible=Q.filter(q=>q.gaps&&q.gaps.length>0);
+  epnQs=shuf(eligible).slice(0,10);
+  epnIdx=0;epnCorrect=0;epnTotal=0;
+  show('s-epn');
+  renderEpn();
+}
+
+function epnNormalise(s){
+  // Normalise for comparison: lowercase, remove spaces, strip unicode variants
+  return s.toLowerCase().replace(/\s+/g,'').replace(/[−–]/g,'-').replace(/[×·]/g,'*');
+}
+
+function epnMatch(input,answer){
+  const a=epnNormalise(input),b=epnNormalise(answer);
+  if(a===b)return true;
+  // Allow some mathematical equivalents
+  const pairs=[['sup{an}','sup{a_n}'],['1/(4n)','(4n)^-1'],['1/n^2','n^-2']];
+  return pairs.some(([x,y])=>(a===x&&b===y)||(a===y&&b===x));
+}
+
+function renderEpn(){
+  const q=epnQs[epnIdx];
+  const total=epnQs.length;
+  document.getElementById('epn-num').textContent='Question '+(epnIdx+1)+' of '+total;
+  document.getElementById('epn-prog').style.width=(epnIdx/total*100)+'%';
+  document.getElementById('epn-score-disp').textContent=epnCorrect+'/'+epnIdx;
+  document.getElementById('epn-theorem').textContent=q.name;
+  document.getElementById('epn-fb').className='fb';
+  document.getElementById('epn-go-btn').style.display='none';
+
+  epnGaps=q.gaps;
+  epnGapStates=epnGaps.map(()=>({checked:false,correct:false}));
+
+  const skel=document.getElementById('epn-skeleton');
+  skel.innerHTML='';
+  epnGaps.forEach((gap,i)=>{
+    const row=document.createElement('div');
+    row.className='epn-gap-row';
+    // Show the step context
+    const ok=q.ok[gap.stepIdx]||'';
+    const stripped=ok.replace(/\[\[.*?\|(.*?)\]\]/g,'$1');
+    const txt=document.createElement('div');
+    txt.className='epn-gap-text';
+    txt.textContent=(gap.before||'')+' ___ '+(gap.after||'');
+    row.appendChild(txt);
+
+    const wrap=document.createElement('div');
+    wrap.className='epn-input-wrap';
+    const inp=document.createElement('input');
+    inp.className='epn-input';
+    inp.id='epn-inp-'+i;
+    inp.placeholder='type your answer…';
+    inp.autocomplete='off';inp.autocorrect='off';inp.autocapitalize='off';inp.spellcheck=false;
+    inp.addEventListener('keydown',e=>{if(e.key==='Enter')epnCheckGap(i);});
+    const checkBtn=document.createElement('button');
+    checkBtn.className='epn-check-btn';
+    checkBtn.id='epn-chk-'+i;
+    checkBtn.textContent='Check';
+    checkBtn.onclick=()=>epnCheckGap(i);
+    wrap.appendChild(inp);wrap.appendChild(checkBtn);
+    row.appendChild(wrap);
+
+    const reveal=document.createElement('div');
+    reveal.className='epn-answer-reveal';
+    reveal.id='epn-rev-'+i;
+    reveal.textContent='Answer: '+gap.answer;
+    row.appendChild(reveal);
+
+    skel.appendChild(row);
+  });
+}
+
+function epnCheckGap(i){
+  const gap=epnGaps[i];
+  const inp=document.getElementById('epn-inp-'+i);
+  const chk=document.getElementById('epn-chk-'+i);
+  const rev=document.getElementById('epn-rev-'+i);
+  if(epnGapStates[i].checked)return;
+  epnGapStates[i].checked=true;
+  const correct=epnMatch(inp.value,gap.answer);
+  epnGapStates[i].correct=correct;
+  inp.disabled=true;chk.disabled=true;
+  if(correct){
+    inp.classList.add('correct');
+    chk.textContent='✓';
+  } else {
+    inp.classList.add('wrong');
+    chk.textContent='✗';
+    rev.style.display='block';
+  }
+  // Check if all gaps done
+  if(epnGapStates.every(s=>s.checked)){
+    const allOk=epnGapStates.every(s=>s.correct);
+    epnTotal++;
+    if(allOk)epnCorrect++;
+    const fb=document.getElementById('epn-fb');
+    fb.className='fb '+(allOk?'ok':'bad');
+    document.getElementById('epn-fbt').textContent=allOk?'✓ All correct!':'✗ Some errors';
+    document.getElementById('epn-fbb').textContent=allOk?'Perfect recall of this step.':'Review the highlighted answers above.';
+    const goBtn=document.getElementById('epn-go-btn');
+    goBtn.style.display='block';
+    goBtn.textContent=epnIdx+1<epnQs.length?'Next →':'See results →';
+    goBtn.className='go-btn '+(allOk?'ok':'bad');
+  }
+}
+
+function epnNext(){
+  epnIdx++;
+  if(epnIdx>=epnQs.length){
+    const pct=Math.round(epnCorrect/epnTotal*100);
+    document.getElementById('r-icon').textContent=pct>=80?'🧮':'📚';
+    document.getElementById('r-title').textContent=pct>=80?'Proof master!':'Keep building!';
+    document.getElementById('r-sub').textContent='ε–N Builder: '+epnCorrect+'/'+epnTotal+' ('+pct+'%)';
+    document.getElementById('r-sc').textContent=epnCorrect+'/'+epnTotal;
+    document.getElementById('r-ss').textContent='—';
+    document.getElementById('r-sa').textContent=pct+'%';
+    show('s-result');return;
+  }
+  renderEpn();
+}
 </script>
 </body>
 </html>
