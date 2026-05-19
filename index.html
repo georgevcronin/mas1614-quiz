@@ -469,10 +469,7 @@ allKeys.forEach(k=>{
   if((rem.history||[]).length>(loc.history||[]).length)base.history=rem.history;
   else if((loc.history||[]).length>(rem.history||[]).length)base.history=loc.history;
   // Take higher consecutiveCorrect and higher bag (more progress)
-  if(rem.consecutiveCorrect!==undefined&&loc.consecutiveCorrect!==undefined)
-    base.consecutiveCorrect=Math.max(rem.consecutiveCorrect,loc.consecutiveCorrect);
-  if(rem.bag!==undefined&&loc.bag!==undefined)
-    base.bag=Math.max(rem.bag,loc.bag);
+  // bag/consecutiveCorrect removed — history and seen are the only data
   merged[k]=base;
 });
 localStorage.setItem('mas_qdata',JSON.stringify(merged));if(typeof loadQData==='function')loadQData();}setSyncStatus('\u2601 Synced \u00b7 @'+username,'ok');
@@ -1649,6 +1646,26 @@ const PROOF_WIKI_MAP={
   'At most one fixed point if f′≠1':'proof_fixed_point',
   'Convergence of 1/√n → 0':'proof_sqrt_n',
   'Differentiable implies Continuous':'proof_diff_cts',
+  'Limit of (6n−1)/(3n+2)':'proof_6n1_limit',
+  'Convergence of n/(n²+1)':'proof_n_over_n2',
+  'OLT: if aₙ→a and bₙ→b with aₙ≤bₙ, then a≤b':'proof_olt_ineq',
+  'Sandwich/Squeeze Theorem':'proof_squeeze',
+  'Convergence of rⁿ for |r|<1':'proof_geom_seq',
+  'Absolute Convergence: if Σaₙ² and Σbₙ² converge, so does Σaₙbₙ':'proof_anbn',
+  'Sup of A = {m/n : m,n∈ℕ, m<n}':'proof_sup_mn',
+  "Bernoulli's Inequality":'proof_bernoulli',
+  'Recursive sequence: aₙ₊₁=√(c+aₙ)':'proof_recursive_seq',
+  'Continuity of |x−a|/(x−a) at x=a':'proof_abs_cont',
+  'Functional equation: f continuous at 0 implies f(x)=ax':'proof_cauchy_eq',
+  'How many continuous f with f(x)²=x²':'proof_fx_squared',
+  'Differentiability of piecewise function at 0':'proof_piecewise_diff',
+  'Differentiability of |f| when f(c)≠0':'proof_abs_diff',
+  'f′=g′ on interval implies f−g constant':'proof_fprime_eq',
+  'Strictly decreasing f with f(a)>0, f(b)<0 has a zero':'proof_strict_dec_zero',
+  'Series: convergence of Σ1/k(k+1) and Σ1/k²':'proof_telescoping',
+  'Harmonic series diverges':'proof_harmonic',
+  'Geometric series sum':'proof_geometric',
+  'Sequential criterion for continuity — application':'proof_seq_criterion',
 };
 
 function openFullSolution(){
@@ -1726,6 +1743,26 @@ const WIKI=[
   {id:"proof_mvt_app",title:"Full Proof: MVT — bounding f(0)",symbol:"f(0)≤11",category:"Full Proof",body:"MVT on [−7,0]: ∃c with f′(c)=[f(0)+3]/7. Since f′(c)≤2: [f(0)+3]/7≤2 ⟹ f(0)≤11. Attained by f(x)=2x+11 (f(−7)=−3, f′=2, f(0)=11). □",relies_on:["mvt","differentiability"],used_by:[]},
   {id:"proof_fixed_point",title:"Full Proof: At most one fixed point",symbol:"f′≠1 ⟹ ≤1 fixed point",category:"Full Proof",body:"Suppose f(p)=p, f(q)=q, p≠q. Let h(x)=f(x)−x. h(p)=h(q)=0. MVT on [p,q]: ∃c with h′(c)=0, i.e. f′(c)=1 — contradicting f′≠1. □",relies_on:["rolle","differentiability"],used_by:[]},
   {id:"proof_diff_cts",title:"Full Proof: Differentiable ⟹ Continuous",symbol:"f′(x₀) exists ⟹ f continuous at x₀",category:"Full Proof",body:"f(x)−f(x₀)=[f(x)−f(x₀)]/(x−x₀)·(x−x₀). As x→x₀: first factor→f′(x₀), second→0. By ALT: f(x)−f(x₀)→0, so f(x)→f(x₀). □",relies_on:["differentiability","alg_lim","continuity"],used_by:[]},
+  {id:"proof_6n1_limit",title:"Full Proof: (6n−1)/(3n+2) → 2",symbol:"lim(6n−1)/(3n+2)=2",category:"Full Proof",body:"<strong>Claim.</strong> (6n−1)/(3n+2) → 2.<br><br><strong>Scratch work.</strong> |(6n−1)/(3n+2)−2| = |6n−1−6n−4|/|3n+2| = 5/(3n+2) &lt; 5/(3n).<br><br><strong>Proof.</strong> Let ε&gt;0. By the Archimedean Axiom choose N∈ℕ with N&gt;5/(3ε). For n≥N:<br>|(6n−1)/(3n+2)−2| = 5/(3n+2) &lt; 5/(3n) ≤ 5/(3N) &lt; ε. □",relies_on:["epsilon_n","naturals"],used_by:[]},
+  {id:"proof_n_over_n2",title:"Full Proof: n/(n²+1) → 0",symbol:"lim n/(n²+1)=0",category:"Full Proof",body:"<strong>Claim.</strong> n/(n²+1) → 0.<br><br><strong>Scratch work.</strong> n/(n²+1) &lt; n/n² = 1/n.<br><br><strong>Proof.</strong> Let ε&gt;0. Choose N&gt;1/ε by the Archimedean Axiom. For n≥N:<br>|n/(n²+1) − 0| = n/(n²+1) &lt; 1/n ≤ 1/N &lt; ε. □",relies_on:["epsilon_n","naturals"],used_by:[]},
+  {id:"proof_olt_ineq",title:"Full Proof: aₙ≤bₙ and convergent ⟹ a≤b",symbol:"aₙ≤bₙ, aₙ→a, bₙ→b ⟹ a≤b",category:"Full Proof",body:"<strong>Proof.</strong> Let cₙ = bₙ−aₙ ≥ 0 for all n. By the Algebraic Limit Theorem, cₙ → b−a. Since cₙ≥0 for all n, the Order Limit Theorem gives b−a ≥ 0, i.e. a ≤ b. □",relies_on:["olt","alg_lim"],used_by:[]},
+  {id:"proof_squeeze",title:"Full Proof: Squeeze Theorem",symbol:"aₙ≤cₙ≤bₙ, aₙ,bₙ→L ⟹ cₙ→L",category:"Full Proof",body:"<strong>Proof.</strong> Let ε&gt;0. Find N₁ with |aₙ−L|&lt;ε for n≥N₁, and N₂ with |bₙ−L|&lt;ε for n≥N₂. Set N=max{N₁,N₂}. For n≥N:<br>L−ε &lt; aₙ ≤ cₙ ≤ bₙ &lt; L+ε,<br>so |cₙ−L| &lt; ε. □",relies_on:["epsilon_n"],used_by:[]},
+  {id:"proof_geom_seq",title:"Full Proof: rⁿ → 0 for |r|&lt;1",symbol:"|r|&lt;1 ⟹ rⁿ→0",category:"Full Proof",body:"<strong>Proof.</strong> If r=0 the result is immediate. Assume 0&lt;|r|&lt;1. Let ε&gt;0. We need |r|ⁿ &lt; ε, i.e. n·log|r| &lt; log ε, i.e. n &gt; log ε/log|r| (dividing by log|r|&lt;0 flips the inequality). By the Archimedean Axiom choose N &gt; log ε/log|r|. For n≥N: |rⁿ| = |r|ⁿ &lt; ε. □",relies_on:["naturals","epsilon_n"],used_by:[]},
+  {id:"proof_anbn",title:"Full Proof: Σaₙ²,Σbₙ² convergent ⟹ Σaₙbₙ absolutely convergent",symbol:"Σaₙ²&lt;∞, Σbₙ²&lt;∞ ⟹ Σ|aₙbₙ|&lt;∞",category:"Full Proof",body:"<strong>Proof.</strong> By AM-GM: |aₙbₙ| ≤ (aₙ²+bₙ²)/2 for all n (this follows from (|aₙ|−|bₙ|)²≥0).<br><br>Since Σaₙ² and Σbₙ² converge, the ALT gives Σ(aₙ²+bₙ²)/2 &lt; ∞.<br><br>By the Comparison Test, 0 ≤ |aₙbₙ| ≤ (aₙ²+bₙ²)/2 implies Σ|aₙbₙ| converges. □",relies_on:["comparison","cauchy_series","alg_lim"],used_by:[]},
+  {id:"proof_sup_mn",title:"Full Proof: sup{m/n : m,n∈ℕ, m&lt;n} = 1",symbol:"sup A = 1, 1∉A",category:"Full Proof",body:"<strong>Claim.</strong> sup A = 1 where A = {m/n | m,n∈ℕ, m&lt;n}.<br><br><strong>Upper bound.</strong> Every element satisfies m/n &lt; n/n = 1, so 1 is an upper bound.<br><br><strong>Least upper bound.</strong> Let M &lt; 1. Then 1−M &gt; 0, so by the Archimedean Axiom ∃n∈ℕ with 1/n &lt; 1−M, i.e. 1−1/n &gt; M. But (n−1)/n = 1−1/n ∈ A, so M is not an upper bound for A.<br><br>Therefore sup A = 1. Since any m/n∈A has m&lt;n so m/n&lt;1, we have 1∉A — it is not a maximum. □",relies_on:["completeness","sup_inf","naturals"],used_by:[]},
+  {id:"proof_bernoulli",title:"Full Proof: Bernoulli's Inequality",symbol:"(1+x)ⁿ ≥ 1+nx for x≥−1",category:"Full Proof",body:"<strong>Proof by induction.</strong> Fix x≥−1.<br><br><strong>Base (n=1):</strong> (1+x)¹ = 1+x = 1+1·x. ✓<br><br><strong>Inductive step:</strong> Assume (1+x)ⁿ ≥ 1+nx. Then:<br>(1+x)ⁿ⁺¹ = (1+x)(1+x)ⁿ ≥ (1+x)(1+nx)<br>= 1 + nx + x + nx² = 1 + (n+1)x + nx² ≥ 1 + (n+1)x,<br>since nx² ≥ 0 for all x∈ℝ. □",relies_on:["naturals"],used_by:[]},
+  {id:"proof_recursive_seq",title:"Full Proof: aₙ₊₁=√(c+aₙ) converges",symbol:"Recursive sequence converges to (1+√(1+4c))/2",category:"Full Proof",body:"<strong>Step 1: Candidate limit.</strong> If aₙ→L then L=√(c+L), so L²−L−c=0, giving L=(1+√(1+4c))/2 (positive root).<br><br><strong>Step 2: Monotone increasing.</strong> a₂=√(c+a₁)&gt;√c=a₁. If aₙ&gt;aₙ₋₁ then aₙ₊₁=√(c+aₙ)&gt;√(c+aₙ₋₁)=aₙ. By induction (aₙ) is increasing.<br><br><strong>Step 3: Bounded above by L.</strong> a₁=√c&lt;L (verify algebraically). If aₙ≤L then aₙ₊₁=√(c+aₙ)≤√(c+L)=√(L²)=L. By induction aₙ≤L for all n.<br><br><strong>Conclusion.</strong> (aₙ) is increasing and bounded above by L, so MCT gives aₙ→L. □",relies_on:["mct","completeness"],used_by:[]},
+  {id:"proof_abs_cont",title:"Full Proof: |x−a|/(x−a) is discontinuous at x=a",symbol:"f discontinuous at a",category:"Full Proof",body:"<strong>Proof.</strong> For x&gt;a: |x−a|/(x−a)=(x−a)/(x−a)=1, so lim_{x→a⁺} f(x)=1.<br><br>For x&lt;a: |x−a|/(x−a)=(a−x)/(x−a)=−1, so lim_{x→a⁻} f(x)=−1.<br><br>Since the left and right limits are −1≠1, lim_{x→a} f(x) does not exist. Therefore f is not continuous at a, regardless of how f(a) is defined. □",relies_on:["continuity","epsilon_n"],used_by:[]},
+  {id:"proof_cauchy_eq",title:"Full Proof: Additive f continuous at 0 implies f(x)=ax",symbol:"f(x+y)=f(x)+f(y), f cts at 0 ⟹ f(x)=f(1)x",category:"Full Proof",body:"<strong>Step 1.</strong> f(0)=0: set x=y=0 to get f(0)=2f(0), so f(0)=0. f(−x)=−f(x): f(x)+f(−x)=f(0)=0.<br><br><strong>Step 2.</strong> By induction f(nx)=nf(x) for n∈ℕ. Setting x=1/n: f(1)=nf(1/n), so f(1/n)=a/n where a=f(1). For m/n∈ℚ: f(m/n)=mf(1/n)=a·(m/n).<br><br><strong>Step 3.</strong> For x∈ℝ, take rationals qₖ→x. Since qₖ−x→0, continuity at 0 gives f(qₖ−x)→0. Then f(x)=f(qₖ)+f(x−qₖ)→aqₖ+0=ax. □",relies_on:["continuity","naturals","epsilon_n"],used_by:[]},
+  {id:"proof_fx_squared",title:"Full Proof: Continuous f with f(x)²=x² — 4 solutions",symbol:"f(x)²=x², f continuous ⟹ 4 solutions",category:"Full Proof",body:"<strong>Analysis.</strong> f(x)²=x² means f(x)=±x at each point. At x=0 both give 0.<br><br><strong>On (0,∞):</strong> If f=x near some a&gt;0 and f=−x near some b&gt;0, then by continuity f passes through 0 between them; but f(c)=0 forces c=0, contradiction. So f=x throughout (0,∞) or f=−x throughout (0,∞).<br><br><strong>On (−∞,0):</strong> Same argument gives 2 options.<br><br><strong>Conclusion.</strong> 2×2=4 continuous solutions: f(x)=x, f(x)=−x, f(x)=|x|, f(x)=−|x|. □",relies_on:["continuity","ivt"],used_by:[]},
+  {id:"proof_piecewise_diff",title:"Full Proof: Piecewise ℚ/ℚᶜ function not differentiable at 0",symbol:"f not differentiable at 0",category:"Full Proof",body:"<strong>Setup.</strong> f(x)=x/2 (x∈ℚ), f(x)=x (x∉ℚ). Note f(0)=0.<br><br><strong>Difference quotient.</strong> [f(h)−f(0)]/h = f(h)/h.<br>• h∈ℚ, h≠0: f(h)/h = (h/2)/h = 1/2.<br>• h∉ℚ: f(h)/h = h/h = 1.<br><br><strong>Limit does not exist.</strong> Since ℚ and ℚᶜ are both dense in ℝ, for any δ&gt;0 both rational and irrational h exist in (−δ,δ)\\{0}. So the difference quotient takes both values 1/2 and 1 in every deleted neighbourhood of 0 — the limit cannot exist. Therefore f is not differentiable at 0. □",relies_on:["differentiability","naturals"],used_by:[]},
+  {id:"proof_abs_diff",title:"Full Proof: Differentiability of |f| when f(c)≠0",symbol:"|f|′(c) = sgn(f(c))·f′(c)",category:"Full Proof",body:"<strong>Proof.</strong> Since f is differentiable at c it is continuous at c. Since f(c)≠0, continuity gives δ&gt;0 with f(x)≠0 for all x∈(c−δ,c+δ).<br><br><strong>Case 1: f(c)&gt;0.</strong> Then f(x)&gt;0 near c, so |f(x)|=f(x) near c. Thus |f|=f near c and |f|′(c)=f′(c).<br><br><strong>Case 2: f(c)&lt;0.</strong> Then f(x)&lt;0 near c, so |f(x)|=−f(x) near c. Thus |f|=−f near c and |f|′(c)=−f′(c).<br><br>In both cases |f|′(c)=sgn(f(c))·f′(c). □",relies_on:["differentiability","continuity"],used_by:[]},
+  {id:"proof_fprime_eq",title:"Full Proof: f′=g′ implies f−g constant",symbol:"f′=g′ on (a,b) ⟹ f−g=C",category:"Full Proof",body:"<strong>Proof.</strong> Let h=f−g. Then h is continuous on [a,b], differentiable on (a,b), and h′(x)=f′(x)−g′(x)=0 for all x∈(a,b).<br><br>For any x,y∈[a,b] with x&lt;y, the MVT gives c∈(x,y) with h(y)−h(x)=h′(c)(y−x)=0·(y−x)=0.<br><br>So h(x)=h(y) for all x,y∈[a,b], i.e. h=f−g is constant. □",relies_on:["mvt","differentiability"],used_by:[]},
+  {id:"proof_strict_dec_zero",title:"Full Proof: Strictly decreasing f with f(a)&gt;0, f(b)&lt;0",symbol:"Continuous strictly decreasing f has unique zero",category:"Full Proof",body:"<strong>Without continuity:</strong> False. Example: f(x)=1 for x∈[1,2), f(x)=−1 for x∈[2,10]. This is strictly decreasing with f(1)=1&gt;0, f(10)=−1&lt;0, but no zero exists.<br><br><strong>With continuity:</strong> Since f is continuous on [a,b] and f(a)&gt;0&gt;f(b), the IVT gives c∈(a,b) with f(c)=0.<br><br><strong>Uniqueness:</strong> Strictly decreasing means injective, so at most one zero. Combined with existence: exactly one zero. □",relies_on:["ivt","continuity"],used_by:[]},
+  {id:"proof_telescoping",title:"Full Proof: Σ1/(k(k+1))=1 and Σ1/k² converges",symbol:"Telescoping and comparison",category:"Full Proof",body:"<strong>Part 1.</strong> Partial fractions: 1/(k(k+1))=1/k−1/(k+1). Partial sum:<br>s_N = Σ_{k=1}^N (1/k−1/(k+1)) = 1 − 1/(N+1) → 1 as N→∞.<br>So Σ_{k=1}^∞ 1/(k(k+1)) = 1.<br><br><strong>Part 2.</strong> For k≥2: k(k−1)≤k², so 1/k²≤1/(k(k−1))=1/(k−1)−1/k.<br>Thus Σ_{k=2}^N 1/k² ≤ Σ_{k=2}^N (1/(k−1)−1/k) = 1−1/N &lt; 1.<br>Partial sums are increasing and bounded, so MCT gives Σ_{k=1}^∞ 1/k² converges. □",relies_on:["mct","comparison","cauchy_series"],used_by:[]},
+  {id:"proof_harmonic",title:"Full Proof: Harmonic series diverges",symbol:"Σ1/n = ∞",category:"Full Proof",body:"<strong>Proof.</strong> Group terms in blocks doubling in size:<br>s₁=1, s₂=1+1/2, s₄=s₂+(1/3+1/4)≥s₂+2·(1/4)=s₂+1/2,<br>s₈≥s₄+1/2, and in general s_{2^k}≥1+k/2.<br><br>Since s_{2^k}→∞, the partial sums are unbounded, so the harmonic series diverges. □<br><br><em>Alternative (Cauchy criterion):</em> |s_{2n}−s_n|=Σ_{k=n+1}^{2n}1/k≥n·1/(2n)=1/2. So the series is not Cauchy, hence diverges.",relies_on:["cauchy_series","mct"],used_by:[]},
+  {id:"proof_geometric",title:"Full Proof: Geometric series Σzᵏ = 1/(1−z) for |z|&lt;1",symbol:"Σ_{k=0}^∞ zᵏ = 1/(1−z)",category:"Full Proof",body:"<strong>Proof.</strong> The partial sum formula: (1−z)·s_n=(1+z+...+zⁿ)−(z+z²+...+z^{n+1})=1−z^{n+1}, so s_n=(1−z^{n+1})/(1−z).<br><br>Since |z|&lt;1, z^{n+1}→0 (Archimedean Axiom / geometric decay). By the ALT:<br>s_n=(1−z^{n+1})/(1−z) → 1/(1−z). □",relies_on:["alg_lim","naturals","epsilon_n"],used_by:[]},
+  {id:"proof_seq_criterion",title:"Full Proof: Sequential criterion — x² continuous, ⌊x⌋ not",symbol:"Sequential criterion applied",category:"Full Proof",body:"<strong>Sequential criterion:</strong> f is continuous at c iff for every sequence xₙ→c, f(xₙ)→f(c).<br><br><strong>f(x)=x² continuous:</strong> If xₙ→c then xₙ²→c² by the ALT (product rule). So f is continuous at every c∈ℝ.<br><br><strong>g(x)=⌊x⌋ discontinuous at integers:</strong> Let c=n∈ℤ. Take xₖ=n−1/k→n. Then g(xₖ)=⌊n−1/k⌋=n−1 for all k≥1, but g(n)=n≠n−1. So the sequential criterion fails, and g is not continuous at n. □",relies_on:["continuity","alg_lim","epsilon_n"],used_by:[]},
 ];
 
 const CAT_COLOURS={'Foundation':'#4F7DBF','Notation':'#6B9FE4','Definition':'#A78BFA','Theorem':'#34D399','Key Lemma':'#F59E0B','Standard Example':'#94A3B8','Full Proof':'#EC4899'};
@@ -1757,112 +1794,83 @@ let masteryExpanded=false;
 // DATA MODEL per question:
 //   bag          : 1 | 2 | 3  — which pass the question is in
 //   bagCorrect   : bool — answered correctly in the current bag?
-//   consecutiveCorrect : int — how many bags in a row correct (for exponential weight)
 //   history      : bool[] (max 10) — rolling window of last 10 results
 //   seen         : total appearances (all time)
 // ---------------------------------------------------------------
 function qKey(q){return q.name.replace(/\s+/g,'_').replace(/[^a-zA-Z0-9_]/g,'').slice(0,40);}
 function loadQData(){
   try{const raw=localStorage.getItem('mas_qdata');if(raw)qData=JSON.parse(raw);}catch(e){qData={};}
-  // Eagerly migrate all entries so mastery panel always sees new format
+  // Migrate all entries eagerly
   Q.forEach(q=>getQEntry(q));
   saveQData();
-}function saveQData(){try{localStorage.setItem('mas_qdata',JSON.stringify(qData));}catch(e){}}
+}
+function saveQData(){try{localStorage.setItem('mas_qdata',JSON.stringify(qData));}catch(e){}}
+
 function getQEntry(q){
   const k=qKey(q);
-  if(!qData[k])qData[k]={bag:1,bagCorrect:false,consecutiveCorrect:0,history:[],seen:0};
+  if(!qData[k])qData[k]={history:[],seen:0,lastSeen:0};
   const e=qData[k];
-  // Migrate old format (seen/correct/wrong/ease/due) to new format
-  if(e.bag===undefined){
-    // Has old data — reconstruct new fields from it
+  // Migrate old formats → new minimal format
+  if(!Array.isArray(e.history))e.history=[];
+  if(e.seen===undefined)e.seen=0;
+  if(e.lastSeen===undefined)e.lastSeen=0;
+  // Migrate old bag/correct/wrong fields → synthetic history
+  if((e.bag!==undefined||e.correct!==undefined)&&e.history.length===0){
     const oldSeen=e.seen||0;
     const oldCorrect=e.correct||0;
     const acc=oldSeen>0?oldCorrect/oldSeen:0;
-    // Reconstruct consecutiveCorrect from accuracy
-    e.consecutiveCorrect=acc>=0.8?2:acc>=0.6?1:0;
-    // Reconstruct bag from accuracy
-    e.bag=acc>=0.85?3:acc>=0.7?2:1;
-    // Synthetic history: interleave true/false at old accuracy ratio
-    if(!Array.isArray(e.history)||e.history.length===0){
-      const slots=Math.min(oldSeen,10);
-      const trueCount=Math.round(acc*slots);
-      // Interleave: spread trues evenly to avoid clumping
-      e.history=Array(slots).fill(false).map((_,i)=>i<trueCount);
-    }
-    e.bagCorrect=false;
-    // Keep seen, drop old fields
-    delete e.correct;delete e.wrong;delete e.ease;delete e.due;
+    const slots=Math.min(oldSeen,10);
+    const trueCount=Math.round(acc*slots);
+    e.history=Array(slots).fill(false).map((_,i)=>i<trueCount);
   }
-  if(e.bagCorrect===undefined)e.bagCorrect=false;
-  if(e.consecutiveCorrect===undefined)e.consecutiveCorrect=0;
-  if(!Array.isArray(e.history))e.history=[];
+  // Drop legacy fields
+  delete e.bag;delete e.bagCorrect;delete e.consecutiveCorrect;
+  delete e.correct;delete e.wrong;delete e.ease;delete e.due;
   return e;
 }
 
 function updateQData(q,correct){
   const e=getQEntry(q);
   e.seen++;
-  // rolling history (last 10)
+  e.lastSeen=Date.now();
   e.history.push(correct);
   if(e.history.length>10)e.history.shift();
-  // bag progression
-  if(correct){
-    if(!e.bagCorrect){
-      e.bagCorrect=true;
-      e.consecutiveCorrect++;
-      // advance bag (cap at 3)
-      if(e.bag<3)e.bag++;
-      else e.bag=3; // stays at 3 once complete
-    }
-  } else {
-    e.consecutiveCorrect=0;
-    e.bagCorrect=false;
-    // regression: if wrong, drop back a bag
-    if(e.bag>1)e.bag--;
-  }
   saveQData();
 }
 
-// Exponential selection weight.
-// consecutiveCorrect=0 → weight 1.0
-// consecutiveCorrect=1 → weight 0.25
-// consecutiveCorrect=2 → weight 0.0625
-// consecutiveCorrect=3 → weight ~0.016
-// consecutiveCorrect=4 → weight ~0.004
-// consecutiveCorrect=5 → weight ~0.001  (virtually never asked)
-function qWeight(e){
-  if(e.bag>3)return 0;
-  const base=0.25;
-  const streak=Math.pow(base,e.consecutiveCorrect);
-  return e.seen===0 ? streak+100 : streak;
+// Rolling accuracy = fraction of last 10 correct
+function rollingAcc(e){
+  if(!e||!e.history||e.history.length===0)return null;
+  return e.history.filter(Boolean).length/e.history.length;
 }
 
-// Build a session: always fill from the earliest bag that has unsatisfied questions first.
-// Bag 1 questions have higher priority than bag 2, bag 2 over bag 3.
-// Within a bag, selection is weighted exponentially by consecutiveCorrect.
+// Selection weight — purely score-driven + recency bonus.
+// acc=0   → weight ~1.0  (needs lots of drilling)
+// acc=0.5 → weight ~0.08
+// acc=0.8 → weight ~0.003
+// acc=1.0 → weight ~0.0002 (very rarely asked)
+// Unseen  → weight 200    (always asked first)
+// Stale   → weight boosted if not seen in >3 sessions (approx >5 min ago)
+function qWeight(e){
+  if(!e||e.seen===0)return 200; // unseen: top priority
+  const acc=rollingAcc(e);
+  const score=acc===null?0:acc;
+  // Exponential decay: w = exp(−5 × score)
+  // score=0→1.0, score=0.5→0.082, score=0.8→0.018, score=1.0→0.0067
+  let w=Math.exp(-5*score);
+  // Recency bonus: if not seen in a while, boost weight
+  // "a while" = more than ~15 min (900000ms) of real time since last seen
+  const age=Date.now()-(e.lastSeen||0);
+  if(age>900000){
+    // Scale boost: unseen for 15min → 2×, 1hr → 4×, 1day → 8×
+    const boost=Math.min(8,1+Math.log2(age/900000));
+    w*=boost;
+  }
+  return w;
+}
+
 function selectQuestions(n){
-  // Group by bag
-  const bags={1:[],2:[],3:[]};
-  Q.forEach(q=>{
-    const e=getQEntry(q);
-    const bag=Math.min(e.bag,3);
-    // Only include if not already correctly answered in this bag (i.e. still needs doing)
-    // Actually we always include — the weight handles frequency.
-    // Questions correctly answered this bag get near-zero weight.
-    bags[bag].push({q,w:qWeight(e),e});
-  });
-
-  // Build weighted pool: bag 1 questions get 8x multiplier, bag 2 get 2x, bag 3 get 1x
-  // This ensures lower bags dominate the selection naturally.
-  const BAG_MULT={1:8,2:2,3:1};
-  const pool=[];
-  [1,2,3].forEach(b=>{
-    bags[b].forEach(item=>{
-      pool.push({q:item.q,w:item.w*BAG_MULT[b]});
-    });
-  });
-
-  // Weighted sample without replacement
+  const pool=Q.map(q=>({q,w:qWeight(getQEntry(q))}));
   const selected=[];
   const available=[...pool];
   const target=Math.min(n,available.length);
@@ -1912,15 +1920,11 @@ function qScore(e, q){
   if(!e||e.seen===0) return 0;
   const acc=rollingAcc(e);
   if(acc===null) return 0;
-  const bag=e.bag||1;
-  const cc=e.consecutiveCorrect||0;
-  const bagProg=(bag-1)/2;
-  const streakProg=Math.min(cc,5)/5;
-  // Hard question bonus/penalty: if question has hardBad entries,
-  // it counts more and requires streak≥3 to reach high scores.
+  const raw=Math.round(acc*100);
+  // Hard questions capped at 80% until 8+ attempts seen
   const hasHard=q&&q.hardBad&&q.hardBad.length>0;
-  const hardPenalty=hasHard&&cc<3?0.15:0;
-  return Math.max(0,Math.round((acc*0.5+bagProg*0.2+streakProg*0.3-hardPenalty)*100));
+  if(hasHard&&e.seen<8) return Math.min(raw,80);
+  return raw;
 }
 
 function catScore(cat){
@@ -1929,17 +1933,16 @@ function catScore(cat){
   const seen=qs.filter(q=>getQEntry(q).seen>0);
   if(seen.length===0)return{score:0,seen:0,total:qs.length};
   const avg=seen.reduce((s,q)=>s+qScore(getQEntry(q),q),0)/seen.length;
-  // Scale down if not all questions seen yet
   const coverage=seen.length/qs.length;
   return{score:Math.round(avg*coverage),seen:seen.length,total:qs.length};
 }
 
-function catColor(score){
+function masteryColor(score){
+  if(score===0)return'#475569';
   if(score>=90)return'#34D399';
   if(score>=70)return'#60A5FA';
   if(score>=50)return'#F59E0B';
-  if(score>0)return'#EF4444';
-  return'#475569';
+  return'#EF4444';
 }
 
 function renderMasteryPanel(){
@@ -1951,8 +1954,8 @@ function renderMasteryPanel(){
   list.innerHTML='';
   Object.entries(CATS).forEach(([cat,label])=>{
     const {score,seen,total}=catScore(cat);
-    const col=catColor(score);
-    const sublabel=seen===0?'No questions seen yet':`${seen}/${total} questions seen`;
+    const col=masteryColor(score);
+    const sublabel=seen===0?'No questions seen yet':`${seen}/${total} seen`;
     const wrap=document.createElement('div');
     wrap.className='mastery-bar-wrap';
     wrap.innerHTML=`<div class="mastery-name">${label}</div><div class="mastery-bar-bg"><div class="mastery-bar-fill" style="width:${score}%;background:${col}"></div></div><div class="mastery-pct" style="color:${col}">${seen===0?'—':score+'%'}</div><div style="font-size:11px;color:#64748B;margin-bottom:4px">${sublabel}</div>`;
@@ -2325,8 +2328,7 @@ function resolveQ(ok,q){
 
   // Mastery toast
   const e=getQEntry(q);
-  const prevBag=e.bag-(ok&&e.bagCorrect?1:0); // bag before this answer
-  if(ok&&e.consecutiveCorrect===5)showMasteryToast('🎯 '+q.name.split(' ')[0]+' mastered!');
+    const acc=rollingAcc(e);if(ok&&acc!==null&&Math.round(acc*100)===100&&e.seen>=5)showMasteryToast('🎯 '+q.name.split(' ')[0]+' mastered!');
 }
 
 function advance(){
