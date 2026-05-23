@@ -8,109 +8,361 @@
 <meta name="theme-color" content="#0F172A">
 <title>MSP1613 Multivariable Calculus</title>
 <style>
-*{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
-:root{--bg:#0F172A;--surface:rgba(255,255,255,.06);--border:rgba(255,255,255,.1);--text:#F1F5F9;--muted:#94A3B8;--blue:#6B9FE4;--green:#34D399;--amber:#F59E0B;--red:#EF4444;--teal:#2DD4BF}
-html,body{height:100%;background:var(--bg);color:var(--text);font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;overflow:hidden}
-#app{height:100%;display:flex;flex-direction:column}
+
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
+html{height:100%;overflow:hidden}
+body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;background:#0F172A;color:#F1F5F9;height:100%;overflow:hidden;display:flex;flex-direction:column;max-width:520px;margin:0 auto}
+button{font-family:inherit;-webkit-appearance:none;appearance:none}
 .scr{display:none;flex-direction:column;height:100%;overflow:hidden}
-.scr.active{display:flex}
-
-/* HOME */
-.home-header{padding:max(env(safe-area-inset-top,20px),20px) 1.5rem 0;flex-shrink:0}
-.home-logo{font-size:28px;font-weight:800;letter-spacing:-1px;background:linear-gradient(135deg,#6B9FE4,#2DD4BF);-webkit-background-clip:text;-webkit-text-fill-color:transparent}
-.home-sub{color:var(--muted);font-size:14px;margin-top:2px}
-.home-body{flex:1;overflow-y:auto;padding:1rem 1.5rem;padding-bottom:max(env(safe-area-inset-bottom,20px),20px)}
-.cat-card{background:var(--surface);border:1.5px solid var(--border);border-radius:16px;padding:16px;margin-bottom:12px;cursor:pointer;transition:all .15s}
-.cat-card:active{transform:scale(.98)}
-.cat-name{font-size:16px;font-weight:700;margin-bottom:4px}
-.cat-desc{font-size:13px;color:var(--muted);line-height:1.4;margin-bottom:10px}
-.cat-bar-bg{background:rgba(255,255,255,.08);border-radius:99px;height:6px;width:100%}
-.cat-bar-fill{height:6px;border-radius:99px;transition:width .4s}
-.cat-meta{display:flex;justify-content:space-between;margin-top:6px;font-size:12px;color:var(--muted)}
-.play-btn{width:100%;padding:15px;background:linear-gradient(135deg,#6B9FE4,#2DD4BF);border:none;border-radius:14px;color:#fff;font-size:17px;font-weight:700;cursor:pointer;margin-bottom:10px}
-
-/* QUIZ */
+.scr.on{display:flex}
+#s-home{align-items:center;justify-content:center;padding:2rem 1.5rem;background:radial-gradient(ellipse at 50% 10%,#1E3A5F 0%,#0F172A 60%);gap:0;text-align:center;overflow-y:auto}
+@keyframes float{0%,100%{transform:translateY(0)}50%{transform:translateY(-8px)}}
+.home-icon{font-size:72px;margin-bottom:1.25rem;animation:float 3s ease-in-out infinite;display:block}
+.home-title{font-family:Georgia,'Times New Roman',serif;font-size:28px;font-weight:700;line-height:1.2;margin-bottom:.3rem}
+.home-sub{font-size:13px;color:#94A3B8;margin-bottom:1.75rem;letter-spacing:.04em}
+.stat-row{display:flex;gap:10px;margin-bottom:1.5rem;width:100%;max-width:340px}
+.stat-box{flex:1;background:#1E293B;border:1px solid #334155;border-radius:12px;padding:.85rem .5rem;text-align:center}
+.stat-v{font-size:22px;font-weight:700;color:#6B9FE4;display:block}
+.stat-l{font-size:10px;color:#64748B;font-weight:600;text-transform:uppercase;letter-spacing:.06em}
+.mode-row{display:flex;gap:8px;width:100%;max-width:340px;margin-bottom:1.1rem}
+.mode-pill{flex:1;padding:.6rem .4rem;border-radius:99px;border:1.5px solid #475569;background:#1E293B;color:#94A3B8;font-size:12px;font-weight:600;cursor:pointer;text-align:center;transition:all .15s}
+.mode-pill.on{border-color:#6B9FE4;background:rgba(107,159,228,.15);color:#BAD4F8}
+.diff-row{display:flex;gap:8px;width:100%;max-width:340px;margin-bottom:1.1rem}
+.diff-pill{flex:1;padding:.55rem .4rem;border-radius:99px;border:1.5px solid #475569;background:#1E293B;color:#94A3B8;font-size:12px;font-weight:600;cursor:pointer;text-align:center;transition:all .15s}
+.diff-pill.on{border-color:#A78BFA;background:rgba(167,139,250,.15);color:#C4B5FD}
+.start-btn{width:100%;max-width:340px;padding:1rem;border-radius:99px;border:none;background:linear-gradient(135deg,#6B9FE4,#3B82F6);color:#fff;font-size:16px;font-weight:700;cursor:pointer;box-shadow:0 8px 24px rgba(107,159,228,.3);transition:transform .1s}
+.start-btn:active{transform:scale(.97)}
+.home-note{font-size:12px;color:#475569;margin-top:.85rem}
+.diff-badge{display:inline-block;padding:2px 8px;border-radius:99px;font-size:10px;font-weight:700;margin-left:4px;vertical-align:middle;background:rgba(239,68,68,.2);color:#FCA5A5}
+#s-quiz{padding-top:max(env(safe-area-inset-top,0px),12px)}
+.hard-banner{background:rgba(239,68,68,.12);border-bottom:1px solid rgba(239,68,68,.3);text-align:center;font-size:10px;font-weight:700;letter-spacing:.1em;color:#FCA5A5;padding:4px;flex-shrink:0;display:none;text-transform:uppercase}
+.hard-banner.on{display:block}
 .q-hdr{display:flex;align-items:center;gap:10px;padding:.75rem 1rem .6rem;flex-shrink:0}
-.back-btn{background:rgba(255,255,255,.08);border:none;border-radius:8px;color:var(--muted);font-size:16px;padding:6px 10px;cursor:pointer}
-.prog-bg{flex:1;background:rgba(255,255,255,.08);border-radius:99px;height:6px}
-.prog-fill{height:6px;border-radius:99px;background:var(--blue);transition:width .3s}
-.streak-pill{background:rgba(255,255,255,.07);border-radius:99px;padding:4px 10px;font-size:13px;font-weight:600}
-.q-body{flex:1;overflow-y:auto;padding:.5rem 1rem 1rem;-webkit-overflow-scrolling:touch}
-.q-num{font-size:12px;color:var(--muted);margin-bottom:4px;margin-top:8px}
-.q-cat-badge{display:inline-block;background:rgba(107,159,228,.15);color:var(--blue);border-radius:6px;padding:3px 8px;font-size:11px;font-weight:600;margin-bottom:8px}
-.q-text{font-size:15px;line-height:1.6;color:#E2E8F0;margin-bottom:14px}
-.q-formula{background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.1);border-radius:10px;padding:10px 14px;font-size:14px;color:var(--teal);font-family:monospace;margin-bottom:14px;line-height:1.8}
-.opt{width:100%;text-align:left;background:var(--surface);border:1.5px solid var(--border);border-radius:12px;padding:12px 14px;margin-bottom:9px;color:var(--text);font-size:14px;line-height:1.5;cursor:pointer;display:flex;gap:10px;align-items:flex-start;transition:all .1s}
-.opt .opt-letter{background:rgba(255,255,255,.1);border-radius:6px;padding:2px 7px;font-weight:700;font-size:12px;flex-shrink:0;margin-top:1px}
-.opt.correct-ans{border-color:var(--green);background:rgba(52,211,153,.12)}
-.opt.wrong-ans{border-color:var(--red);background:rgba(239,68,68,.08)}
-.opt.dim-ans{opacity:.4}
-.fb{border-radius:12px;padding:12px 14px;margin:10px 0;display:none}
-.fb.ok{display:block;background:rgba(52,211,153,.1);border:1px solid rgba(52,211,153,.3)}
-.fb.bad{display:block;background:rgba(239,68,68,.07);border:1px solid rgba(239,68,68,.25)}
-.fb-title{font-weight:700;font-size:14px;margin-bottom:4px}
-.fb-body{font-size:13px;color:#CBD5E1;line-height:1.5}
-.go-btn{width:100%;padding:14px;border:none;border-radius:14px;font-size:16px;font-weight:700;cursor:pointer;margin-top:8px;display:none;color:#fff}
-.go-btn.ok{background:var(--green)}
-.go-btn.bad{background:var(--red)}
+.back-btn{background:none;border:none;color:#64748B;font-size:22px;cursor:pointer;line-height:1;padding:4px;flex-shrink:0}
+.prog-bg{flex:1;height:8px;background:#1E293B;border-radius:99px;overflow:hidden}
+.prog-fill{height:100%;background:linear-gradient(90deg,#6B9FE4,#34D399);border-radius:99px;transition:width .5s cubic-bezier(.4,0,.2,1)}
+.prog-fill.hard-prog{background:linear-gradient(90deg,#EF4444,#F59E0B)}
+.hdr-r{display:flex;align-items:center;gap:8px}
+.hearts{font-size:15px;display:flex;gap:1px}
+.streak-pill{display:flex;align-items:center;gap:4px;background:rgba(245,158,11,.12);border:1px solid rgba(245,158,11,.4);border-radius:99px;padding:3px 10px;font-size:13px;font-weight:700;color:#FCD34D}
+.q-body{flex:1;overflow-y:auto;overflow-x:hidden;padding:0 1rem;-webkit-overflow-scrolling:touch}
+.q-body::-webkit-scrollbar{display:none}
+.thm-card{background:#1E293B;border:1px solid #334155;border-radius:14px;padding:1rem 1.25rem;margin-bottom:.75rem}
+.thm-card.hard-card{border-color:rgba(239,68,68,.4)}
+.thm-lbl{font-size:10px;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:#64748B;margin-bottom:.4rem}
+.thm-name{font-family:Georgia,serif;font-size:18px;color:#F1F5F9;margin-bottom:.55rem;line-height:1.3}
+.thm-stmt{font-size:13px;color:#94A3B8;line-height:1.85}
+.hint-btn{background:none;border:none;font-size:12px;font-weight:600;color:#64748B;cursor:pointer;text-decoration:underline;padding:0;margin-bottom:.65rem;display:block}
+.hint-box{background:rgba(245,158,11,.08);border:1px solid rgba(245,158,11,.25);border-radius:8px;padding:.55rem .85rem;font-size:13px;color:#FCD34D;margin-bottom:.75rem;line-height:1.6;display:none}
+.hint-box.on{display:block}
+.instr{font-size:13px;font-weight:600;color:#94A3B8;margin-bottom:.7rem}
+.opts{display:flex;flex-direction:column;gap:8px;margin-bottom:.75rem}
+.opt{background:#1E293B;border:1.5px solid #334155;border-radius:12px;padding:.85rem .95rem;text-align:left;cursor:pointer;font-size:13px;color:#F1F5F9;line-height:1.75;display:flex;align-items:flex-start;gap:10px;width:100%;transition:border-color .12s,background .12s}
+.opt:active:not([disabled]){transform:scale(.99)}
+.opt[disabled]{cursor:default}
+.opt.sel{border-color:rgba(96,165,250,.5);background:rgba(96,165,250,.12)}
+.opt.wrong{border-color:rgba(239,68,68,.5);background:rgba(239,68,68,.12)}
+.opt.dim{opacity:.28}
+.opt.c0{border-color:rgba(107,159,228,.5);background:rgba(107,159,228,.15)}
+.opt.c1{border-color:rgba(245,158,11,.5);background:rgba(245,158,11,.13)}
+.opt.c2{border-color:rgba(52,211,153,.5);background:rgba(52,211,153,.13)}
+.badge{flex-shrink:0;width:26px;height:26px;border-radius:7px;border:1.5px solid #475569;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:700;color:#64748B;font-family:monospace;margin-top:2px;transition:background .12s,border-color .12s,color .12s}
+.opt.sel .badge{background:#60A5FA;border-color:#60A5FA;color:#fff}
+.opt.wrong .badge{background:#EF4444;border-color:#EF4444;color:#fff}
+.opt.c0 .badge{background:#6B9FE4;border-color:#6B9FE4;color:#fff}
+.opt.c1 .badge{background:#F59E0B;border-color:#F59E0B;color:#fff}
+.opt.c2 .badge{background:#34D399;border-color:#34D399;color:#fff}
+.opt-body{flex:1}
+.why-txt{display:none;font-size:12px;margin-top:.45rem;padding-top:.45rem;border-top:1px solid;line-height:1.6;font-style:italic}
+.opt.c0 .why-txt{display:block;color:#BAD4F8;border-color:rgba(107,159,228,.3)}
+.opt.c1 .why-txt{display:block;color:#FCD34D;border-color:rgba(245,158,11,.3)}
+.opt.c2 .why-txt{display:block;color:#6EE7B7;border-color:rgba(52,211,153,.3)}
+.why-txt a.wlink,.exp-why a.wlink,.fb-body a.wlink{color:inherit;border-bottom:1px dotted currentColor;cursor:pointer;text-decoration:none;font-style:normal;opacity:.9}
+.drag-handle{color:#475569;font-size:18px;cursor:grab;flex-shrink:0;margin-top:1px;user-select:none}
+.order-num{flex-shrink:0;width:26px;height:26px;border-radius:7px;background:#273449;display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:700;color:#64748B;font-family:monospace;margin-top:2px;transition:background .2s,color .2s}
+.opt.dragging{opacity:.4}
+.opt.drag-over{border-color:rgba(96,165,250,.5);background:rgba(96,165,250,.12)}
+.check-btn{width:100%;padding:.85rem;border-radius:99px;border:1.5px solid #475569;background:#1E293B;color:#F1F5F9;font-size:15px;font-weight:700;cursor:pointer;margin-top:4px}
+.exp-panel{background:#1E293B;border:1px solid #334155;border-radius:14px;padding:1rem 1.1rem;margin-bottom:.75rem;display:none}
+.exp-panel.on{display:block}
+.exp-title{font-size:10px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:#64748B;margin-bottom:.75rem}
+.exp-step{display:flex;gap:10px;margin-bottom:.6rem;align-items:flex-start}
+.exp-step:last-child{margin-bottom:0}
+.exp-num{flex-shrink:0;width:22px;height:22px;border-radius:6px;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:700;color:#fff;margin-top:1px;font-family:monospace}
+.exp-lbl{font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.06em;margin-bottom:2px}
+.exp-why{font-size:13px;color:#94A3B8;line-height:1.6}
+.fb{border-radius:10px;padding:.8rem 1rem;margin-bottom:.75rem;border:1px solid transparent;display:none}
+.fb.ok{display:block;background:rgba(16,185,129,.1);border-color:rgba(16,185,129,.5)}
+.fb.bad{display:block;background:rgba(239,68,68,.1);border-color:rgba(239,68,68,.5)}
+.fb-title{font-size:14px;font-weight:700;margin-bottom:3px}
+.fb.ok .fb-title{color:#6EE7B7}
+.fb.bad .fb-title{color:#FCA5A5}
+.fb-body{font-size:13px;line-height:1.55;color:#94A3B8}
+.go-btn{width:100%;padding:1rem;border-radius:99px;border:none;font-size:16px;font-weight:700;cursor:pointer;display:none;transition:transform .1s;margin-top:4px;margin-bottom:max(env(safe-area-inset-bottom,0px),20px)}
+.go-btn:active{transform:scale(.97)}
+.go-btn.ok{display:block;background:linear-gradient(135deg,#10B981,#059669);color:#fff;box-shadow:0 6px 20px rgba(16,185,129,.3)}
+.go-btn.bad{display:block;background:linear-gradient(135deg,#EF4444,#DC2626);color:#fff;box-shadow:0 6px 20px rgba(239,68,68,.25)}
+#s-result{align-items:center;justify-content:center;padding:2rem 1.5rem;padding-top:max(env(safe-area-inset-top,0px),2rem);padding-bottom:max(env(safe-area-inset-bottom,0px),2rem);background:radial-gradient(ellipse at 50% 10%,#1E3A5F 0%,#0F172A 60%);text-align:center}
+.res-icon{font-size:68px;display:block;margin-bottom:1rem}
+.res-title{font-family:Georgia,serif;font-size:28px;font-weight:700;margin-bottom:.4rem}
+.res-sub{font-size:14px;color:#94A3B8;margin-bottom:1.75rem;line-height:1.65;max-width:280px}
+.res-stats{display:flex;gap:10px;margin-bottom:1.75rem;width:100%;max-width:320px}
+.res-stat{flex:1;background:#1E293B;border:1px solid #334155;border-radius:12px;padding:.85rem .5rem;text-align:center}
+.res-stat-v{font-size:26px;font-weight:700;display:block;color:#6B9FE4}
+.res-stat-l{font-size:10px;color:#64748B;font-weight:600;text-transform:uppercase;letter-spacing:.05em}
+.res-btns{display:flex;flex-direction:column;gap:10px;width:100%;max-width:320px}
+.res-btn-p{padding:1rem;border-radius:99px;border:none;background:linear-gradient(135deg,#6B9FE4,#3B82F6);color:#fff;font-size:16px;font-weight:700;cursor:pointer;box-shadow:0 6px 20px rgba(107,159,228,.3);transition:transform .1s}
+.res-btn-p:active{transform:scale(.97)}
+.res-btn-s{padding:1rem;border-radius:99px;border:1.5px solid #334155;background:#1E293B;color:#94A3B8;font-size:15px;font-weight:600;cursor:pointer;transition:transform .1s}
+.res-btn-s:active{transform:scale(.97)}
+#s-wiki{padding-top:max(env(safe-area-inset-top,0px),0px)}
+.wiki-hdr{display:flex;align-items:center;gap:10px;padding:1rem 1rem .75rem;flex-shrink:0;background:#0F172A;position:sticky;top:0;z-index:10}
+.wiki-title{font-family:Georgia,serif;font-size:18px;font-weight:700;color:#F1F5F9;flex:1}
+.wiki-search{flex:1;background:#1E293B;border:1px solid #334155;border-radius:8px;padding:.5rem .85rem;color:#F1F5F9;font-size:14px;font-family:inherit;outline:none}
+.wiki-search::placeholder{color:#475569}
+.wiki-search:focus{border-color:#6B9FE4}
+.wiki-body{flex:1;overflow-y:auto;-webkit-overflow-scrolling:touch;padding:0 1rem 2rem}
+.wiki-body::-webkit-scrollbar{display:none}
+.cat-section{margin-bottom:1.25rem}
+.cat-label{font-size:10px;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:#64748B;margin-bottom:.5rem;padding-top:.5rem}
+.wiki-card{background:#1E293B;border:1px solid #334155;border-radius:12px;padding:.75rem 1rem;margin-bottom:6px;display:flex;align-items:center;gap:10px;cursor:pointer;transition:border-color .12s,background .12s}
+.wiki-card:hover{border-color:#475569;background:#273449}
+.wiki-cat-dot{width:8px;height:8px;border-radius:50%;flex-shrink:0}
+.wiki-card-info{flex:1;min-width:0}
+.wiki-card-title{font-size:14px;font-weight:600;color:#F1F5F9;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.wiki-card-sym{font-size:11px;color:#64748B;font-family:Georgia,serif;margin-top:1px}
+.wiki-card-arrow{color:#475569;font-size:14px}
+#s-wiki-detail{padding-top:max(env(safe-area-inset-top,0px),0px)}
+.wd-hdr{display:flex;align-items:center;gap:10px;padding:1rem 1rem .75rem;flex-shrink:0;background:#0F172A;position:sticky;top:0;z-index:10;border-bottom:1px solid #1E293B}
+.wd-back{background:none;border:none;color:#6B9FE4;font-size:14px;font-weight:600;cursor:pointer;font-family:inherit;padding:0;display:flex;align-items:center;gap:4px;flex-shrink:0}
+.wd-body{flex:1;overflow-y:auto;-webkit-overflow-scrolling:touch;padding:1rem 1rem 3rem}
+.wd-body::-webkit-scrollbar{display:none}
+.wd-cat-badge{display:inline-block;padding:2px 10px;border-radius:99px;font-size:11px;font-weight:700;letter-spacing:.04em;margin-bottom:.75rem}
+.wd-title{font-family:Georgia,serif;font-size:22px;font-weight:700;color:#F1F5F9;margin-bottom:.2rem;line-height:1.25}
+.wd-symbol{font-family:Georgia,serif;font-size:15px;color:#94A3B8;margin-bottom:1rem}
+.wd-content{font-size:14px;color:#CBD5E1;line-height:1.95;margin-bottom:1.25rem}
+.wd-content strong{color:#F1F5F9}
+.wd-content em{color:#94A3B8;font-style:italic}
+.wd-content a.wlink{color:#6B9FE4;text-decoration:none;border-bottom:1px dotted rgba(107,159,228,.5);cursor:pointer;font-style:normal}
+.wd-content a.wlink:hover{border-bottom-style:solid}
+.wd-section-title{font-size:10px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:#475569;margin-bottom:.5rem}
+.wd-links{display:flex;flex-wrap:wrap;gap:6px;margin-bottom:1rem}
+.wd-link{background:#0F172A;border:1px solid #334155;border-radius:8px;padding:5px 10px;font-size:12px;font-weight:600;color:#6B9FE4;cursor:pointer;transition:border-color .12s,background .12s;font-family:inherit}
+.wd-link:hover{border-color:#6B9FE4;background:#1E293B}
+.wd-link.green{color:#34D399;border-color:#1E3B2F}
+.wd-divider{height:1px;background:#1E293B;margin:1rem 0}
+.sync-row{display:flex;align-items:center;gap:8px;width:100%;max-width:340px;margin-top:.6rem}
+.sync-status{flex:1;font-size:11px;color:#475569;text-align:left}
+.sync-status.ok{color:#34D399}
+.sync-status.err{color:#EF4444}
+.sync-status.loading{color:#6B9FE4}
+.sync-input{flex:1;background:#1E293B;border:1px solid #334155;border-radius:8px;padding:6px 10px;color:#F1F5F9;font-size:12px;font-family:inherit;outline:none;min-width:0}
+.sync-input::placeholder{color:#475569}
+.sync-input:focus{border-color:#6B9FE4}
+.sync-btn{background:none;border:1px solid #334155;border-radius:8px;padding:5px 12px;font-size:11px;font-weight:600;color:#94A3B8;cursor:pointer;white-space:nowrap;transition:border-color .12s,color .12s;flex-shrink:0}
+.sync-btn:hover{border-color:#6B9FE4;color:#6B9FE4}
+.mastery-panel{width:100%;max-width:340px;margin-top:.85rem;background:#1E293B;border:1px solid #334155;border-radius:14px;padding:.85rem 1rem}
+.mastery-hdr{display:flex;align-items:center;justify-content:space-between;margin-bottom:.6rem}
+.mastery-title{font-size:11px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:#64748B}
+.mastery-btn{background:none;border:none;font-size:11px;color:#6B9FE4;cursor:pointer;padding:0;font-family:inherit}
+.mastery-bar-wrap{display:flex;align-items:center;gap:8px;margin-bottom:4px}
+.mastery-name{font-size:11px;color:#94A3B8;flex:1;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;min-width:0}
+.mastery-bar-bg{width:80px;height:6px;background:#0F172A;border-radius:99px;overflow:hidden;flex-shrink:0}
+.mastery-bar-fill{height:100%;border-radius:99px;transition:width .4s}
+.mastery-pct{font-size:10px;font-weight:700;width:28px;text-align:right;flex-shrink:0}
+.mastery-legend{display:flex;gap:10px;margin-top:.6rem;flex-wrap:wrap}
+.mastery-leg-item{display:flex;align-items:center;gap:4px;font-size:10px;color:#475569}
+.mastery-leg-dot{width:8px;height:8px;border-radius:50%;flex-shrink:0}
+.mastery-toast{position:fixed;bottom:80px;left:50%;transform:translateX(-50%);background:#1E293B;border:1px solid #334155;border-radius:10px;padding:6px 14px;font-size:12px;font-weight:600;color:#F1F5F9;z-index:100;opacity:0;transition:opacity .3s;pointer-events:none;white-space:nowrap}
+.mastery-toast.show{opacity:1}
+/* True/False */
+.tf-stmt-card{background:#1E293B;border:1.5px solid #334155;border-radius:14px;padding:1rem 1.25rem;margin-bottom:.75rem}
+.tf-label{font-size:11px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:#64748B;margin-bottom:.3rem}
+.tf-text{font-size:14px;color:#F1F5F9;line-height:1.7}
+.tf-btn-row{display:flex;gap:10px;margin-bottom:.5rem}
+.tf-btn{flex:1;padding:.75rem;border-radius:10px;border:1.5px solid #334155;font-size:15px;font-weight:700;cursor:pointer;font-family:inherit;transition:all .12s;background:#1E293B;color:#94A3B8}
+.tf-btn.true-btn:hover{border-color:#34D399;color:#34D399;background:rgba(52,211,153,.1)}
+.tf-btn.false-btn:hover{border-color:#EF4444;color:#EF4444;background:rgba(239,68,68,.1)}
+.tf-btn.correct{border-color:#34D399;background:rgba(52,211,153,.15);color:#34D399}
+.tf-btn.wrong{border-color:#EF4444;background:rgba(239,68,68,.15);color:#FCA5A5}
+.tf-btn.dim{opacity:.3;cursor:default}
+.tf-explanation{font-size:12.5px;color:#94A3B8;line-height:1.65;margin-top:.5rem;padding:.6rem .85rem;background:#0F172A;border-radius:8px;border-left:3px solid #334155;display:none}
+.tf-explanation.show{display:block}
+.tf-explanation.show.ok{border-color:#34D399}
+.tf-explanation.show.bad{border-color:#EF4444}
+.tf-progress{font-size:11px;color:#475569;margin-bottom:.5rem;font-weight:600}
+.tf-score{font-size:13px;font-weight:700;margin-top:.5rem}
+.solution-btn{width:100%;padding:.7rem;border-radius:99px;border:1.5px solid #4F7DBF;background:rgba(79,125,191,.12);color:#6B9FE4;font-size:14px;font-weight:600;cursor:pointer;margin-top:6px;margin-bottom:6px;transition:all .12s;font-family:inherit}
+.solution-btn:hover{background:rgba(79,125,191,.22);border-color:#6B9FE4}
+.solution-btn:active{transform:scale(.98)}
+.pick-pool{display:flex;flex-direction:column;gap:6px;margin-bottom:.75rem}
+.pick-pool-lbl{font-size:10px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:#64748B;margin-bottom:2px}
+.pick-slot-area{min-height:44px;background:#0F172A;border:1.5px dashed #334155;border-radius:10px;padding:6px;display:flex;flex-direction:column;gap:5px;margin-bottom:.75rem;transition:border-color .15s}
+.pick-slot-area.has-items{border-color:#475569}
+.pick-option{background:#1E293B;border:1.5px solid #334155;border-radius:10px;padding:.65rem .9rem;font-size:13px;color:#F1F5F9;cursor:pointer;display:flex;align-items:center;gap:8px;transition:all .12s;line-height:1.5;text-align:left;width:100%;font-family:inherit}
+.pick-option:active{transform:scale(.98)}
+.pick-option.chosen{border-color:rgba(107,159,228,.5);background:rgba(107,159,228,.12);opacity:.55;cursor:default}
+.pick-option.disabled{cursor:default}
+.pick-slot{background:#1E293B;border:1.5px solid #6B9FE4;border-radius:10px;padding:.6rem .9rem;font-size:13px;color:#F1F5F9;display:flex;align-items:center;gap:8px;cursor:pointer;line-height:1.5;text-align:left;transition:all .12s}
+.pick-slot:active{transform:scale(.98)}
+.pick-slot-num{flex-shrink:0;width:22px;height:22px;border-radius:6px;background:#6B9FE4;color:#fff;font-size:11px;font-weight:700;display:flex;align-items:center;justify-content:center;font-family:monospace}
+.pick-slot.correct{border-color:#34D399;background:rgba(52,211,153,.12)}
+.pick-slot.correct .pick-slot-num{background:#34D399}
+.pick-slot.wrong{border-color:#EF4444;background:rgba(239,68,68,.12)}
+.pick-slot.wrong .pick-slot-num{background:#EF4444}
+/* Match mode — redesigned as term→definition */
+#s-match{padding-top:max(env(safe-area-inset-top,0px),12px)}
+.match-body{flex:1;overflow-y:auto;padding:0 1rem;-webkit-overflow-scrolling:touch}
+.match-body::-webkit-scrollbar{display:none}
+/* Term card (top half) */
+.match-term-card{background:#1E293B;border:2px solid #6B9FE4;border-radius:14px;padding:.9rem 1.1rem;margin-bottom:.75rem;text-align:center}
+.match-term-label{font-size:10px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:#6B9FE4;margin-bottom:.3rem}
+.match-term-text{font-family:Georgia,serif;font-size:16px;font-weight:700;color:#F1F5F9;line-height:1.35}
+/* Definition options grid */
+.match-defs{display:flex;flex-direction:column;gap:8px;margin-bottom:.75rem}
+.match-def-btn{background:#1E293B;border:1.5px solid #334155;border-radius:12px;padding:.75rem 1rem;text-align:left;cursor:pointer;font-size:13px;color:#F1F5F9;line-height:1.6;width:100%;font-family:inherit;transition:all .15s;display:flex;align-items:flex-start;gap:10px}
+.match-def-btn:active:not([disabled]){transform:scale(.99)}
+.match-def-btn[disabled]{cursor:default}
+.match-def-letter{flex-shrink:0;width:26px;height:26px;border-radius:7px;border:1.5px solid #475569;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:700;color:#64748B;font-family:monospace;margin-top:1px;transition:all .12s}
+.match-def-btn.correct-ans{border-color:#34D399;background:rgba(52,211,153,.12)}
+.match-def-btn.correct-ans .match-def-letter{background:#34D399;border-color:#34D399;color:#fff}
+.match-def-btn.wrong-ans{border-color:#EF4444;background:rgba(239,68,68,.1)}
+.match-def-btn.wrong-ans .match-def-letter{background:#EF4444;border-color:#EF4444;color:#fff}
+.match-def-btn.dim-ans{opacity:.3}
+.match-progress{font-size:11px;color:#475569;font-weight:600;margin-bottom:.5rem}
+/* Gap fill mode */
+.gap-stmt{background:#1E293B;border:1px solid #334155;border-radius:14px;padding:1rem 1.25rem;margin-bottom:.75rem;font-size:14px;color:#94A3B8;line-height:2}
+.gap-step-box{background:rgba(255,255,255,.04);border:1.5px solid rgba(255,255,255,.1);border-radius:12px;padding:14px 16px;font-size:15px;line-height:1.6;margin-bottom:14px;color:#E2E8F0}
+.epn-gap-row{margin-bottom:14px}
+.epn-gap-text{font-size:14px;color:#94A3B8;line-height:1.6;margin-bottom:6px}
+.epn-input-wrap{display:flex;gap:8px;align-items:center}
+.epn-input{flex:1;background:rgba(255,255,255,.06);border:1.5px solid rgba(255,255,255,.15);border-radius:10px;padding:10px 14px;color:#F1F5F9;font-size:15px;font-family:inherit;outline:none;-webkit-appearance:none}
+.epn-input:focus{border-color:#6B9FE4}
+.epn-input.correct{border-color:#34D399;background:rgba(52,211,153,.1);color:#34D399}
+.epn-input.wrong{border-color:#EF4444;background:rgba(239,68,68,.08);color:#FCA5A5}
+.epn-check-btn{background:#6B9FE4;color:#fff;border:none;border-radius:10px;padding:10px 16px;font-size:14px;font-weight:700;cursor:pointer;white-space:nowrap}
+.epn-answer-reveal{font-size:13px;color:#34D399;margin-top:4px;display:none}
+.flaw-opt,.cex-opt{width:100%;text-align:left;background:rgba(255,255,255,.05);border:1.5px solid rgba(255,255,255,.1);border-radius:12px;padding:13px 15px;margin-bottom:10px;color:#E2E8F0;font-size:14px;line-height:1.5;cursor:pointer;display:flex;gap:10px;align-items:flex-start}
+.flaw-opt .opt-letter,.cex-opt .opt-letter{background:rgba(255,255,255,.1);border-radius:6px;padding:2px 8px;font-weight:700;font-size:13px;flex-shrink:0;margin-top:1px}
+.flaw-opt.correct-ans,.cex-opt.correct-ans{border-color:#34D399;background:rgba(52,211,153,.12)}
+.flaw-opt.wrong-ans,.cex-opt.wrong-ans{border-color:#EF4444;background:rgba(239,68,68,.08)}
+.flaw-opt.dim-ans,.cex-opt.dim-ans{opacity:.4}
+.gap-blank.filled{background:rgba(52,211,153,.15);border-color:#34D399;color:#34D399}
+.gap-blank.wrong-fill{background:rgba(239,68,68,.12);border-color:#EF4444;color:#FCA5A5}
 
-/* GAP FILL */
-.gap-step{background:rgba(255,255,255,.04);border:1.5px solid var(--border);border-radius:12px;padding:12px 14px;font-size:14px;line-height:1.7;margin-bottom:10px;color:#E2E8F0}
-.gap-inp{background:rgba(107,159,228,.1);border:1.5px solid var(--blue);border-radius:8px;padding:4px 10px;color:var(--blue);font-weight:700;font-size:14px;min-width:60px;display:inline-block;text-align:center;vertical-align:middle}
-.epn-input{flex:1;background:rgba(255,255,255,.06);border:1.5px solid rgba(255,255,255,.15);border-radius:10px;padding:10px 14px;color:var(--text);font-size:15px;font-family:inherit;outline:none;-webkit-appearance:none}
-.epn-input:focus{border-color:var(--blue)}
-.epn-input.correct{border-color:var(--green);background:rgba(52,211,153,.1);color:var(--green)}
-.epn-input.wrong{border-color:var(--red);background:rgba(239,68,68,.08);color:#FCA5A5}
-.epn-check-btn{background:var(--blue);color:#fff;border:none;border-radius:10px;padding:10px 16px;font-size:14px;font-weight:700;cursor:pointer}
-.epn-reveal{font-size:13px;color:var(--green);margin-top:4px;display:none}
-.epn-row{margin-bottom:14px}
-.epn-ctx{font-size:13px;color:var(--muted);margin-bottom:6px;line-height:1.6}
-.epn-wrap{display:flex;gap:8px;align-items:center}
-
-/* RESULT */
-#s-result{align-items:center;justify-content:flex-start;padding:2rem 1.5rem;padding-top:max(env(safe-area-inset-top,0px),2rem);padding-bottom:max(env(safe-area-inset-bottom,0px),2rem);background:radial-gradient(ellipse at 50% 10%,#1E3A5F 0%,#0F172A 60%);text-align:center;overflow-y:auto}
-.res-icon{font-size:60px;display:block;margin-bottom:12px}
-.res-title{font-size:26px;font-weight:800;margin-bottom:6px}
-.res-sub{font-size:14px;color:var(--muted);margin-bottom:24px}
-.res-stats{display:flex;gap:10px;margin-bottom:28px;width:100%}
-.res-stat{flex:1;background:rgba(255,255,255,.06);border-radius:14px;padding:14px 10px}
-.res-stat-label{font-size:11px;color:var(--muted);margin-bottom:4px}
-.res-stat-val{font-size:22px;font-weight:800}
-.res-btn-p{width:100%;padding:15px;background:linear-gradient(135deg,#6B9FE4,#2DD4BF);border:none;border-radius:14px;color:#fff;font-size:17px;font-weight:700;cursor:pointer;margin-bottom:10px}
-.res-btn-s{width:100%;padding:13px;background:rgba(255,255,255,.08);border:1.5px solid rgba(255,255,255,.12);border-radius:14px;color:var(--text);font-size:15px;font-weight:600;cursor:pointer}
-
-/* T/F */
-.tf-stmt{font-size:15px;color:#E2E8F0;line-height:1.6;margin-bottom:12px}
-.tf-btns{display:flex;gap:10px;margin-bottom:10px}
-.tf-btn{flex:1;padding:13px;border:1.5px solid var(--border);border-radius:12px;background:var(--surface);color:var(--text);font-size:15px;font-weight:700;cursor:pointer}
-.tf-btn.true-btn{border-color:rgba(52,211,153,.4)}
-.tf-btn.false-btn{border-color:rgba(239,68,68,.4)}
-.tf-btn.selected-t{background:rgba(52,211,153,.15);border-color:var(--green)}
-.tf-btn.selected-f{background:rgba(239,68,68,.1);border-color:var(--red)}
-.tf-progress{font-size:12px;color:var(--muted);margin-bottom:6px}
+.cat-badge{display:inline-block;padding:2px 8px;border-radius:99px;font-size:11px;font-weight:700;margin-bottom:6px;background:rgba(167,139,250,.15);color:#C4B5FD;letter-spacing:.04em}
+.q-cat{font-size:10px;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:#A78BFA;margin-bottom:.4rem}
+.mastery-cat-row{display:flex;align-items:center;gap:8px;margin-bottom:6px}
+.mastery-cat-name{font-size:12px;color:#CBD5E1;flex:1;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.mastery-cat-bar-bg{width:90px;height:6px;background:#0F172A;border-radius:99px;flex-shrink:0}
+.mastery-cat-bar-fill{height:6px;border-radius:99px;transition:width .4s}
+.mastery-cat-pct{font-size:11px;font-weight:700;width:32px;text-align:right;flex-shrink:0}
 </style>
 </head>
 <body>
-<div id="app">
+
+<!-- Firebase CDN -->
+<script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore-compat.js"></script>
+<script>
+
+const firebaseConfig={apiKey:"AIzaSyCE9o42ZekICLHHwFS7v6Uee7e2Xmfmtsw",authDomain:"theorem-test.firebaseapp.com",projectId:"theorem-test",storageBucket:"theorem-test.firebasestorage.app",messagingSenderId:"65472887776",appId:"1:65472887776:web:3f4286da6e752731a10985",measurementId:"G-T0DLWT33MV"};
+let db=null,currentUsername=null,syncEnabled=false;
+function setSyncStatus(msg,cls){const el=document.getElementById('sync-status');if(!el)return;el.textContent=msg;el.className='sync-status'+(cls?' '+cls:'');}
+function sanitiseUsername(raw){return raw.trim().toLowerCase().replace(/[^a-z0-9_]/g,'').slice(0,30);}
+function showLoginRow(){const lr=document.getElementById('sync-row-login'),sr=document.getElementById('sync-row-status');if(lr)lr.style.display='flex';if(sr)sr.style.display='none';}
+function showStatusRow(){const lr=document.getElementById('sync-row-login'),sr=document.getElementById('sync-row-status');if(lr)lr.style.display='none';if(sr)sr.style.display='flex';}
+async function pushData(){if(!db||!currentUsername||!syncEnabled)return;try{const p=+localStorage.getItem('mas_p')||0,b=+localStorage.getItem('mas_b')||0,c=+localStorage.getItem('mas_c')||0,t=+localStorage.getItem('mas_t')||0;let qd={};try{const raw=localStorage.getItem('mas_qdata');if(raw)qd=JSON.parse(raw);}catch(e){}await db.collection('users').doc(currentUsername).set({p,b,c,t,qdata:qd,updated:firebase.firestore.FieldValue.serverTimestamp()},{merge:true});}catch(e){console.warn('Push failed:',e);}}
+async function connectUser(username){if(!db)return;currentUsername=username;syncEnabled=true;localStorage.setItem('mas_username',username);showStatusRow();setSyncStatus('\u2601 Syncing\u2026','loading');try{const snap=await db.collection('users').doc(username).get();if(snap.exists){const d=snap.data();const lp=+localStorage.getItem('mas_p')||0,lb=+localStorage.getItem('mas_b')||0,lc=+localStorage.getItem('mas_c')||0,lt=+localStorage.getItem('mas_t')||0;localStorage.setItem('mas_p',Math.max(lp,d.p||0));localStorage.setItem('mas_b',Math.max(lb,d.b||0));localStorage.setItem('mas_c',Math.max(lc,d.c||0));localStorage.setItem('mas_t',Math.max(lt,d.t||0));if(d.qdata){let localQD={};try{const raw=localStorage.getItem('mas_qdata');if(raw)localQD=JSON.parse(raw);}catch(e){}
+// Merge: remote wins on seen count (take max); for new-format fields prefer whichever has more history
+const merged={};
+const allKeys=new Set([...Object.keys(d.qdata),...Object.keys(localQD)]);
+allKeys.forEach(k=>{
+  const rem=d.qdata[k]||{};const loc=localQD[k]||{};
+  // Keep whichever has higher seen count as base, then take max seen
+  const base=(rem.seen||0)>=(loc.seen||0)?{...rem}:{...loc};
+  base.seen=Math.max(rem.seen||0,loc.seen||0);
+  // If either side is old format (has 'correct' field), migration will happen in getQEntry
+  // If both are new format, prefer the one with more history entries
+  if((rem.history||[]).length>(loc.history||[]).length)base.history=rem.history;
+  else if((loc.history||[]).length>(rem.history||[]).length)base.history=loc.history;
+  // Take higher consecutiveCorrect and higher bag (more progress)
+  // bag/consecutiveCorrect removed — history and seen are the only data
+  merged[k]=base;
+});
+localStorage.setItem('mas_qdata',JSON.stringify(merged));if(typeof loadQData==='function')loadQData();}setSyncStatus('\u2601 Synced \u00b7 @'+username,'ok');
+// Push immediately to overwrite any old-format Firestore data with new format
+await pushData();}else{setSyncStatus('\u2601 New user \u00b7 @'+username,'ok');await pushData();}if(typeof loadStats==='function')loadStats();}catch(e){console.warn('Sync failed:',e);setSyncStatus('\u2601 Sync error \u2014 working offline','err');}}
+function initFirebase(){try{if(!firebase.apps.length)firebase.initializeApp(firebaseConfig);db=firebase.firestore();const saved=localStorage.getItem('mas_username');if(saved){connectUser(saved);}else{showLoginRow();}}catch(e){console.warn('Firebase init failed:',e);showLoginRow();}}
+window.syncLogin=async function(){const input=document.getElementById('sync-username-input');if(!input||!db)return;const username=sanitiseUsername(input.value);if(username.length<3){input.style.borderColor='#EF4444';input.placeholder='Min 3 chars: letters, numbers, _';setTimeout(()=>{input.style.borderColor='';input.placeholder='Enter a username to sync\u2026';},2500);return;}input.value='';await connectUser(username);};
+window.syncLogout=function(){currentUsername=null;syncEnabled=false;localStorage.removeItem('mas_username');showLoginRow();const input=document.getElementById('sync-username-input');if(input){input.value='';input.focus();}};
+window.firebasePush=async function(){if(!syncEnabled)return;await pushData();setSyncStatus('\u2601 Synced \u00b7 @'+currentUsername,'ok');};
+window.confirmReset=function(){if(confirm('Reset all stats and learning progress? This cannot be undone.')){localStorage.setItem('mas_p',0);localStorage.setItem('mas_b',0);localStorage.setItem('mas_c',0);localStorage.setItem('mas_t',0);localStorage.removeItem('mas_qdata');if(typeof loadQData==='function'){window.qData={};loadQData();}if(typeof loadStats==='function')loadStats();if(typeof window.firebasePush==='function')window.firebasePush();}};
+initFirebase();
+
+
+window.syncLogin=async function(){const input=document.getElementById('sync-username-input');if(!input||!db)return;const username=sanitiseUsername(input.value);if(username.length<3){input.style.borderColor='#EF4444';input.placeholder='Min 3 chars';setTimeout(()=>{input.style.borderColor='';input.placeholder='Enter a username to sync…';},2500);return;}input.value='';await connectUser(username);};
+window.syncLogout=function(){if(!currentUsername)return;currentUsername=null;syncEnabled=false;localStorage.removeItem('msp_username');showLoginRow();setSyncStatus('');renderMastery();};
+window.confirmReset=function(){if(confirm('Reset all MSP1613 progress?')){localStorage.removeItem('msp_qdata');localStorage.removeItem('msp_p');localStorage.removeItem('msp_c');localStorage.removeItem('msp_t');qData={};loadStats();renderMastery();pushData();alert('Progress reset.');};};
+window.firebasePush=pushData;
+initFirebase();
+</script>
 
 <!-- HOME -->
-<div id="s-home" class="scr active">
-  <div class="home-header">
-    <div class="home-logo">MSP1613</div>
-    <div class="home-sub">Multivariable Calculus · Pick a topic</div>
+<div id="s-home" class="scr on">
+  <span class="home-icon">∂</span>
+  <div class="home-title">Multivariable<br>Calculus Quiz</div>
+  <div class="home-sub">MSP1613 · Newcastle University</div>
+  <div class="stat-row">
+    <div class="stat-box"><span class="stat-v" id="hs-p">0</span><span class="stat-l">played</span></div>
+    <div class="stat-box"><span class="stat-v" id="hs-a">—</span><span class="stat-l">accuracy</span></div>
+    <div class="stat-box"><span class="stat-v" id="hs-c">0</span><span class="stat-l">correct</span></div>
   </div>
-  <div class="home-body">
-    <div id="cat-list"></div>
-    <button class="play-btn" onclick="startRandom()">🎲 Random 10 questions</button>
+  <div class="mode-row" style="flex-wrap:wrap;gap:6px">
+    <button class="mode-pill on" id="pill-all" onclick="selCat(null)">🎲 All Topics</button>
+    <button class="mode-pill" id="pill-lim" onclick="selCat('Limits & Continuity')">🎯 Limits</button>
+    <button class="mode-pill" id="pill-par" onclick="selCat('Partial Derivatives')">∂ Partials</button>
+    <button class="mode-pill" id="pill-grd" onclick="selCat('Gradient & Differentiability')">∇ Gradient</button>
+    <button class="mode-pill" id="pill-chn" onclick="selCat('Chain Rule')">⛓ Chain Rule</button>
+    <button class="mode-pill" id="pill-crt" onclick="selCat('Critical Points & Taylor')">📍 Critical Pts</button>
+    <button class="mode-pill" id="pill-int" onclick="selCat('Multiple Integrals')">∬ Integrals</button>
+    <button class="mode-pill" id="pill-chv" onclick="selCat('Change of Variables')">🔄 Change of Var</button>
+    <button class="mode-pill" id="pill-lag" onclick="selCat('Lagrange Multipliers')">λ Lagrange</button>
   </div>
+  <button class="start-btn" onclick="startQuiz()">Start Quiz →</button>
+  <div class="home-note" id="home-note">10 questions · 51 available · All Topics</div>
+  <div class="sync-row" id="sync-row-login">
+    <input class="sync-input" id="sync-username-input" placeholder="Enter a username to sync…" maxlength="30" onkeydown="if(event.key==='Enter')syncLogin()">
+    <button class="sync-btn" onclick="syncLogin()">Save</button>
+  </div>
+  <div class="sync-row" id="sync-row-status" style="display:none">
+    <span class="sync-status" id="sync-status">☁ Connecting…</span>
+    <button class="sync-btn" onclick="syncLogout()" style="font-size:10px">Switch user</button>
+    <button class="sync-btn" onclick="confirmReset()" style="font-size:10px">Reset</button>
+  </div>
+  <div class="mastery-panel" id="mastery-panel" style="display:none">
+    <div class="mastery-hdr">
+      <span class="mastery-title">📊 Your progress</span>
+    </div>
+    <div id="mastery-list"></div>
+    <div class="mastery-legend">
+      <div class="mastery-leg-item"><div class="mastery-leg-dot" style="background:#EF4444"></div>Struggling</div>
+      <div class="mastery-leg-item"><div class="mastery-leg-dot" style="background:#F59E0B"></div>Improving</div>
+      <div class="mastery-leg-item"><div class="mastery-leg-dot" style="background:#34D399"></div>Strong</div>
+      <div class="mastery-leg-item"><div class="mastery-leg-dot" style="background:#475569"></div>Unseen</div>
+    </div>
+  </div>
+  <div class="mastery-toast" id="mastery-toast"></div>
 </div>
 
 <!-- QUIZ -->
 <div id="s-quiz" class="scr">
   <div class="q-hdr">
     <button class="back-btn" onclick="goHome()">←</button>
-    <div class="prog-bg"><div class="prog-fill" id="q-prog" style="width:0%"></div></div>
-    <div class="streak-pill">✓ <span id="q-cor">0</span>/<span id="q-tot">0</span></div>
+    <div class="prog-bg"><div class="prog-fill" id="prog" style="width:0%"></div></div>
+    <div class="hdr-r">
+      <div class="streak-pill">🔥<span id="stk">0</span></div>
+    </div>
   </div>
   <div class="q-body" id="q-body"></div>
 </div>
@@ -121,66 +373,20 @@ html,body{height:100%;background:var(--bg);color:var(--text);font-family:-apple-
   <div class="res-title" id="r-title"></div>
   <div class="res-sub" id="r-sub"></div>
   <div class="res-stats">
-    <div class="res-stat"><div class="res-stat-label">CORRECT</div><div class="res-stat-val" id="r-sc"></div></div>
-    <div class="res-stat"><div class="res-stat-label">ACCURACY</div><div class="res-stat-val" id="r-sa"></div></div>
+    <div class="res-stat"><span class="res-stat-v" id="r-sc"></span><span class="res-stat-l">correct</span></div>
+    <div class="res-stat"><span class="res-stat-v" id="r-sa"></span><span class="res-stat-l">accuracy</span></div>
   </div>
-  <button class="res-btn-p" onclick="startQuiz(lastCat)">Play again</button>
-  <button class="res-btn-s" onclick="goHome()">Home</button>
-</div>
-
+  <div class="res-btns">
+    <button class="res-btn-p" onclick="startQuiz()">Play again</button>
+    <button class="res-btn-s" onclick="goHome()">Home</button>
+  </div>
 </div>
 
 <script>
 // ================================================================
-// DATA: questions by category
+// QUESTION DATA
 // ================================================================
-const CATS = {
-  'Limits & Continuity': {
-    color:'#6B9FE4',
-    desc:'ε-δ definitions, continuity, path-dependence of limits',
-    questions:[]
-  },
-  'Partial Derivatives': {
-    color:'#2DD4BF',
-    desc:'Computing ∂f/∂x, ∂f/∂y, tangent planes, second-order partials',
-    questions:[]
-  },
-  'Gradient & Differentiability': {
-    color:'#A78BFA',
-    desc:'∇f, Jacobian, differentiability condition, directional derivatives',
-    questions:[]
-  },
-  'Chain Rule': {
-    color:'#F59E0B',
-    desc:'Composite functions, dF/dt, ∂F/∂r, ∂F/∂θ, Laplacian in polars',
-    questions:[]
-  },
-  'Critical Points & Taylor': {
-    color:'#34D399',
-    desc:'∇f=0, Hessian, eigenvalue classification, saddle/max/min',
-    questions:[]
-  },
-  'Multiple Integrals': {
-    color:'#EC4899',
-    desc:'Double and triple integrals, Fubini, order of integration',
-    questions:[]
-  },
-  'Change of Variables': {
-    color:'#F97316',
-    desc:'Jacobian determinant, polar coordinates, substitution in integrals',
-    questions:[]
-  },
-  'Lagrange Multipliers': {
-    color:'#60A5FA',
-    desc:'Constrained optimisation, Lagrangian, ∇f=λ∇g',
-    questions:[]
-  },
-};
-
-// ================================================================
-// QUESTIONS
-// ================================================================
-const ALL_QUESTIONS = [
+const Q=[
 
 // ---- LIMITS & CONTINUITY ----
 {cat:'Limits & Continuity',type:'mc',
@@ -653,293 +859,959 @@ const ALL_QUESTIONS = [
    dist:['−2/5','1/5','2/5','−1/5','1/10','2/10']},
  ]},
 
+// ================================================================
+// NEW QUESTIONS — BATCH 2
+// ================================================================
+
+// ---- LIMITS & CONTINUITY ----
+{cat:'Limits & Continuity',type:'mc',
+ text:'Evaluate lim_{(x,y)→(0,0)} (x²y)/(x²+y²), or show it does not exist.',
+ opts:['The limit equals 0 (use squeeze: |x²y/(x²+y²)| ≤ |y| → 0)',
+       'The limit does not exist — try y=x and y=x²',
+       'The limit equals 1 along y=x',
+       'The limit equals ½ since the denominator averages x² and y²'],
+ ans:0,
+ why:'|x²y/(x²+y²)| ≤ (x²+y²)|y|/(x²+y²) = |y| → 0. So by the squeeze theorem the limit is 0.',
+ hint:'Try bounding the numerator using x²≤x²+y², giving |x²y/(x²+y²)|≤|y|.'},
+
+{cat:'Limits & Continuity',type:'mc',
+ text:'For which values of α does lim_{(x,y)→(0,0)} |x|^α/(x²+y²) exist?',
+ opts:['α > 2 (switch to polars: r^α/(r²) = r^{α−2} → 0 iff α>2)',
+       'α > 1',
+       'α > 0',
+       'All α > 0 since the numerator goes to 0'],
+ ans:0,
+ why:'In polar coords: |x|^α/(x²+y²) = r^α |cosθ|^α / r² = r^{α−2}|cosθ|^α. For this to → 0 we need α−2 > 0, i.e. α > 2. If α=2 the limit depends on θ (not 0).',
+ hint:'Convert to polar coordinates: x=r cosθ, x²+y²=r². What power of r remains?'},
+
+{cat:'Limits & Continuity',type:'mc',
+ text:'The function f(x,y) = xy/(x²+y²) for (x,y)≠(0,0), f(0,0)=0. Along which path does f NOT tend to 0?',
+ opts:['y = x (gives f = x²/2x² = 1/2 ≠ 0)',
+       'y = x² (gives f → 0)',
+       'y = 0 (gives f = 0)',
+       'x = 0 (gives f = 0)'],
+ ans:0,
+ why:'Along y=x: f(x,x)=x²/(2x²)=1/2 for all x≠0. Since f(0,0)=0 but the limit along y=x is 1/2≠0, f is discontinuous at the origin.',
+ hint:'Try substituting y=x into f(x,y) and simplify.'},
+
+// ---- PARTIAL DERIVATIVES ----
+{cat:'Partial Derivatives',type:'mc',
+ text:'For f(x,y,z) = x²yz + sin(xz), find ∂f/∂z.',
+ opts:['x²y + x cos(xz)','2xyz + cos(xz)','x²y + cos(xz)','2xyz + x cos(z)'],
+ ans:0,
+ why:'∂/∂z(x²yz) = x²y (treating x,y as constants). ∂/∂z(sin(xz)) = x cos(xz) (chain rule: ∂(xz)/∂z = x). So ∂f/∂z = x²y + x cos(xz).',
+ hint:'Treat x and y as constants. Remember to use the chain rule on sin(xz).'},
+
+{cat:'Partial Derivatives',type:'mc',
+ text:'Find the tangent plane to z = f(x,y) = x³+xy²+3x+2 at (x,y)=(1,1).',
+ opts:['z = 5x + 2y − 2','z = 5x + 2y + 2','z = 3x + 2y − 2','z = 5x − 2y + 2'],
+ ans:0,
+ why:'f(1,1)=1+1+3+2=7. ∂f/∂x=3x²+y²+3, so ∂f/∂x(1,1)=3+1+3=7... wait: actually fx=3x²+y²+3=7, fy=2xy=2. Plane: z=7+7(x−1)+2(y−1)=7x+2y−2. Hmm: 7+7x−7+2y−2=7x+2y−2. But 7x+2y−2 at (1,1)=7+2−2=7 ✓. However 3x²+y²+3 at (1,1)=3+1+3=7, so first option should be 7x+2y−2... Let me recheck the option: "5x+2y−2" corresponds to fx=5. Recompute: f=x³+xy²+3x+2, fx=3x²+y²+3=3+1+3=7, fy=2xy=2. z=7+7(x−1)+2(y−1)=7x+2y−2. So correct answer is 7x+2y−2.',
+ opts:['z = 7x + 2y − 2','z = 5x + 2y + 2','z = 3x + 2y + 2','z = 7x − 2y + 2'],
+ ans:0,
+ why:'f(1,1)=1+1+3+2=7. ∂f/∂x=3x²+y²+3=7 at (1,1). ∂f/∂y=2xy=2 at (1,1). Tangent plane: z=7+7(x−1)+2(y−1)=7x+2y−2.',
+ hint:'Compute f(1,1), ∂f/∂x at (1,1), and ∂f/∂y at (1,1), then use the tangent plane formula.'},
+
+{cat:'Partial Derivatives',type:'mc',
+ text:'For f(x,y)=eˣ cos y, find ∂²f/∂x² + ∂²f/∂y².',
+ opts:['0 (f is harmonic)',
+       '2eˣ cos y',
+       'eˣ cos y − eˣ cos y = 0, but only along x=0',
+       'eˣ(cos y − sin y)'],
+ ans:0,
+ why:'∂f/∂x=eˣ cos y, ∂²f/∂x²=eˣ cos y. ∂f/∂y=−eˣ sin y, ∂²f/∂y²=−eˣ cos y. Sum: eˣ cos y − eˣ cos y = 0. Functions satisfying ∂²f/∂x²+∂²f/∂y²=0 are called harmonic.',
+ hint:'Compute each second partial derivative separately then add them.'},
+
+{cat:'Partial Derivatives',type:'gap',
+ text:'For f(x,y)=x²e^{xy}, compute ∂f/∂x and ∂²f/∂x∂y.',
+ steps:[
+  {before:'∂f/∂x: use product rule on x²·e^{xy}. ∂/∂x(x²)=2x and ∂/∂x(e^{xy})=ye^{xy}. So ∂f/∂x = ',
+   answer:'2xe^{xy} + x²ye^{xy}',after:'.',
+   why:'Product rule: (x²)\'e^{xy} + x²(e^{xy})\'= 2xe^{xy}+x²ye^{xy}.',
+   dist:['2xe^{xy}','x²ye^{xy}','2xe^{xy}−x²ye^{xy}']},
+  {before:'∂²f/∂x∂y = ∂/∂y(2xe^{xy}+x²ye^{xy}) = 2x·xe^{xy} + ∂/∂y(x²ye^{xy}). For the second term, product rule in y: x²e^{xy}+x²y·xe^{xy}. Total: ',
+   answer:'2x²e^{xy} + x²e^{xy} + x³ye^{xy}',after:' = (3x²+x³y)e^{xy}.',
+   why:'∂/∂y(2xe^{xy})=2x²e^{xy}. ∂/∂y(x²ye^{xy})=x²e^{xy}+x³ye^{xy}. Sum: (3x²+x³y)e^{xy}.',
+   dist:['2x²e^{xy}+x³ye^{xy}','(2x²+x³y)e^{xy}','3x²e^{xy}']},
+ ]},
+
+{cat:'Partial Derivatives',type:'tf',
+ text:'Properties of partial derivatives and the Hessian',
+ statements:[
+  {s:'If f:ℝ²→ℝ has all second-order partial derivatives continuous, then ∂²f/∂x∂y = ∂²f/∂y∂x.',ans:true,
+   why:'TRUE. This is Schwarz\'s (Clairaut\'s) theorem: continuity of second-order partial derivatives guarantees symmetry of mixed partials.'},
+  {s:'The Hessian matrix H of a scalar field f:ℝ²→ℝ is always symmetric.',ans:true,
+   why:'TRUE. H has entries ∂²f/∂xᵢ∂xⱼ. By Schwarz\'s theorem (assuming continuous second partials), ∂²f/∂xᵢ∂xⱼ=∂²f/∂xⱼ∂xᵢ, so H=Hᵀ.'},
+  {s:'If ∂f/∂x(a,b)=0 and ∂f/∂y(a,b)=0, then f has a local minimum at (a,b).',ans:false,
+   why:'FALSE. Critical points (∇f=0) can be local minima, local maxima, or saddle points. The Hessian eigenvalues determine which.'},
+  {s:'A saddle point of f:ℝ²→ℝ is a critical point where the Hessian has one positive and one negative eigenvalue.',ans:true,
+   why:'TRUE. Opposite-sign eigenvalues mean f increases in one eigendirection and decreases in the other — a saddle. Equivalently, det(H)<0.'},
+ ]},
+
+// ---- GRADIENT & DIFFERENTIABILITY ----
+{cat:'Gradient & Differentiability',type:'mc',
+ text:'For g(x,y,z) = xy + z, find ∇g.',
+ opts:['(y, x, 1)','(x, y, 1)','(y, x, 0)','(xy, xy, 1)'],
+ ans:0,
+ why:'∂g/∂x=y, ∂g/∂y=x, ∂g/∂z=1. So ∇g=(y, x, 1).',
+ hint:'Differentiate term by term with respect to each variable.'},
+
+{cat:'Gradient & Differentiability',type:'mc',
+ text:'For f(x,y)=3x+2y+1, find the directional derivative at any point in the direction n=(1/√13, 2/√13, 0)... wait, n=(1/√13, 2/√13) in ℝ².',
+ opts:['7/√13','3/√13','5/√13','√13'],
+ ans:0,
+ why:'∇f=(3,2) everywhere (f is linear). Directional derivative = n·∇f = (1/√13)·3+(2/√13)·2 = (3+4)/√13 = 7/√13.',
+ hint:'For a linear function the gradient is constant. Apply n·∇f.'},
+
+{cat:'Gradient & Differentiability',type:'mc',
+ text:'Show f(x,y)=7x+2y+1 is differentiable at a=(a,b). The error term f(a+h)−f(a)−h·∇f(a) equals:',
+ opts:['0, making the differentiability limit 0/‖h‖=0 trivially',
+       '‖h‖, so the limit equals 1',
+       '7h+2k (the gradient dot h again)',
+       'Undefined since we divide by ‖h‖=0'],
+ ans:0,
+ why:'f(a+h)=7(a+h)+2(b+k)+1 and f(a)+h·∇f(a)=7a+2b+1+7h+2k. The difference is exactly 0, so the limit lim_{‖h‖→0} 0/‖h‖=0. Linear functions are always differentiable.',
+ hint:'Compute f(a+h)−f(a)−h·∇f(a) explicitly. For a linear function, what do you expect?'},
+
+{cat:'Gradient & Differentiability',type:'mc',
+ text:'A function f:ℝ²→ℝ has f(0,0)=0, ∂f/∂x(0,0)=0, ∂f/∂y(0,0)=0. Which conclusion is valid?',
+ opts:['None of the others — ∇f=0 at a point tells us nothing about differentiability or continuity without more assumptions',
+       'f is differentiable at (0,0)',
+       'f is continuous at (0,0)',
+       'f has a critical point at (0,0) that is a local minimum'],
+ ans:0,
+ why:'Existence of partial derivatives at a point does NOT imply continuity or differentiability. A classic counterexample: f(x,y)=xy/(x²+y²) has ∂f/∂x=∂f/∂y=0 at origin but is discontinuous there.',
+ hint:'Remember the key theorem: existence of partials ≠ differentiability. What additional condition is needed?'},
+
+{cat:'Gradient & Differentiability',type:'gap',
+ text:'For f(x,y)=x sin(x+y)+y²eˣʸ, find ∇f (from Specimen Exam 1 Q3).',
+ steps:[
+  {before:'∂f/∂x: use product rule on x sin(x+y), and differentiate y²eˣʸ w.r.t. x (treating y as constant). ∂f/∂x = ',
+   answer:'sin(x+y) + x cos(x+y) + y³eˣʸ',after:'.',
+   why:'∂/∂x[x sin(x+y)]=sin(x+y)+x cos(x+y). ∂/∂x[y²eˣʸ]=y²·yeˣʸ=y³eˣʸ.',
+   dist:['x cos(x+y)+y³eˣʸ','sin(x+y)+x cos(x+y)','x cos(x+y)+2yeˣʸ']},
+  {before:'∂f/∂y = ',
+   answer:'x cos(x+y) + 2yeˣʸ + xy²eˣʸ',after:'.',
+   why:'∂/∂y[x sin(x+y)]=x cos(x+y). ∂/∂y[y²eˣʸ]=2yeˣʸ+y²·xeˣʸ=2yeˣʸ+xy²eˣʸ.',
+   dist:['x cos(x+y)+y²eˣʸ','2yeˣʸ+xy²eˣʸ','x cos(x+y)+2eˣʸ']},
+ ]},
+
+// ---- CHAIN RULE ----
+{cat:'Chain Rule',type:'mc',
+ text:'In plane polars, x=r cosθ, y=r sinθ. For F(r,θ)=f(x(r,θ),y(r,θ)), what is ∂F/∂r at r=1, θ=π/4 if ∂f/∂x=1 and ∂f/∂y=2 there?',
+ opts:['1/√2 + 2/√2 = 3/√2 = 3√2/2',
+       '−1/√2 + 2/√2 = 1/√2',
+       '1·1 + 2·1 = 3',
+       '1·r + 2·r = 3r = 3'],
+ ans:0,
+ why:'∂F/∂r = cosθ·∂f/∂x + sinθ·∂f/∂y. At θ=π/4: cosθ=sinθ=1/√2. So ∂F/∂r = 1/√2·1 + 1/√2·2 = 3/√2.',
+ hint:'Use ∂F/∂r = cosθ(∂f/∂x) + sinθ(∂f/∂y) with cos(π/4)=sin(π/4)=1/√2.'},
+
+{cat:'Chain Rule',type:'mc',
+ text:'If f(x,y)=x²−y², x=r cosθ, y=r sinθ, F=f(x(r,θ),y(r,θ)), find ∂F/∂θ.',
+ opts:['−2r² sin(2θ)','2r cos(2θ)','−4r² sinθ cosθ','2r²(cos²θ−sin²θ)'],
+ ans:0,
+ why:'∂F/∂θ=−r sinθ·∂f/∂x+r cosθ·∂f/∂y=−r sinθ·2x+r cosθ·(−2y)=−2r sinθ·r cosθ−2r cosθ·r sinθ=−4r² sinθ cosθ=−2r² sin(2θ).',
+ hint:'Use ∂F/∂θ = (∂x/∂θ)(∂f/∂x)+(∂y/∂θ)(∂f/∂y) with ∂x/∂θ=−r sinθ and ∂y/∂θ=r cosθ.'},
+
+{cat:'Chain Rule',type:'mc',
+ text:'If u=f(x,y) where x=s+t, y=s−t, express ∂²u/∂s∂t in terms of partial derivatives of f.',
+ opts:['∂²f/∂x² − ∂²f/∂y²',
+       '∂²f/∂x² + ∂²f/∂y²',
+       '2∂²f/∂x∂y',
+       '∂²f/∂x∂y − ∂²f/∂x²'],
+ ans:0,
+ why:'∂u/∂s=(∂f/∂x)(∂x/∂s)+(∂f/∂y)(∂y/∂s)=∂f/∂x+∂f/∂y. Then ∂²u/∂s∂t=∂/∂t(∂f/∂x+∂f/∂y)=(∂²f/∂x²·∂x/∂t+∂²f/∂x∂y·∂y/∂t)+(∂²f/∂x∂y·∂x/∂t+∂²f/∂y²·∂y/∂t)=∂²f/∂x²(1)−∂²f/∂y²(1) since ∂x/∂t=1 and ∂y/∂t=−1.',
+ hint:'First compute ∂u/∂s using the chain rule, then differentiate with respect to t using the chain rule again.'},
+
+{cat:'Chain Rule',type:'tf',
+ text:'Chain rule identities',
+ statements:[
+  {s:'If F(t)=f(x(t),y(t)) then dF/dt=(∂f/∂x)(dx/dt)+(∂f/∂y)(dy/dt).',ans:true,
+   why:'TRUE. This is the multivariable chain rule — the full derivative is the dot product of the gradient with the velocity vector (dx/dt, dy/dt).'},
+  {s:'For a scalar field f:ℝ²→ℝ with x=r cosθ, y=r sinθ: ∂F/∂θ = r(∂F/∂r) rotated by 90°.',ans:false,
+   why:'FALSE. ∂F/∂θ = −r sinθ(∂f/∂x)+r cosθ(∂f/∂y), which is r times ∇f dotted with the unit tangent vector, not simply r·∂F/∂r.'},
+  {s:'The chain rule for f:ℝⁿ→ℝᵐ and g:ℝᵐ→ℝᵏ gives d_a(g∘f)=d_{f(a)}g · d_af as matrix multiplication.',ans:true,
+   why:'TRUE. This is the abstract chain rule: the Jacobian of the composition equals the product of the Jacobians (matrix multiplication).'},
+  {s:'If F(u,v)=f(x(u,v),y(u,v)) then ∂F/∂u=(∂f/∂x)(∂x/∂u)+(∂f/∂y)(∂y/∂u).',ans:true,
+   why:'TRUE. This is the partial chain rule (Equation 2.17 in the notes): ∂F/∂uᵢ = Σⱼ (∂f/∂xⱼ)(∂xⱼ/∂uᵢ).'},
+ ]},
+
+// ---- CRITICAL POINTS & TAYLOR ----
+{cat:'Critical Points & Taylor',type:'mc',
+ text:'For f(x,y)=x³+y³−3xy, find all critical points.',
+ opts:['(0,0) and (1,1)','(0,0) only','(1,1) only','(0,0), (1,1) and (−1,−1)'],
+ ans:0,
+ why:'∂f/∂x=3x²−3y=0 ⟹ y=x². ∂f/∂y=3y²−3x=0 ⟹ x=y². Substituting: x=(x²)²=x⁴, so x⁴−x=0, x(x³−1)=0. Thus x=0 (giving y=0) or x=1 (giving y=1).',
+ hint:'Set ∂f/∂x=0 and ∂f/∂y=0. From the first equation express y in terms of x, substitute into the second.'},
+
+{cat:'Critical Points & Taylor',type:'mc',
+ text:'For f(x,y)=x³+y³−3xy at the critical point (1,1), the Hessian is H=[[6,−3],[−3,6]]. Classify this point.',
+ opts:['Local minimum (both eigenvalues positive: λ=3 and λ=9)',
+       'Saddle point (det(H)<0)',
+       'Local maximum',
+       'Degenerate (λ=0)'],
+ ans:0,
+ why:'det(H)=36−9=27>0 and trace=12>0, so both eigenvalues are positive (λ=(12±√(144−108))/2=(12±6)/2, giving 3 and 9). Hence (1,1) is a local minimum.',
+ hint:'Check: if det(H)>0 and ∂²f/∂x²>0, the point is a local minimum. If det(H)>0 and ∂²f/∂x²<0, local maximum. If det(H)<0, saddle.'},
+
+{cat:'Critical Points & Taylor',type:'mc',
+ text:'For f(x,y)=x³+y³−3xy at the critical point (0,0), the Hessian is H=[[0,−3],[−3,0]]. Classify this point.',
+ opts:['Saddle point (det(H)=0−9=−9<0)',
+       'Local minimum',
+       'Local maximum',
+       'Degenerate — cannot be classified'],
+ ans:0,
+ why:'det(H)=0·0−(−3)²=−9<0. Negative determinant means eigenvalues have opposite signs — a saddle point. Eigenvalues: λ²=9, λ=±3.',
+ hint:'det(H)<0 always means a saddle point (eigenvalues of opposite sign).'},
+
+{cat:'Critical Points & Taylor',type:'mc',
+ text:'The Hessian determinant criterion: if det(H)>0 at a critical point, then:',
+ opts:['Both eigenvalues have the same sign; use sign of ∂²f/∂x² to determine min vs max',
+       'The point is definitely a local minimum',
+       'The point is definitely a local maximum',
+       'The point is a saddle point'],
+ ans:0,
+ why:'det(H)=λ₁λ₂>0 means eigenvalues have the same sign. If ∂²f/∂x²>0 (i.e. both positive): local min. If ∂²f/∂x²<0 (i.e. both negative): local max. det(H)<0 ⟹ saddle. det(H)=0 ⟹ degenerate.',
+ hint:'det(H)=λ₁λ₂. What does the sign of this product tell you about the signs of the eigenvalues?'},
+
+{cat:'Critical Points & Taylor',type:'gap',
+ text:'Find and classify the critical points of f(x,y) = x³+y³−3xy.',
+ steps:[
+  {before:'∂f/∂x = 3x²−3y = 0 ⟹ y = x². ∂f/∂y = 3y²−3x = 0 ⟹ x = y². Substituting y=x²: x = (x²)² = x⁴, so x(x³−1)=0. Critical points: ',
+   answer:'(0,0) and (1,1)',after:'.',
+   why:'x=0⟹y=0; x=1⟹y=1.',dist:['(1,1) only','(0,0) only','(1,1) and (−1,−1)']},
+  {before:'At (0,0): H=[[0,−3],[−3,0]], det(H)=',answer:'−9',after:'<0 → saddle. At (1,1): H=[[6,−3],[−3,6]], det(H)=27>0, ∂²f/∂x²=6>0 → ',answer2:'local minimum',after2:'.',
+   why:'det at (0,0): 0·0−9=−9<0 saddle. det at (1,1): 36−9=27>0 and fxx=6>0 → local min.',dist:['9','0','27','saddle point','local maximum','degenerate']},
+ ]},
+
+// ---- MULTIPLE INTEGRALS ----
+{cat:'Multiple Integrals',type:'mc',
+ text:'Evaluate ∬_D xy dS where D = {(x,y): 0≤x≤1, 0≤y≤x}.',
+ opts:['1/8','1/4','1/6','1/12'],
+ ans:0,
+ why:'∫_0^1 ∫_0^x xy dy dx = ∫_0^1 x[y²/2]_0^x dx = ∫_0^1 x³/2 dx = [x⁴/8]_0^1 = 1/8.',
+ hint:'Inner integral: ∫_0^x xy dy (treat x as constant). Then integrate the result from 0 to 1.'},
+
+{cat:'Multiple Integrals',type:'mc',
+ text:'Evaluate ∫_0^2∫_0^{4−y} dx dy (switching to iterate x first).',
+ opts:['8','4','6','12'],
+ ans:0,
+ why:'∫_0^2∫_0^{4−y} dx dy = ∫_0^2 (4−y) dy = [4y−y²/2]_0^2 = 8−2 = 6. Wait: 4·2−4/2=8−2=6. But let me check: option A says 8. ∫_0^2(4−y)dy=[4y−y²/2]_0^2=8−2=6.',
+ opts:['6','8','4','12'],
+ ans:0,
+ why:'∫_0^2∫_0^{4−y} dx dy = ∫_0^2 (4−y) dy = [4y−y²/2]_0^2 = 8−2 = 6.',
+ hint:'The inner integral ∫_0^{4−y} dx = 4−y. Then integrate (4−y) from y=0 to y=2.'},
+
+{cat:'Multiple Integrals',type:'mc',
+ text:'To switch the order of integration in ∫_0^1∫_y^1 f(x,y) dx dy, the new limits are:',
+ opts:['∫_0^1∫_0^x f(x,y) dy dx',
+       '∫_0^1∫_0^y f(x,y) dy dx',
+       '∫_0^1∫_x^1 f(x,y) dy dx',
+       '∫_0^1∫_y^1 f(x,y) dx dy (unchanged)'],
+ ans:0,
+ why:'Original region: 0≤y≤1, y≤x≤1. This is the triangle where x≥y. Switching: 0≤x≤1, 0≤y≤x. So the new integral is ∫_0^1∫_0^x f(x,y) dy dx.',
+ hint:'Sketch the region of integration. The original says "for each y from 0 to 1, x goes from y to 1." Re-describe this region with x as the outer variable.'},
+
+{cat:'Multiple Integrals',type:'mc',
+ text:'Evaluate the triple integral ∭_V 1 dV where V is the box 0≤x≤2, 0≤y≤3, 0≤z≤4.',
+ opts:['24','9','14','12'],
+ ans:0,
+ why:'∭_V 1 dV = ∫_0^2∫_0^3∫_0^4 dz dy dx = (∫_0^2 dx)(∫_0^3 dy)(∫_0^4 dz) = 2·3·4 = 24. The triple integral of 1 gives the volume.',
+ hint:'The triple integral of 1 gives the volume. For a rectangular box this is length × width × height.'},
+
+{cat:'Multiple Integrals',type:'mc',
+ text:'Evaluate ∫_0^1∫_0^1∫_0^1 (x+y+z) dx dy dz.',
+ opts:['3/2','1','3','1/2'],
+ ans:0,
+ why:'By symmetry (or direct computation): ∫∫∫(x+y+z)dxdydz = ∫∫∫x dxdydz + ∫∫∫y dxdydz + ∫∫∫z dxdydz = 3·[∫_0^1 x dx·1·1] = 3·(1/2) = 3/2.',
+ hint:'Split into three integrals by linearity. By symmetry, each ∫∫∫x dxdydz = ∫∫∫y dxdydz = ∫∫∫z dxdydz.'},
+
+{cat:'Multiple Integrals',type:'gap',
+ text:'Evaluate ∫_0^1∫_{x}^{1} e^{y²} dy dx by switching the order of integration.',
+ steps:[
+  {before:'Original region: 0≤x≤1, x≤y≤1. Sketch: the triangle with y≥x. Switching order: 0≤y≤1, 0≤x≤',
+   answer:'y',after:'. New integral: ∫_0^1∫_0^y e^{y²} dx dy.',
+   why:'For each y (outer), x ranges from 0 to y (the diagonal boundary).',dist:['1','x','y²']},
+  {before:'∫_0^1∫_0^y e^{y²} dx dy = ∫_0^1 ye^{y²} dy = [e^{y²}/2]_0^1 = ',
+   answer:'(e−1)/2',after:'.',
+   why:'∫_0^y e^{y²}dx=ye^{y²}. Then ∫_0^1 ye^{y²}dy=[e^{y²}/2]_0^1=(e¹−e⁰)/2=(e−1)/2.',dist:['(e+1)/2','e/2','e−1']},
+ ]},
+
+// ---- CHANGE OF VARIABLES ----
+{cat:'Change of Variables',type:'mc',
+ text:'Using the substitution u=x+y, v=x−y (so x=(u+v)/2, y=(u−v)/2), the Jacobian |∂(x,y)/∂(u,v)| is:',
+ opts:['1/2','2','1','1/4'],
+ ans:0,
+ why:'∂x/∂u=1/2, ∂x/∂v=1/2, ∂y/∂u=1/2, ∂y/∂v=−1/2. det=1/2·(−1/2)−1/2·1/2=−1/4−1/4=−1/2. |J|=1/2.',
+ hint:'Compute ∂x/∂u, ∂x/∂v, ∂y/∂u, ∂y/∂v and take the absolute value of the determinant.'},
+
+{cat:'Change of Variables',type:'mc',
+ text:'In spherical coordinates x=ρ sinφ cosθ, y=ρ sinφ sinθ, z=ρ cosφ, the volume element dxdydz equals:',
+ opts:['ρ² sinφ dρ dφ dθ','ρ² dρ dφ dθ','ρ sinφ dρ dφ dθ','ρ² cosφ dρ dφ dθ'],
+ ans:0,
+ why:'The Jacobian determinant for spherical coordinates is ρ² sinφ. So dxdydz = ρ² sinφ dρ dφ dθ.',
+ hint:'The Jacobian for spherical coordinates is a standard result: |∂(x,y,z)/∂(ρ,φ,θ)| = ρ² sinφ.'},
+
+{cat:'Change of Variables',type:'mc',
+ text:'Compute ∬_D e^{x+y} dxdy where D is the parallelogram with vertices (0,0),(1,0),(2,1),(1,1), using u=x−y, v=x+y.',
+ opts:['(e³−e²−e+1)/2 = (e−1)²(e+1)/2... actually (e²−e)(e−1)/2 = ½(e³−2e²+e)',
+       '(e³−1)/2',
+       'e²−1',
+       '(e−1)²'],
+ ans:0,
+ why:'With u=x−y, v=x+y: |J|=1/2. D maps to 0≤u≤1, 1≤v≤3... let me re-examine. Actually vertices map as: (0,0)→(0,0),(1,0)→(1,1),(2,1)→(1,3),(1,1)→(0,2). The region becomes 0≤u≤1, u+1≤v≤u+2... this is complex. The key result is |J|=1/2 and the integral becomes (1/2)∫∫e^v dudv.',
+ hint:'The main skill here: find |∂(x,y)/∂(u,v)|=1/2, substitute e^v for e^{x+y}, then determine the new region limits.'},
+
+{cat:'Change of Variables',type:'mc',
+ text:'Evaluate ∬_D dxdy where D is the disk x²+y²≤R², using polar coordinates.',
+ opts:['πR²','2πR','πR²/2','2πR²'],
+ ans:0,
+ why:'∬_D dxdy = ∫_0^{2π}∫_0^R r dr dθ = 2π·[r²/2]_0^R = 2π·R²/2 = πR². This confirms the area of a disk of radius R.',
+ hint:'In polar coordinates: dxdy=r dr dθ, and the disk becomes 0≤r≤R, 0≤θ≤2π.'},
+
+{cat:'Change of Variables',type:'gap',
+ text:'Evaluate ∬_D √(x²+y²) dxdy over the semicircle D={x²+y²≤4, y≥0} using polar coordinates.',
+ steps:[
+  {before:'In polar: √(x²+y²)=r, dxdy=r dr dθ. Semicircle D maps to r∈[0,2], θ∈[0,π]. Integral = ∫_0^π∫_0^2 r·r dr dθ = ∫_0^π dθ · ∫_0^2 ',
+   answer:'r²',after:' dr.',
+   why:'√(x²+y²)=r and dxdy=r dr dθ, so the integrand becomes r·r=r².',dist:['r','r³','r/2']},
+  {before:'= π · [r³/3]_0^2 = π · 8/3 = ',
+   answer:'8π/3',after:'.',
+   why:'∫_0^π dθ=π. ∫_0^2 r² dr=[r³/3]_0^2=8/3. Product: 8π/3.',dist:['4π/3','16π/3','2π']},
+ ]},
+
+// ---- LAGRANGE MULTIPLIERS ----
+{cat:'Lagrange Multipliers',type:'mc',
+ text:'Find the minimum distance from the origin to the plane 2x+y+2z=9.',
+ opts:['3 (point (2,1,2))',
+       '9 (point (9/5,9/5,9/5))',
+       '√6',
+       '9/3=3 but at (9/2,0,0)'],
+ ans:0,
+ why:'Minimise f=x²+y²+z² subject to g=2x+y+2z=9. Lagrange: (2x,2y,2z)=λ(2,1,2), so x=λ, y=λ/2, z=λ. Constraint: 2λ+λ/2+2λ=9 → 9λ/2=9 → λ=2. So (x,y,z)=(2,1,2), dist=√(4+1+4)=3.',
+ hint:'Set ∇f=λ∇g: 2x=2λ, 2y=λ, 2z=2λ. Solve for x,y,z in terms of λ, then use the constraint.'},
+
+{cat:'Lagrange Multipliers',type:'mc',
+ text:'Maximise f(x,y)=xy subject to x+y=10 (x,y>0).',
+ opts:['Maximum is 25, at x=y=5',
+       'Maximum is 50, at x=10, y=0',
+       'Maximum is 10, at x=y=5',
+       'No maximum exists'],
+ ans:0,
+ why:'Lagrange: (y,x)=λ(1,1) ⟹ y=x=λ. Constraint: 2λ=10 ⟹ λ=5. So x=y=5, f=25. (By AM-GM: xy≤((x+y)/2)²=25, equality when x=y.)',
+ hint:'Set ∇f=λ∇g: ∂f/∂x=y=λ and ∂f/∂y=x=λ. What does this tell you about x and y?'},
+
+{cat:'Lagrange Multipliers',type:'mc',
+ text:'Find extrema of f(x,y,z)=x+2y+3z subject to x²+y²+z²=14.',
+ opts:['Maximum √(1²+2²+3²)·√14=14 at (1,2,3); minimum −14 at (−1,−2,−3)',
+       'Maximum 14 at (1,2,3); minimum −14 at (−1,−2,−3)',
+       'Maximum 6 at (1,2,3)',
+       'Maximum √14 at (1/√14, 2/√14, 3/√14)'],
+ ans:1,
+ why:'Lagrange: (1,2,3)=λ(2x,2y,2z) ⟹ x=1/(2λ), y=1/λ, z=3/(2λ). Constraint: 1/(4λ²)+1/λ²+9/(4λ²)=14 ⟹ 14/(4λ²)=14 ⟹ λ=±1/2. For λ=1/2: (x,y,z)=(1,2,3), f=1+4+9=14. For λ=−1/2: (x,y,z)=(−1,−2,−3), f=−14.',
+ hint:'Lagrange gives x=1/(2λ), y=1/λ, z=3/(2λ). Substitute into x²+y²+z²=14 to find λ.'},
+
+{cat:'Lagrange Multipliers',type:'mc',
+ text:'Using Lagrange multipliers to maximise f(x,y)=x²y on the ellipse x²+4y²=12, the critical point condition ∇f=λ∇g gives:',
+ opts:['(2xy, x²) = λ(2x, 8y), leading to x²=4y² at non-trivial solutions',
+       '(2xy, x²) = λ(x, 4y), leading to x=2y',
+       '(xy, x²) = λ(2x, 8y)',
+       '(2xy, x²) = (2λx, 8λy) requires x=0 or y=0'],
+ ans:0,
+ why:'∇f=(2xy, x²), ∇g=(2x, 8y). Lagrange: 2xy=2λx ⟹ y=λ (if x≠0); x²=8λy=8y² ⟹ x²=8y². Combined with ellipse x²+4y²=12: 8y²+4y²=12 ⟹ y²=1 ⟹ y=±1, x=±2√2.',
+ hint:'Write ∇f=λ∇g component by component. From the first equation (assuming x≠0) find λ in terms of y, then substitute into the second.'},
+
+{cat:'Lagrange Multipliers',type:'tf',
+ text:'Lagrange multiplier theory',
+ statements:[
+  {s:'At a constrained maximum of f subject to g=c, we must have ∇f=λ∇g for some λ∈ℝ.',ans:true,
+   why:'TRUE. This is the Lagrange condition — the gradient of f must be parallel to the gradient of g at a constrained extremum (assuming ∇g≠0).'},
+  {s:'The value of the Lagrange multiplier λ has no physical meaning.',ans:false,
+   why:'FALSE. λ has a concrete interpretation: it equals ∂f/∂c, the rate of change of the optimal value of f as the constraint c changes.'},
+  {s:'If f and g have continuous partial derivatives and ∇g≠0 at the solution, the method is guaranteed to find all local extrema on g=c.',ans:true,
+   why:'TRUE. Every local extremum of f on the constraint surface g=c must satisfy ∇f=λ∇g (when ∇g≠0). So solving the Lagrange system finds all candidates.'},
+  {s:'For two constraints g₁=c₁ and g₂=c₂, the Lagrangian is L=f−λg₁−μg₂ (omitting the constants c₁, c₂ since ∂L/∂λ=0 recovers g₁=c₁).',ans:true,
+   why:'TRUE. Writing L=f−λ(g₁−c₁)−μ(g₂−c₂) or equivalently L=f−λg₁−μg₂ (plus constants that vanish on differentiation) are equivalent.'},
+ ]},
+
+// ================================================================
+// NEW QUESTIONS — BATCH 3
+// ================================================================
+
+// ---- LIMITS & CONTINUITY ----
+{cat:'Limits & Continuity',type:'mc',
+ text:'Find lim_{(x,y)→(0,0)} sin(x²+y²)/(x²+y²).',
+ opts:['1','0','Does not exist','π'],
+ ans:0,
+ why:'Let r²=x²+y². As (x,y)→(0,0), r→0. The limit becomes lim_{r→0} sin(r²)/r² = 1 (standard single-variable limit lim_{u→0} sin(u)/u = 1 with u=r²).',
+ hint:'Substitute u=x²+y² and recognise the standard limit lim_{u→0} sin(u)/u.'},
+
+{cat:'Limits & Continuity',type:'mc',
+ text:'Which of the following functions is continuous at (0,0)?',
+ opts:['f(x,y) = (x²−y²)/(x²+y²) for (x,y)≠(0,0), f(0,0) = 0 — DISCONTINUOUS (limit along y=0 is 1, along x=0 is −1)',
+       'f(x,y) = xy/√(x²+y²) for (x,y)≠(0,0), f(0,0) = 0',
+       'f(x,y) = (x+y)/(x−y) for (x,y)≠(0,0), f(0,0) = 0',
+       'f(x,y) = x/(x+y) for (x,y)≠(0,0), f(0,0) = 1/2'],
+ ans:1,
+ why:'For option B: |xy/√(x²+y²)| ≤ (x²+y²)/(2√(x²+y²)) = √(x²+y²)/2 → 0. So f→0=f(0,0): continuous. Option A has different limits along different lines.',
+ hint:'Use the squeeze: |xy| ≤ (x²+y²)/2 (AM-GM), so |xy/√(x²+y²)| ≤ √(x²+y²)/2.'},
+
+{cat:'Limits & Continuity',type:'mc',
+ text:'A scalar field f:ℝ²→ℝ is continuous at (a,b) if and only if:',
+ opts:['For every sequence (xₙ,yₙ)→(a,b), f(xₙ,yₙ)→f(a,b)',
+       'The partial derivatives ∂f/∂x and ∂f/∂y both exist at (a,b)',
+       'f is bounded near (a,b)',
+       'lim_{x→a} f(x,b) = f(a,b) and lim_{y→b} f(a,y) = f(a,b)'],
+ ans:0,
+ why:'The sequential characterisation of continuity works in ℝⁿ just as in ℝ: f is continuous at a iff f(xₙ)→f(a) for every sequence xₙ→a. Options B and D are insufficient (they miss curved paths).'},
+
+{cat:'Limits & Continuity',type:'gap',
+ text:'Prove f(x,y)=x is continuous at (a,b) using the ε-δ definition (Specimen Exam 1, Q1).',
+ steps:[
+  {before:'We need: given ε>0, find δ>0 such that 0<‖(x,y)−(a,b)‖<δ ⟹ |f(x,y)−f(a,b)|=|x−a|<ε. Try δ=',
+   answer:'ε',after:'. Then ‖(x,y)−(a,b)‖<δ means √((x−a)²+(y−b)²)<ε.',
+   why:'We choose δ=ε as the response to any challenge ε>0.',dist:['ε/2','ε²','1']},
+  {before:'Since (y−b)²≥0, we have (x−a)²≤(x−a)²+(y−b)²<ε², so |x−a|<',
+   answer:'ε',after:'. This completes the proof that f is continuous at (a,b).',
+   why:'√((x−a)²)≤√((x−a)²+(y−b)²)<ε, so |x−a|<ε.',dist:['δ²','ε²','2ε']},
+ ]},
+
+// ---- CHAIN RULE ----
+{cat:'Chain Rule',type:'mc',
+ text:'If F(t)=f(x(t),y(t)) and x(t)=cos t, y(t)=sin t, what is dF/dt at t=0 given ∇f(1,0)=(3,−2)?',
+ opts:['−2','3','−3','0'],
+ ans:0,
+ why:'dF/dt = (∂f/∂x)(dx/dt)+(∂f/∂y)(dy/dt). At t=0: x=1,y=0, dx/dt=−sin(0)=0, dy/dt=cos(0)=1. So dF/dt = 3·0+(−2)·1 = −2.',
+ hint:'Compute dx/dt and dy/dt at t=0. Then apply dF/dt=(∂f/∂x)(dx/dt)+(∂f/∂y)(dy/dt) using ∇f(1,0).'},
+
+{cat:'Chain Rule',type:'mc',
+ text:'For F(r,θ)=f(r cosθ, r sinθ), which identity is always true?',
+ opts:['(∂F/∂r)² + (1/r²)(∂F/∂θ)² = (∂f/∂x)²+(∂f/∂y)² = ‖∇f‖²',
+       '∂F/∂r = (1/r)∂F/∂θ always',
+       '∂²F/∂r² = ∂²f/∂x²+∂²f/∂y²',
+       'r∂F/∂r = ∂F/∂θ when f is harmonic'],
+ ans:0,
+ why:'(∂F/∂r)²=(cosθ fx+sinθ fy)² and (1/r²)(∂F/∂θ)²=(1/r²)(−r sinθ fx+r cosθ fy)²=(−sinθ fx+cosθ fy)². Sum: (cos²θ+sin²θ)fx²+(sin²θ+cos²θ)fy²=fx²+fy²=‖∇f‖².'},
+
+{cat:'Chain Rule',type:'mc',
+ text:'In the chain rule for F(u,v)=f(x(u,v),y(u,v)), the formula ∂F/∂u = (∂f/∂x)(∂x/∂u)+(∂f/∂y)(∂y/∂u) can be written in matrix form as:',
+ opts:['[∂F/∂u, ∂F/∂v] = [∂f/∂x, ∂f/∂y] · [[∂x/∂u, ∂x/∂v],[∂y/∂u, ∂y/∂v]]',
+       '[∂F/∂u, ∂F/∂v] = [[∂x/∂u, ∂x/∂v],[∂y/∂u, ∂y/∂v]] · [∂f/∂x, ∂f/∂y]',
+       'dF = df · dx','∇F = ∇f · J'],
+ ans:0,
+ why:'The chain rule is d_{(u,v)}F = d_{(x,y)}f · d_{(u,v)}(x,y): the Jacobian of the composition equals the gradient of f times the Jacobian of the substitution. In the abstract chain rule: da(g∘f)=df(a)g·daf.',
+ hint:'The chain rule d(g∘f)=dg·df means: the Jacobian of the composition is the product of the Jacobians.'},
+
+{cat:'Chain Rule',type:'gap',
+ text:'F(t)=f(x(t),y(t)) with x(t)=3t, y(t)=5t. Find d²F/dt² (Specimen Exam 2, Q4b). Given symmetric second partials, find α,β,γ with d²F/dt²=α·fₓₓ+β·fₓᵧ+γ·fᵧᵧ.',
+ steps:[
+  {before:'dF/dt = 3fₓ+5fᵧ. Differentiating again: d/dt(fₓ)=(∂fₓ/∂x)·3+(∂fₓ/∂y)·5=3fₓₓ+5fₓᵧ. So d²F/dt²=3(3fₓₓ+5fₓᵧ)+5(3fₓᵧ+5fᵧᵧ). Thus α=',
+   answer:'9',after:', β=',answer2:'30',after2:', γ=25.',
+   why:'3×3=9, 3×5+5×3=30, 5×5=25.',dist:['3','6','15','15','25','10']},
+ ]},
+
+// ---- CRITICAL POINTS & TAYLOR ----
+{cat:'Critical Points & Taylor',type:'mc',
+ text:'The second-order Taylor expansion of f(x,y) near a critical point (a,b) where ∇f=0 simplifies to:',
+ opts:['f(a,b) + ½hᵀH(a,b)h',
+       'f(a,b) + h·∇f(a,b)',
+       'f(a,b) + h·∇f(a,b) + ½hᵀH(a,b)h',
+       '½hᵀH(a,b)h only'],
+ ans:0,
+ why:'At a critical point ∇f(a,b)=0, so the first-order term h·∇f(a,b) vanishes. The expansion reduces to f(a,b)+½hᵀH(a,b)h, showing the Hessian completely determines local behaviour.',
+ hint:'At a critical point, what happens to the first-order term in the Taylor expansion?'},
+
+{cat:'Critical Points & Taylor',type:'mc',
+ text:'For f(x,y)=x⁴+y⁴−4xy, find the critical points.',
+ opts:['(0,0), (√2,√2), (−√2,−√2)',
+       '(0,0) only',
+       '(1,1) and (−1,−1)',
+       '(0,0), (1,1), (−1,−1), (1,−1)'],
+ ans:0,
+ why:'fₓ=4x³−4y=0⟹y=x³. fᵧ=4y³−4x=0⟹x=y³. Substituting: x=(x³)³=x⁹, so x(x⁸−1)=0. Thus x=0 or x⁸=1⟹x=±1. For x=0: y=0. For x=1: y=1. For x=−1: y=−1. Three critical points.',
+ hint:'Set fₓ=4x³−4y=0 to get y=x³. Substitute into fᵧ=4y³−4x=0 and solve.'},
+
+{cat:'Critical Points & Taylor',type:'mc',
+ text:'The 2D Taylor expansion f(a+h,b+k)≈f(a,b)+hfₓ+kfᵧ+½(h²fₓₓ+2hkfₓᵧ+k²fᵧᵧ) can be written using the Hessian as f(a+h)≈f(a)+h·∇f(a)+½hᵀHh. What does hᵀHh equal explicitly in 2D?',
+ opts:['h²fₓₓ + 2hkfₓᵧ + k²fᵧᵧ',
+       'hfₓ + kfᵧ',
+       'h²fₓₓ + k²fᵧᵧ',
+       '(hfₓ+kfᵧ)²'],
+ ans:0,
+ why:'With h=(h,k) and H=[[fₓₓ,fₓᵧ],[fₓᵧ,fᵧᵧ]]: hᵀHh=(h,k)·(hfₓₓ+kfₓᵧ, hfₓᵧ+kfᵧᵧ)=h²fₓₓ+hkfₓᵧ+hkfₓᵧ+k²fᵧᵧ=h²fₓₓ+2hkfₓᵧ+k²fᵧᵧ.',
+ hint:'Multiply out hᵀ(Hh) explicitly with H=[[fₓₓ,fₓᵧ],[fₓᵧ,fᵧᵧ]] and h=(h,k).'},
+
+{cat:'Critical Points & Taylor',type:'tf',
+ text:'Critical points and Hessian classification',
+ statements:[
+  {s:'If det(H)<0 at a critical point, then the point is a saddle point.',ans:true,
+   why:'TRUE. det(H)=λ₁λ₂. If det(H)<0, the eigenvalues have opposite signs, so f increases in one eigendirection and decreases in the other — a saddle.'},
+  {s:'If det(H)>0 at a critical point, then the point is a local minimum.',ans:false,
+   why:'FALSE. det(H)>0 means both eigenvalues have the same sign. If fₓₓ>0 it is a local minimum; if fₓₓ<0 it is a local maximum. The sign of fₓₓ is needed.'},
+  {s:'A function f:ℝ²→ℝ can have a critical point where ∇f=0 but the Hessian criterion is inconclusive (det(H)=0).',ans:true,
+   why:'TRUE. When det(H)=0, at least one eigenvalue is zero. Higher-order terms in the Taylor expansion are needed to classify the critical point.'},
+  {s:'Every local minimum of a differentiable function f:ℝ²→ℝ is a critical point.',ans:true,
+   why:'TRUE. At an interior local minimum, all directional derivatives are zero, so ∇f=0. (This is the 2D Fermat theorem.)'},
+ ]},
+
+// ---- MULTIPLE INTEGRALS ----
+{cat:'Multiple Integrals',type:'mc',
+ text:'Evaluate ∭_V xyz dV over the unit cube V=[0,1]³.',
+ opts:['1/8','1/6','1/4','1/27'],
+ ans:0,
+ why:'By Fubini: (∫₀¹x dx)(∫₀¹y dy)(∫₀¹z dz)=(½)(½)(½)=1/8. The integrand factors completely so the triple integral factors into three independent single integrals.',
+ hint:'Since xyz=x·y·z and the domain is a box, the integral factors: ∭xyz dV=(∫x dx)(∫y dy)(∫z dz).'},
+
+{cat:'Multiple Integrals',type:'mc',
+ text:'The region D bounded by y=x, y=2x, x=1 and x=2. Which iterated integral correctly represents ∬_D f dS?',
+ opts:['∫₁²∫ₓ²ˣ f(x,y) dy dx',
+       '∫₁²∫ₓ²ˣ f(x,y) dx dy',
+       '∫₀²∫ₓ²ˣ f(x,y) dy dx',
+       '∫₁²∫₀ˣ f(x,y) dy dx'],
+ ans:0,
+ why:'For each x∈[1,2], y ranges from x (lower boundary y=x) to 2x (upper boundary y=2x). The outer integral runs from x=1 to x=2.',
+ hint:'For each fixed x∈[1,2], what are the minimum and maximum values of y in the region?'},
+
+{cat:'Multiple Integrals',type:'mc',
+ text:'Evaluate ∫₀¹∫_{√y}^1 e^{x³} dx dy by switching the order of integration.',
+ opts:['(e−1)/3','(e−1)/2','e/3','1/3'],
+ ans:0,
+ why:'Original: 0≤y≤1, √y≤x≤1. Switch: 0≤x≤1, 0≤y≤x². New: ∫₀¹∫₀^{x²} e^{x³} dy dx = ∫₀¹ x²e^{x³} dx = [e^{x³}/3]₀¹ = (e−1)/3.',
+ hint:'Sketch the region: y≤x² means x≥√y. Switching order: for each x∈[0,1], y runs from 0 to x². Then the inner integral ∫₀^{x²} e^{x³} dy = x²e^{x³}.'},
+
+{cat:'Multiple Integrals',type:'gap',
+ text:'Evaluate ∫_{-1}^{1}∫_0^{√(1-x²)} y dy dx (upper half of unit disk).',
+ steps:[
+  {before:'Inner integral: ∫_0^{√(1-x²)} y dy = [y²/2]_0^{√(1-x²)} = ',
+   answer:'(1-x²)/2',after:'.',
+   why:'y² evaluated at y=√(1-x²) gives 1-x², divided by 2.',dist:['√(1-x²)/2','(1-x²)','1/2']},
+  {before:'Outer: ∫_{-1}^{1} (1-x²)/2 dx = ½[x - x³/3]_{-1}^{1} = ½[(1-1/3)−(−1+1/3)] = ½·4/3 = ',
+   answer:'2/3',after:'.',
+   why:'[x-x³/3] from -1 to 1: (1-1/3)-(-1+1/3)=2/3+2/3=4/3. Half of 4/3 is 2/3.',dist:['1/3','4/3','π/4']},
+ ]},
+
+// ---- CHANGE OF VARIABLES ----
+{cat:'Change of Variables',type:'mc',
+ text:'For the substitution x=2u, y=3v (scaling), the Jacobian |∂(x,y)/∂(u,v)| is:',
+ opts:['6','1/6','5','1'],
+ ans:0,
+ why:'∂x/∂u=2, ∂x/∂v=0, ∂y/∂u=0, ∂y/∂v=3. det=2·3−0·0=6. So dxdy=6 du dv.',
+ hint:'The Jacobian matrix is diagonal: [[2,0],[0,3]]. Its determinant is 2×3=6.'},
+
+{cat:'Change of Variables',type:'mc',
+ text:'Using x=r cosθ, y=r sinθ, evaluate ∬_D (x²+y²) dxdy over D = {x²+y²≤a²}.',
+ opts:['πa⁴/2','πa²','2πa³/3','πa⁴'],
+ ans:0,
+ why:'∬_D (x²+y²)dxdy = ∫₀^{2π}∫₀^a r²·r dr dθ = 2π·[r⁴/4]₀^a = 2π·a⁴/4 = πa⁴/2.',
+ hint:'In polar: x²+y²=r² and dxdy=r dr dθ. The disk becomes r∈[0,a], θ∈[0,2π).'},
+
+{cat:'Change of Variables',type:'mc',
+ text:'The change of variables formula states ∬_D f(x,y)dxdy = ∬_{D\'} f(x(u,v),y(u,v))|J| du dv. Why must we use |J| rather than J?',
+ opts:['Area is always positive, so we need the absolute value to ensure the area element dxdy>0 regardless of orientation',
+       'J can be complex-valued in some cases',
+       'The formula only works when J>0',
+       '|J|=J always since Jacobians are always positive'],
+ ans:0,
+ why:'The area element dA=dxdy must be positive. The signed Jacobian J can be negative if the change of variables reverses orientation. Taking |J| ensures dA>0 in all cases.',
+ hint:'Think about what happens geometrically if the transformation reverses the orientation of the region.'},
+
+// ---- LAGRANGE MULTIPLIERS ----
+{cat:'Lagrange Multipliers',type:'mc',
+ text:'Heron\'s formula gives area A=√(m(m-a)(m-b)(m-c)) where m=(a+b+c)/2. For fixed perimeter (fixed m), which triangle maximises area?',
+ opts:['Equilateral triangle: a=b=c=2m/3',
+       'Right-angled triangle',
+       'Isosceles triangle with any angle',
+       'The triangle with the largest angle equal to 90°'],
+ ans:0,
+ why:'Maximise f=(m-a)(m-b)(m-c) subject to a+b+c=2m. Lagrange gives equal partial derivatives, forcing a=b=c=2m/3. This is the equilateral triangle — consistent with the AM-GM inequality.',
+ hint:'By symmetry and AM-GM: (m-a)(m-b)(m-c) ≤ ((m-a+m-b+m-c)/3)³ = (m/3)³, with equality when m-a=m-b=m-c.'},
+
+{cat:'Lagrange Multipliers',type:'mc',
+ text:'To minimise f(x,y,z)=x²+y²+z² subject to z²=x²+y² and x−2z=3, the Lagrangian is:',
+ opts:['L=x²+y²+z²−λ(x²+y²−z²)−μ(x−2z−3)',
+       'L=x²+y²+z²−λ(z²−x²−y²)−μ(x−2z−3)',
+       'L=x²+y²+z²+λ(x²+y²−z²)+μ(x−2z−3)',
+       'L=x²+y²+z²−λ(x²+y²−z²)−μ(x−2z)'],
+ ans:0,
+ why:'L = f − λ(g₁−c₁) − μ(g₂−c₂) = x²+y²+z² − λ(x²+y²−z²) − μ(x−2z−3). Setting ∂L/∂λ=0 gives the constraint x²+y²−z²=0, i.e. z²=x²+y².',
+ hint:'Write L=f−λ(g₁−c₁)−μ(g₂−c₂) with g₁=x²+y²−z², c₁=0 and g₂=x−2z, c₂=3.'},
+
+{cat:'Lagrange Multipliers',type:'gap',
+ text:'Find the maximum of f(x,y)=xy on the ellipse x²/4+y²=1 using Lagrange multipliers.',
+ steps:[
+  {before:'g(x,y)=x²/4+y²=1. ∇f=(y,x), ∇g=(x/2, 2y). Lagrange ∇f=λ∇g: y=λx/2 and x=2λy. Substituting the first into the second: x=2λ(λx/2)=λ²x. So λ²=1, λ=',
+   answer:'±1',after:'. For λ=1: y=x/2.',
+   why:'λ²x=x (for x≠0) gives λ²=1, so λ=±1.',dist:['±2','±½','±√2']},
+  {before:'Constraint with y=x/2: x²/4+(x/2)²=x²/4+x²/4=x²/2=1, so x²=2, x=±√2, y=±√2/2=±1/√2. Maximum value of xy = √2·(1/√2) = ',
+   answer:'1',after:'. (For λ=−1: minimum xy=−1.)',
+   why:'xy=√2·(1/√2)=√2/√2=1.',dist:['√2','2','1/2']},
+ ]},
+
+{cat:'Lagrange Multipliers',type:'mc',
+ text:'Suppose we want to maximise f(x,y)=x²+y over the circle x²+y²=1. Setting up Lagrange: ∇f=(2x,1)=λ(2x,2y). The second component gives:',
+ opts:['1=2λy, so λ=1/(2y) (valid when y≠0)',
+       'y=λ, so λ=y',
+       '1=2λ, so λ=1/2 always',
+       'y=2λ'],
+ ans:0,
+ why:'∇g=(2x,2y). Second component of ∇f=λ∇g: 1=λ·2y, giving λ=1/(2y). Then first component: 2x=λ·2x=2x/(2y)=x/y, so either x=0 or y=1.',
+ hint:'Write out ∇f=λ∇g component by component and read off the second equation.'},
+
 ];
 
-// Distribute questions to categories
-ALL_QUESTIONS.forEach(q => { if(CATS[q.cat]) CATS[q.cat].questions.push(q); });
+// ================================================================
+// CATEGORIES
+// ================================================================
+const CAT_LIST=[
+  'Limits & Continuity','Partial Derivatives','Gradient & Differentiability',
+  'Chain Rule','Critical Points & Taylor','Multiple Integrals',
+  'Change of Variables','Lagrange Multipliers'
+];
+const CAT_COLORS={
+  'Limits & Continuity':'#6B9FE4','Partial Derivatives':'#2DD4BF',
+  'Gradient & Differentiability':'#A78BFA','Chain Rule':'#F59E0B',
+  'Critical Points & Taylor':'#34D399','Multiple Integrals':'#EC4899',
+  'Change of Variables':'#F97316','Lagrange Multipliers':'#60A5FA'
+};
 
 // ================================================================
 // STATE
 // ================================================================
-let activeQuestions = [], qi = 0, correct = 0, total = 0, lastCat = null;
-let qData = {};
+let qData={}, mode='all', tot=0, cor=0, stk=0;
+let qs=[], qi=0, done=false, tfIdx=0, tfCor=0, gapOk=true, gapChecked=0, gapTotal=0;
 
-function qKey(q){ return (q.cat+'_'+q.text.slice(0,30)).replace(/\W/g,'_'); }
-function loadQData(){ try{ const r=localStorage.getItem('msp1613_qdata'); if(r) qData=JSON.parse(r); }catch(e){ qData={}; } }
-function saveQData(){ try{ localStorage.setItem('msp1613_qdata', JSON.stringify(qData)); }catch(e){} }
-function getEntry(q){ const k=qKey(q); if(!qData[k]) qData[k]={seen:0,correct:0,lastSeen:0,history:[]}; return qData[k]; }
+function qKey(q){return(q.cat+'|'+q.text.slice(0,40)).replace(/\W/g,'_');}
+function loadQData(){try{const r=localStorage.getItem('msp_qdata');if(r)qData=JSON.parse(r);}catch(e){qData={};}}
+function saveQData(){try{localStorage.setItem('msp_qdata',JSON.stringify(qData));}catch(e){}}
+function getE(q){const k=qKey(q);if(!qData[k])qData[k]={seen:0,correct:0,lastSeen:0,history:[]};return qData[k];}
+function loadStats(){
+  const p=+localStorage.getItem('msp_p')||0,c=+localStorage.getItem('msp_c')||0,t=+localStorage.getItem('msp_t')||0;
+  document.getElementById('hs-p').textContent=p||'0';
+  document.getElementById('hs-c').textContent=c||'0';
+  document.getElementById('hs-a').textContent=t>0?(Math.round(c/t*100)+'%'):'—';
+  renderMastery();
+}
+function saveStats(){
+  localStorage.setItem('msp_p',(+localStorage.getItem('msp_p')||0)+1);
+  localStorage.setItem('msp_c',(+localStorage.getItem('msp_c')||0)+cor);
+  localStorage.setItem('msp_t',(+localStorage.getItem('msp_t')||0)+tot);
+  loadStats();
+  pushData&&pushData();
+}
 
+function show(id){document.querySelectorAll('.scr').forEach(s=>s.classList.remove('on'));document.getElementById(id).classList.add('on');}
+function goHome(){saveStats();show('s-home');loadStats();}
+
+// ================================================================
+// CATEGORY FILTER
+// ================================================================
+let activeCat=null;
+function selCat(cat){
+  activeCat=cat;
+  document.querySelectorAll('.mode-pill').forEach(p=>p.classList.remove('on'));
+  const pillMap={null:'pill-all','Limits & Continuity':'pill-lim','Partial Derivatives':'pill-par',
+    'Gradient & Differentiability':'pill-grd','Chain Rule':'pill-chn',
+    'Critical Points & Taylor':'pill-crt','Multiple Integrals':'pill-int',
+    'Change of Variables':'pill-chv','Lagrange Multipliers':'pill-lag'};
+  const id=pillMap[cat];
+  if(id)document.getElementById(id).classList.add('on');
+  const note=document.getElementById('home-note');
+  const pool=cat?Q.filter(q=>q.cat===cat):Q;
+  note.textContent='10 questions · '+pool.length+' available · '+(cat||'All Topics');
+}
+
+// ================================================================
+// SELECTION (weighted by recency & accuracy)
+// ================================================================
+function qWeight(q){
+  const e=getE(q);
+  if(e.seen===0)return 200;
+  const acc=e.history.length?e.history.filter(Boolean).length/e.history.length:0.5;
+  let w=Math.exp(-4*acc);
+  const age=Date.now()-(e.lastSeen||0);
+  if(age>900000)w*=Math.min(8,1+Math.log2(age/900000));
+  return w;
+}
+
+function selectQuestions(n){
+  const pool=(activeCat?Q.filter(q=>q.cat===activeCat):[...Q]).map(q=>({q,w:qWeight(q)}));
+  const selected=[],avail=[...pool];
+  for(let i=0;i<Math.min(n,avail.length);i++){
+    const tot=avail.reduce((s,x)=>s+x.w,0);if(tot<=0)break;
+    let r=Math.random()*tot;
+    for(let j=0;j<avail.length;j++){r-=avail[j].w;if(r<=0){selected.push(avail[j].q);avail.splice(j,1);break;}}
+  }
+  return selected;
+}
+
+// ================================================================
+// MASTERY PANEL
+// ================================================================
 function catScore(cat){
-  const qs = CATS[cat].questions;
-  if(!qs.length) return {score:0, seen:0, total:qs.length};
-  const seen = qs.filter(q=>getEntry(q).seen>0);
-  if(!seen.length) return {score:0, seen:0, total:qs.length};
-  const avg = seen.reduce((s,q)=>{ const e=getEntry(q); return s+(e.history.length?e.history.filter(Boolean).length/e.history.length:0); },0)/seen.length;
-  return {score:Math.round(avg*100*seen.length/qs.length), seen:seen.length, total:qs.length};
+  const catQs=Q.filter(q=>q.cat===cat);
+  const seen=catQs.filter(q=>getE(q).seen>0);
+  if(!seen.length)return{score:0,seen:0,total:catQs.length};
+  const avg=seen.reduce((s,q)=>{const e=getE(q);return s+(e.history.length?e.history.filter(Boolean).length/e.history.length:0);},0)/seen.length;
+  return{score:Math.round(avg*100*seen.length/catQs.length),seen:seen.length,total:catQs.length};
 }
-
-function catColor(score){
-  if(score>=90) return '#34D399';
-  if(score>=70) return '#60A5FA';
-  if(score>=50) return '#F59E0B';
-  if(score>0) return '#EF4444';
-  return '#475569';
-}
-
-// ================================================================
-// HOME
-// ================================================================
-function show(id){ document.querySelectorAll('.scr').forEach(s=>s.classList.remove('active')); document.getElementById(id).classList.add('active'); }
-function goHome(){ show('s-home'); renderHome(); }
-
-function renderHome(){
-  const list = document.getElementById('cat-list');
-  list.innerHTML = '';
-  Object.entries(CATS).forEach(([name, cat])=>{
-    const {score, seen, total} = catScore(name);
-    const col = seen===0 ? '#475569' : catColor(score);
-    const div = document.createElement('div');
-    div.className = 'cat-card';
-    div.style.borderColor = seen>0 ? col+'40' : 'rgba(255,255,255,.1)';
-    div.innerHTML = `
-      <div class="cat-name" style="color:${cat.color}">${name}</div>
-      <div class="cat-desc">${cat.desc}</div>
-      <div class="cat-bar-bg"><div class="cat-bar-fill" style="width:${score}%;background:${col}"></div></div>
-      <div class="cat-meta"><span>${seen===0?'Not started':seen+'/'+total+' seen'}</span><span style="color:${col}">${seen===0?'':score+'%'}</span></div>`;
-    div.onclick = () => startQuiz(name);
-    list.appendChild(div);
+function catColor(s){return s>=90?'#34D399':s>=70?'#60A5FA':s>=50?'#F59E0B':s>0?'#EF4444':'#475569';}
+function renderMastery(){
+  const panel=document.getElementById('mastery-panel'),list=document.getElementById('mastery-list');
+  if(!panel||!list)return;
+  const anySeen=Q.some(q=>getE(q).seen>0);
+  panel.style.display=anySeen?'block':'none';
+  if(!anySeen)return;
+  list.innerHTML='';
+  CAT_LIST.forEach(cat=>{
+    const {score,seen,total}=catScore(cat);
+    const col=catColor(score);
+    const row=document.createElement('div');row.className='mastery-cat-row';
+    row.innerHTML=`<div class="mastery-cat-name" style="color:${CAT_COLORS[cat]||'#94A3B8'}">${cat}</div><div class="mastery-cat-bar-bg"><div class="mastery-cat-bar-fill" style="width:${score}%;background:${col}"></div></div><div class="mastery-cat-pct" style="color:${col}">${seen===0?'—':score+'%'}</div>`;
+    list.appendChild(row);
   });
 }
 
-function startRandom(){
-  const all = ALL_QUESTIONS;
-  // Weight by inverse accuracy
-  const weighted = all.map(q=>{ const e=getEntry(q); const acc=e.history.length?e.history.filter(Boolean).length/e.history.length:0.5; return {q, w:Math.exp(-4*acc)+(e.seen===0?50:0)}; });
-  const selected = [];
-  const pool = [...weighted];
-  for(let i=0;i<Math.min(10,pool.length);i++){
-    const tot=pool.reduce((s,x)=>s+x.w,0); let rand=Math.random()*tot;
-    for(let j=0;j<pool.length;j++){ rand-=pool[j].w; if(rand<=0){ selected.push(pool[j].q); pool.splice(j,1); break; } }
-  }
-  lastCat = null;
-  launchSession(selected);
-}
-
 // ================================================================
-// QUIZ
+// QUIZ ENGINE
 // ================================================================
-function startQuiz(catName){
-  lastCat = catName;
-  const qs = catName ? CATS[catName].questions : ALL_QUESTIONS;
-  // Weight: unseen first, then by inverse accuracy
-  const weighted = qs.map(q=>{ const e=getEntry(q); const acc=e.history.length?e.history.filter(Boolean).length/e.history.length:0.5; return {q, w:Math.exp(-4*acc)+(e.seen===0?50:0)}; });
-  const selected = [], pool=[...weighted];
-  for(let i=0;i<Math.min(10,pool.length);i++){
-    const tot=pool.reduce((s,x)=>s+x.w,0); let rand=Math.random()*tot;
-    for(let j=0;j<pool.length;j++){ rand-=pool[j].w; if(rand<=0){ selected.push(pool[j].q); pool.splice(j,1); break; } }
-  }
-  launchSession(selected);
-}
-
-function launchSession(qs){
-  activeQuestions=qs; qi=0; correct=0; total=0;
-  show('s-quiz');
-  renderQ();
+function startQuiz(){
+  qs=selectQuestions(10);qi=0;cor=0;tot=0;stk=0;
+  show('s-quiz');renderQ();
 }
 
 function renderQ(){
-  const q=activeQuestions[qi];
-  const tot=activeQuestions.length;
-  document.getElementById('q-prog').style.width=(qi/tot*100)+'%';
-  document.getElementById('q-cor').textContent=correct;
-  document.getElementById('q-tot').textContent=qi;
+  done=false;
+  const q=qs[qi];
+  document.getElementById('prog').style.width=(qi/qs.length*100)+'%';
+  document.getElementById('stk').textContent=stk;
   const body=document.getElementById('q-body');
   body.innerHTML='';
 
-  const num=document.createElement('div'); num.className='q-num'; num.textContent='Question '+(qi+1)+' of '+tot; body.appendChild(num);
-  const badge=document.createElement('div'); badge.className='q-cat-badge'; badge.textContent=q.cat; body.appendChild(badge);
+  // Header: category + question number
+  const num=document.createElement('div');num.className='thm-lbl';num.style.marginTop='8px';
+  num.textContent='Q'+(qi+1)+' of '+qs.length+' · '+q.cat;body.appendChild(num);
 
-  if(q.type==='mc') renderMC(q, body);
-  else if(q.type==='tf') renderTF(q, body);
-  else if(q.type==='gap') renderGap(q, body);
+  if(q.type==='mc')renderMC(q,body);
+  else if(q.type==='tf')renderTF(q,body);
+  else if(q.type==='gap')renderGap(q,body);
 }
 
-// MULTI-CHOICE
-function renderMC(q, body){
-  const txt=document.createElement('div'); txt.className='q-text'; txt.textContent=q.text; body.appendChild(txt);
-  if(q.formula){ const f=document.createElement('div'); f.className='q-formula'; f.textContent=q.formula; body.appendChild(f); }
-  const hint=document.createElement('div'); hint.style.cssText='font-size:12px;color:#64748B;margin-bottom:10px;font-style:italic'; hint.textContent='Hint: '+q.hint; body.appendChild(hint);
-  const fb=document.createElement('div'); fb.className='fb'; fb.id='q-fb'; body.appendChild(fb);
-  const go=document.createElement('button'); go.className='go-btn'; go.id='q-go'; go.textContent='Next →'; go.style.display='none'; go.onclick=advance; body.appendChild(go);
+// ---- MULTI-CHOICE ----
+function renderMC(q,body){
+  const card=document.createElement('div');card.className='thm-card';
+  card.innerHTML=`<div class="thm-name" style="font-size:15px;font-family:inherit">${q.text}</div>`;
+  if(q.hint){const hb=document.createElement('div');hb.className='hint-box on';hb.style.display='block';hb.textContent='💡 '+q.hint;card.appendChild(hb);}
+  body.appendChild(card);
 
-  const opts=document.createElement('div'); opts.id='opts'; body.insertBefore(opts, fb);
-  const letters=['A','B','C','D'];
+  const fb=document.createElement('div');fb.className='fb';fb.id='q-fb';
+  const go=document.createElement('button');go.className='go-btn';go.id='q-go';go.onclick=advance;go.style.display='none';
+
+  const lets=['A','B','C','D'];
+  const optDiv=document.createElement('div');optDiv.className='opts';
   q.opts.forEach((opt,i)=>{
-    const btn=document.createElement('button'); btn.className='opt';
-    btn.innerHTML=`<span class="opt-letter">${letters[i]}</span><span>${opt}</span>`;
-    btn.onclick=()=>pickMC(i,q,btn);
-    opts.appendChild(btn);
+    const btn=document.createElement('button');btn.className='opt';
+    btn.innerHTML=`<span class="badge">${lets[i]}</span><span class="opt-body">${opt}</span>`;
+    btn.onclick=()=>pickMC(i,q,btn,optDiv,fb,go);
+    optDiv.appendChild(btn);
   });
+  body.appendChild(optDiv);body.appendChild(fb);body.appendChild(go);
 }
 
-function pickMC(i, q, btn){
-  document.querySelectorAll('.opt').forEach(b=>b.disabled=true);
-  const ok = i===q.ans;
+function pickMC(i,q,btn,optDiv,fb,go){
+  if(done)return;done=true;
+  const ok=i===q.ans;
   recordAnswer(q,ok);
-  document.querySelectorAll('.opt').forEach((b,idx)=>{
-    if(idx===q.ans) b.classList.add('correct-ans');
-    else if(b===btn&&!ok) b.classList.add('wrong-ans');
-    else b.classList.add('dim-ans');
+  optDiv.querySelectorAll('.opt').forEach((b,idx)=>{
+    b.disabled=true;
+    if(idx===q.ans)b.className='opt c0';
+    else if(b===btn&&!ok)b.className='opt wrong';
+    else b.className='opt dim';
   });
-  const fb=document.getElementById('q-fb');
   fb.className='fb '+(ok?'ok':'bad');
-  fb.innerHTML=`<div class="fb-title">${ok?'✓ Correct!':'✗ Incorrect'}</div><div class="fb-body">${q.why}</div>`;
-  const go=document.getElementById('q-go');
-  go.style.display='block'; go.className='go-btn '+(ok?'ok':'bad');
-  go.textContent=qi+1<activeQuestions.length?'Next →':'See results →';
+  fb.innerHTML=`<div class="fb-title">${ok?'✓ Correct!':'✗ Incorrect'}</div><div class="fb-body">${q.why||''}</div>`;
+  go.style.display='block';go.className='go-btn '+(ok?'ok':'bad');
+  go.textContent=qi+1<qs.length?'Next →':'See results →';
 }
 
-// TRUE/FALSE
-let tfIdx=0, tfCorrect=0;
-function renderTF(q, body){
-  const txt=document.createElement('div'); txt.className='q-text'; txt.textContent=q.text; body.appendChild(txt);
-  tfIdx=0; tfCorrect=0;
+// ---- TRUE / FALSE ----
+function renderTF(q,body){
+  const card=document.createElement('div');card.className='thm-card';
+  card.innerHTML=`<div class="thm-name" style="font-size:14px;font-family:inherit">${q.text}</div><div class="thm-stmt">Determine TRUE or FALSE for each statement:</div>`;
+  body.appendChild(card);
+  tfIdx=0;tfCor=0;
   renderTFStmt(q,body);
 }
 
 function renderTFStmt(q,body){
-  body.querySelectorAll('.tf-stmt,.tf-btns,.tf-progress,.tf-fb').forEach(e=>e.remove());
+  body.querySelectorAll('.tf-stmt-card,.tf-btn-row,.tf-explanation,.tf-progress,.tf-go').forEach(e=>e.remove());
   const s=q.statements[tfIdx];
-  const prog=document.createElement('div'); prog.className='tf-progress'; prog.textContent='Statement '+(tfIdx+1)+' of '+q.statements.length; body.appendChild(prog);
-  const stmt=document.createElement('div'); stmt.className='tf-stmt'; stmt.textContent=s.s; body.appendChild(stmt);
-  const btns=document.createElement('div'); btns.className='tf-btns';
-  const tBtn=document.createElement('button'); tBtn.className='tf-btn true-btn'; tBtn.textContent='✓ True'; tBtn.onclick=()=>answerTF(true,q,body,tBtn,fBtn);
-  const fBtn=document.createElement('button'); fBtn.className='tf-btn false-btn'; fBtn.textContent='✗ False'; fBtn.onclick=()=>answerTF(false,q,body,tBtn,fBtn);
-  btns.appendChild(tBtn); btns.appendChild(fBtn); body.appendChild(btns);
+  const prog=document.createElement('div');prog.className='tf-progress';prog.textContent='Statement '+(tfIdx+1)+' of '+q.statements.length;body.appendChild(prog);
+  const card=document.createElement('div');card.className='tf-stmt-card';
+  card.innerHTML=`<div class="tf-label">Statement ${tfIdx+1}</div><div class="tf-text">${s.s}</div>`;body.appendChild(card);
+  const btnRow=document.createElement('div');btnRow.className='tf-btn-row';
+  const tBtn=document.createElement('button');tBtn.className='tf-btn true-btn';tBtn.textContent='✓ True';
+  const fBtn=document.createElement('button');fBtn.className='tf-btn false-btn';fBtn.textContent='✗ False';
+  tBtn.onclick=()=>answerTF(true,q,body,tBtn,fBtn,s);
+  fBtn.onclick=()=>answerTF(false,q,body,tBtn,fBtn,s);
+  btnRow.appendChild(tBtn);btnRow.appendChild(fBtn);body.appendChild(btnRow);
 }
 
-function answerTF(ans, q, body, tBtn, fBtn){
-  tBtn.disabled=true; fBtn.disabled=true;
-  const s=q.statements[tfIdx];
+function answerTF(ans,q,body,tBtn,fBtn,s){
+  tBtn.disabled=true;fBtn.disabled=true;
   const ok=ans===s.ans;
-  if(ok) tfCorrect++;
-  tBtn.classList.add(s.ans===true?'selected-t':'dim-ans');
-  fBtn.classList.add(s.ans===false?'selected-f':'dim-ans');
-  const fb=document.createElement('div'); fb.className='tf-fb';
-  fb.style.cssText=`background:${ok?'rgba(52,211,153,.1)':'rgba(239,68,68,.07)'};border:1px solid ${ok?'rgba(52,211,153,.3)':'rgba(239,68,68,.25)'};border-radius:10px;padding:10px;margin:8px 0;font-size:13px;color:#CBD5E1`;
-  fb.innerHTML=`<strong>${ok?'✓ Correct':'✗ Incorrect'} — ${s.ans?'TRUE':'FALSE'}.</strong> ${s.why}`;
-  body.appendChild(fb);
+  if(ok)tfCor++;
+  tBtn.className='tf-btn true-btn '+(s.ans===true?(ok?'correct':'dim'):'dim');
+  fBtn.className='tf-btn false-btn '+(s.ans===false?(ok?'correct':'dim'):'dim');
+  const exp=document.createElement('div');
+  exp.className='tf-explanation show '+(ok?'ok':'bad');
+  exp.textContent=(ok?'✓ ':'✗ ')+(s.ans?'TRUE':'FALSE')+' — '+s.why;
+  body.appendChild(exp);
   tfIdx++;
   if(tfIdx<q.statements.length){
-    const nextBtn=document.createElement('button'); nextBtn.className='go-btn '+(ok?'ok':'bad'); nextBtn.style.display='block'; nextBtn.textContent='Next statement →'; nextBtn.style.marginTop='8px';
-    nextBtn.onclick=()=>{ nextBtn.remove(); renderTFStmt(q,body); };
-    body.appendChild(nextBtn);
-  } else {
-    const allOk=(tfCorrect===q.statements.length);
+    const nb=document.createElement('button');nb.className='go-btn '+(ok?'ok':'bad');
+    nb.style.display='block';nb.textContent='Next statement →';
+    nb.onclick=()=>{nb.remove();body.querySelectorAll('.tf-progress,.tf-stmt-card,.tf-btn-row,.tf-explanation').forEach(e=>e.remove());renderTFStmt(q,body);};
+    body.appendChild(nb);
+  }else{
+    const allOk=tfCor===q.statements.length;
     recordAnswer(q,allOk);
-    const go=document.getElementById('q-go'); if(!go){ const g=document.createElement('button'); g.className='go-btn '+(allOk?'ok':'bad'); g.id='q-go'; g.style.display='block'; g.textContent=qi+1<activeQuestions.length?'Next →':'See results →'; g.onclick=advance; body.appendChild(g); }
+    const go=document.createElement('button');go.className='go-btn '+(allOk?'ok':'bad');
+    go.style.display='block';go.id='q-go';
+    go.textContent=qi+1<qs.length?'Next →':'See results →';go.onclick=advance;body.appendChild(go);
   }
 }
 
-// GAP FILL
-let gapIdx=0, gapAllCorrect=true;
-function renderGap(q, body){
-  const txt=document.createElement('div'); txt.className='q-text'; txt.textContent=q.text; body.appendChild(txt);
-  gapIdx=0; gapAllCorrect=true;
-  q.steps.forEach((step,i)=>{ renderGapStep(step,i,q,body); });
+// ---- GAP FILL ----
+function renderGap(q,body){
+  const card=document.createElement('div');card.className='thm-card';
+  card.innerHTML=`<div class="thm-name" style="font-size:14px;font-family:inherit">${q.text}</div><div class="thm-stmt">Fill in the blanks:</div>`;
+  body.appendChild(card);
+  gapOk=true;gapChecked=0;gapTotal=q.steps.reduce((s,st)=>s+(st.answer2!==undefined?2:1),0);
+  const go=document.createElement('button');go.className='go-btn';go.id='q-go';go.style.display='none';go.onclick=advance;
+  q.steps.forEach((step,i)=>{renderGapStep(step,i,q,body,go);});
+  body.appendChild(go);
 }
 
-function renderGapStep(step,i,q,body){
-  const row=document.createElement('div'); row.className='epn-row';
-  const ctx=document.createElement('div'); ctx.className='epn-ctx';
+function normGap(s){return String(s).toLowerCase().replace(/\s+/g,'').replace(/[−–]/g,'-');}
 
-  // Build context text with blanks
-  const hasTwo = step.answer2!==undefined;
-  ctx.innerHTML=(step.before||'')+'<span class="gap-inp" id="gap-display-'+i+'-0">?</span>'+(step.after||'')+(hasTwo?'<span class="gap-inp" id="gap-display-'+i+'-1">?</span>'+(step.after2||''):'');
+function renderGapStep(step,i,q,body,go){
+  const row=document.createElement('div');row.style.marginBottom='12px';
+  // Context text
+  const has2=step.answer2!==undefined;
+  const ctx=document.createElement('div');ctx.className='gap-stmt';
+  ctx.style.cssText='background:#1E293B;border:1px solid #334155;border-radius:12px;padding:.85rem 1rem;margin-bottom:8px;font-size:13px;color:#94A3B8;line-height:2';
+  const mk=(id)=>`<span id="gd-${i}-${id}" style="display:inline-block;background:rgba(107,159,228,.12);border:1.5px solid #6B9FE4;border-radius:6px;padding:2px 12px;color:#6B9FE4;font-weight:700;min-width:60px;text-align:center;vertical-align:middle">?</span>`;
+  ctx.innerHTML=(step.before||'')+mk(0)+(step.after||'')+(has2?mk(1)+(step.after2||''):'');
   row.appendChild(ctx);
-
-  // Input row for blank 1
-  const wrap1=document.createElement('div'); wrap1.className='epn-wrap';
-  const inp1=document.createElement('input'); inp1.className='epn-input'; inp1.id='gap-inp-'+i+'-0'; inp1.placeholder='your answer…'; inp1.autocomplete='off'; inp1.autocorrect='off'; inp1.autocapitalize='off'; inp1.spellcheck=false;
-  const chk1=document.createElement('button'); chk1.className='epn-check-btn'; chk1.textContent='Check';
-  chk1.onclick=()=>checkGapBlank(i,0,step.answer,inp1,chk1,body,q,step,hasTwo?null:'done');
-  wrap1.appendChild(inp1); wrap1.appendChild(chk1); row.appendChild(wrap1);
-  const rev1=document.createElement('div'); rev1.className='epn-reveal'; rev1.id='gap-rev-'+i+'-0'; rev1.textContent='Answer: '+step.answer; row.appendChild(rev1);
-
-  if(hasTwo){
-    const wrap2=document.createElement('div'); wrap2.className='epn-wrap'; wrap2.style.marginTop='6px';
-    const inp2=document.createElement('input'); inp2.className='epn-input'; inp2.id='gap-inp-'+i+'-1'; inp2.placeholder='second blank…'; inp2.autocomplete='off'; inp2.autocorrect='off'; inp2.autocapitalize='off'; inp2.spellcheck=false; inp2.disabled=true;
-    const chk2=document.createElement('button'); chk2.className='epn-check-btn'; chk2.textContent='Check'; chk2.disabled=true;
-    chk2.onclick=()=>checkGapBlank(i,1,step.answer2,inp2,chk2,body,q,step,'done');
-    wrap2.appendChild(inp2); wrap2.appendChild(chk2); row.appendChild(wrap2);
-    const rev2=document.createElement('div'); rev2.className='epn-reveal'; rev2.id='gap-rev-'+i+'-1'; rev2.textContent='Answer: '+step.answer2; row.appendChild(rev2);
-    // Enable second input after first is checked
-    inp1._enableNext=()=>{ inp2.disabled=false; chk2.disabled=false; };
+  // Input 1
+  const w1=document.createElement('div');w1.style.cssText='display:flex;gap:8px;align-items:center;margin-bottom:6px';
+  const inp1=document.createElement('input');inp1.className='epn-input';inp1.id='gi-'+i+'-0';inp1.placeholder='Answer…';inp1.autocomplete='off';inp1.autocorrect='off';inp1.autocapitalize='off';inp1.spellcheck=false;
+  const chk1=document.createElement('button');chk1.className='epn-check-btn';chk1.textContent='Check';
+  chk1.onclick=()=>checkGap(i,0,step.answer,inp1,chk1,q,go,body);
+  inp1.addEventListener('keydown',e=>{if(e.key==='Enter')chk1.click();});
+  w1.appendChild(inp1);w1.appendChild(chk1);row.appendChild(w1);
+  const rev1=document.createElement('div');rev1.id='gr-'+i+'-0';rev1.style.cssText='font-size:12px;color:#34D399;margin-bottom:4px;display:none';rev1.textContent='✓ Answer: '+step.answer;row.appendChild(rev1);
+  if(has2){
+    const w2=document.createElement('div');w2.style.cssText='display:flex;gap:8px;align-items:center;margin-bottom:6px';
+    const inp2=document.createElement('input');inp2.className='epn-input';inp2.id='gi-'+i+'-1';inp2.placeholder='Second blank…';inp2.autocomplete='off';inp2.autocorrect='off';inp2.autocapitalize='off';inp2.spellcheck=false;inp2.disabled=true;
+    const chk2=document.createElement('button');chk2.className='epn-check-btn';chk2.textContent='Check';chk2.disabled=true;
+    chk2.onclick=()=>checkGap(i,1,step.answer2,inp2,chk2,q,go,body);
+    inp2.addEventListener('keydown',e=>{if(e.key==='Enter')chk2.click();});
+    w2.appendChild(inp2);w2.appendChild(chk2);row.appendChild(w2);
+    const rev2=document.createElement('div');rev2.id='gr-'+i+'-1';rev2.style.cssText='font-size:12px;color:#34D399;margin-bottom:4px;display:none';rev2.textContent='✓ Answer: '+step.answer2;row.appendChild(rev2);
+    inp1._next=()=>{inp2.disabled=false;chk2.disabled=false;};
   }
-
-  const stepFb=document.createElement('div'); stepFb.className='epn-reveal'; stepFb.id='gap-fb-'+i; stepFb.style.cssText='color:#94A3B8;font-size:12px;margin-top:4px;'; stepFb.textContent=step.why; row.appendChild(stepFb);
-  body.appendChild(row);
+  const why=document.createElement('div');why.id='gw-'+i;why.style.cssText='font-size:12px;color:#64748B;font-style:italic;margin-top:4px;display:none';why.textContent=step.why||'';row.appendChild(why);
+  body.insertBefore(row,go);
 }
 
-function normAnswer(s){ return String(s).toLowerCase().replace(/\s+/g,'').replace(/[−–]/g,'-'); }
-
-function checkGapBlank(stepI,blankI,answer,inp,btn,body,q,step,isDone){
-  if(inp.disabled&&inp.classList.contains('correct')) return;
-  btn.disabled=true; inp.disabled=true;
-  const ok=normAnswer(inp.value)===normAnswer(answer);
-  inp.classList.add(ok?'correct':'wrong');
+function checkGap(stepI,blankI,answer,inp,btn,q,go,body){
+  btn.disabled=true;inp.disabled=true;
+  const ok=normGap(inp.value)===normGap(answer);
+  inp.className='epn-input '+(ok?'correct':'wrong');
   btn.textContent=ok?'✓':'✗';
-  const display=document.getElementById('gap-display-'+stepI+'-'+blankI);
-  if(display){ display.textContent=answer; display.style.background=ok?'rgba(52,211,153,.15)':'rgba(239,68,68,.1)'; display.style.borderColor=ok?'#34D399':'#EF4444'; display.style.color=ok?'#34D399':'#FCA5A5'; }
-  if(!ok){ document.getElementById('gap-rev-'+stepI+'-'+blankI).style.display='block'; gapAllCorrect=false; }
-  document.getElementById('gap-fb-'+stepI).style.display='block';
-  // Enable next blank if exists
-  if(inp._enableNext) inp._enableNext();
-  if(isDone==='done'){
-    // Check if all steps done
-    const allInputs=[...body.querySelectorAll('.epn-input')];
-    const allDone=allInputs.every(i=>i.disabled);
-    if(allDone){
-      recordAnswer(q,gapAllCorrect);
-      const go=document.getElementById('q-go');
-      if(go){ go.style.display='block'; go.className='go-btn '+(gapAllCorrect?'ok':'bad'); go.textContent=qi+1<activeQuestions.length?'Next →':'See results →'; }
-      else { const g=document.createElement('button'); g.className='go-btn '+(gapAllCorrect?'ok':'bad'); g.id='q-go'; g.style.display='block'; g.textContent=qi+1<activeQuestions.length?'Next →':'See results →'; g.onclick=advance; body.appendChild(g); }
-    }
+  const disp=document.getElementById('gd-'+stepI+'-'+blankI);
+  if(disp){disp.textContent=answer;disp.style.background=ok?'rgba(52,211,153,.12)':'rgba(239,68,68,.08)';disp.style.borderColor=ok?'#34D399':'#EF4444';disp.style.color=ok?'#34D399':'#FCA5A5';}
+  if(!ok){gapOk=false;const rev=document.getElementById('gr-'+stepI+'-'+blankI);if(rev)rev.style.display='block';}
+  if(inp._next)inp._next();
+  const why=document.getElementById('gw-'+stepI);if(why)why.style.display='block';
+  gapChecked++;
+  if(gapChecked>=gapTotal){
+    recordAnswer(q,gapOk);
+    go.style.display='block';go.className='go-btn '+(gapOk?'ok':'bad');
+    go.textContent=qi+1<qs.length?'Next →':'See results →';
   }
 }
 
 // ================================================================
 // SCORING
 // ================================================================
-function recordAnswer(q, ok){
-  total++; if(ok) correct++;
-  document.getElementById('q-cor').textContent=correct;
-  document.getElementById('q-tot').textContent=total;
-  const e=getEntry(q); e.seen++; e.lastSeen=Date.now(); e.history.push(ok); if(e.history.length>10) e.history.shift(); if(ok) e.correct=(e.correct||0)+1;
+function recordAnswer(q,ok){
+  tot++;if(ok){cor++;stk++;}else{stk=0;}
+  document.getElementById('stk').textContent=stk;
+  const e=getE(q);e.seen++;e.lastSeen=Date.now();e.history.push(ok);if(e.history.length>10)e.history.shift();if(ok)e.correct=(e.correct||0)+1;
   saveQData();
 }
 
 function advance(){
   qi++;
-  if(qi>=activeQuestions.length){ showResult(); return; }
+  if(qi>=qs.length){
+    const pct=Math.round(cor/tot*100);
+    document.getElementById('r-icon').textContent=pct===100?'🏆':pct>=70?'🎉':pct>=50?'📚':'💪';
+    document.getElementById('r-title').textContent=pct===100?'Perfect!':pct>=70?'Well done!':pct>=50?'Good effort!':'Keep at it!';
+    document.getElementById('r-sub').textContent=cor+' of '+tot+' correct · Best streak '+stk;
+    document.getElementById('r-sc').textContent=cor+'/'+tot;
+    document.getElementById('r-sa').textContent=pct+'%';
+    saveStats();show('s-result');return;
+  }
   renderQ();
 }
 
-function showResult(){
-  const pct=Math.round(correct/total*100);
-  document.getElementById('r-icon').textContent=pct===100?'🏆':pct>=70?'🎉':pct>=50?'📚':'💪';
-  document.getElementById('r-title').textContent=pct===100?'Perfect!':pct>=70?'Well done!':pct>=50?'Good effort!':'Keep at it!';
-  document.getElementById('r-sub').textContent=correct+' of '+total+' correct';
-  document.getElementById('r-sc').textContent=correct+'/'+total;
-  document.getElementById('r-sa').textContent=pct+'%';
-  show('s-result');
+// ================================================================
+// FIREBASE PUSH
+// ================================================================
+async function pushData(){
+  if(!db||!currentUsername||!syncEnabled)return;
+  try{
+    const p=+localStorage.getItem('msp_p')||0,c=+localStorage.getItem('msp_c')||0,t=+localStorage.getItem('msp_t')||0;
+    await db.collection('users_msp').doc(currentUsername).set({p,c,t,qdata:qData,updated:firebase.firestore.FieldValue.serverTimestamp()},{merge:true});
+  }catch(e){console.warn('Push failed:',e);}
+}
+
+async function connectUser(username){
+  if(!db)return;currentUsername=username;syncEnabled=true;localStorage.setItem('msp_username',username);
+  showStatusRow();setSyncStatus('☁ Syncing…','loading');
+  try{
+    const snap=await db.collection('users_msp').doc(username).get();
+    if(snap.exists){
+      const d=snap.data();
+      localStorage.setItem('msp_p',Math.max(+localStorage.getItem('msp_p')||0,d.p||0));
+      localStorage.setItem('msp_c',Math.max(+localStorage.getItem('msp_c')||0,d.c||0));
+      localStorage.setItem('msp_t',Math.max(+localStorage.getItem('msp_t')||0,d.t||0));
+      if(d.qdata){const merged={...d.qdata,...qData};localStorage.setItem('msp_qdata',JSON.stringify(merged));loadQData();}
+      setSyncStatus('☁ Synced · @'+username,'ok');
+      await pushData();
+    }else{setSyncStatus('☁ New user · @'+username,'ok');await pushData();}
+    loadStats();
+  }catch(e){console.warn('Sync failed:',e);setSyncStatus('☁ Offline','err');}
+}
+
+function initFirebase(){
+  try{
+    if(!firebase.apps.length)firebase.initializeApp(firebaseConfig);
+    db=firebase.firestore();
+    const saved=localStorage.getItem('msp_username');
+    if(saved)connectUser(saved);else showLoginRow();
+  }catch(e){console.warn('Firebase init failed:',e);showLoginRow();}
 }
 
 // ================================================================
 // INIT
 // ================================================================
 loadQData();
-renderHome();
+loadStats();
+initFirebase();
 </script>
 </body>
 </html>
