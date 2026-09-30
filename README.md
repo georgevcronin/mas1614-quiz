@@ -3,7 +3,8 @@
 A 6-week accelerated plan for six Newcastle Stage 2 modules (MAS2909 Probability, MAS2901
 Statistical Inference, MAS2701 Linear Algebra, MAS2702 Complex Analysis, MSP2801 Vector Calculus,
 MSP2802 Differential Equations). Enter how long you have; the app builds a lesson of mini exams
-with instant feedback.
+with instant feedback. Answers are written, then marked by Gemini (add an API key in
+Settings) or self-marked against the mark scheme.
 
 - **PICK** decides what gets time: Implement (test first), Challenge (learn today, closed-book
   check on a later day), Possible (3-question check), Kill (skipped).
@@ -18,9 +19,11 @@ with instant feedback.
 | `js/curriculum.js` | Plan start date, modules, every section with its week, stream, PICK category, source and key points |
 | `js/keypoints.js` | Key points per section (LaTeX) |
 | `js/questions/week1.js` | Week 1 question bank (add `week2.js` etc. and a `<script>` tag in `index.html`) |
-| `js/questions/de-specimen.js` | MSP2802 questions built from Specimen Papers 1–3, tagged e.g. "(SP1 A3)" |
+| `js/questions/de-specimen.js` | MSP2802 short questions built from Specimen Papers 1–3, tagged e.g. "(SP1 A3)" |
+| `js/questions/de-written.js` | The specimen-paper questions themselves, with marks and mark schemes |
 | `js/planner.js` | Lesson builder, spaced-review scheduling, pass/fail rules (no DOM) |
-| `js/quiz.js` | Mini-exam engine: multiple choice, true/false, step-by-step gap fill |
+| `js/quiz.js` | Written mini-exam engine: every question answered in writing (typed or photo) |
+| `js/marking.js` | Gemini API marking against the mark scheme (key stored only in the browser) |
 | `js/app.js` | Screens, lesson runner, local storage and Firebase sync |
 
 All maths is LaTeX (`\( … \)` inline, `\[ … \]` display), typeset in the browser by KaTeX.

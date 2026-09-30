@@ -18,8 +18,8 @@ function today(){ return dayNum(todayStr()); }
 function show(id){ document.querySelectorAll('.scr').forEach(s => s.classList.remove('on')); document.getElementById(id).classList.add('on'); }
 function goHome(){ renderHome(); show('s-home'); }
 
-function modChip(modKey){ const m = MODULES[modKey]; return `<span class="mod-chip" style="background:${m.color}22;color:${m.color}">${m.short}</span>`; }
-function pickBadge(p){ const i = PICK_INFO[p]; return `<span class="pick-badge" style="color:${i.color};border-color:${i.color}66">${i.name}</span>`; }
+function modChip(modKey){ const m = MODULES[modKey]; return `<span class="mod-chip" style="background:${m.color}14;color:${m.color}">${m.short}</span>`; }
+function pickBadge(p){ const i = PICK_INFO[p]; return `<span class="pick-badge" style="color:${i.color};border-color:${i.color}55">${i.name}</span>`; }
 
 // ---------------------------------------------------------------- home
 function renderHome(){
@@ -31,9 +31,12 @@ function renderHome(){
   document.getElementById('hs-acc').textContent = st.answered ? Math.round(100*st.credit/st.answered) + '%' : '—';
   document.getElementById('hs-min').textContent = Math.round(st.minutes || 0);
   const tr = document.getElementById('track');
-  if(sum.week === PLAN_WEEKS && day >= 35){ tr.className = 'track ok'; tr.textContent = '🏁 Week 6: consolidation — lessons are mixed review and mocks'; }
-  else if(sum.behind > 0){ tr.className = 'track behind'; tr.textContent = `⏳ ${sum.behind} topic${sum.behind > 1 ? 's' : ''} behind schedule — longer sessions will catch you up`; }
-  else { tr.className = 'track ok'; tr.textContent = '✅ On track'; }
+  if(sum.week === PLAN_WEEKS && day >= 35){ tr.className = 'track ok'; tr.textContent = 'Week 6: consolidation — lessons are mixed review and mocks'; }
+  else if(sum.behind > 0){ tr.className = 'track behind'; tr.textContent = `${sum.behind} topic${sum.behind > 1 ? 's' : ''} behind schedule — longer sessions will catch you up`; }
+  else { tr.className = 'track ok'; tr.textContent = 'On track'; }
+  const g = geminiSettings();
+  document.getElementById('mark-dot').className = 'dotx' + (geminiReady() ? ' on' : '');
+  document.getElementById('mark-status').textContent = geminiReady() ? `Marking: Gemini (${g.model})` : 'Marking: self-mark — add a Gemini key in Settings';
   const chips = document.getElementById('chips'); chips.innerHTML = '';
   TIME_CHIPS.forEach(m => {
     const c = el('button', 'chip' + (m === chosenMins ? ' on' : ''), m < 60 ? m + ' min' : (m/60) + (m === 60 ? ' hour' : ' hours'));
@@ -53,11 +56,11 @@ function describe(b){
   if(b.kind === 'review') return `Mixed mini exam on topics that are due for review — keeps what you’ve learned from fading.`;
   const s = SECTION_BY_ID[b.sec];
   switch(b.kind){
-    case 'i': return `Test first: ${b.q1} questions cold → read only what you missed → ${b.q2} new questions. 80% passes.`;
-    case 'c1': return `Key points & notes → ${b.q1}-question mini exam (hints allowed) → fix gaps → ${b.q2} more. Closed-book check tomorrow.`;
-    case 'c2': return `Closed-book mini exam (${b.q1} questions) on yesterday’s challenge topic. 80% passes.`;
-    case 'retest': return `You didn’t pass this last time — ${b.q1} fresh questions. 80% passes.`;
-    case 'p': return `Skim topic: ${b.q1}-question check. Pass 2 of 3 or it’s parked until week 6.`;
+    case 'i': return `Test first: ~${b.e1} min of written questions cold → read only what you missed → ~${b.e2} min of new questions. 80% of the marks passes.`;
+    case 'c1': return `Key points & notes → ~${b.e1}-min written mini exam (hints allowed) → fix gaps → ~${b.e2} min more. Closed-book check tomorrow.`;
+    case 'c2': return `Closed-book written mini exam (~${b.e1} min) on yesterday’s challenge topic. 80% passes.`;
+    case 'retest': return `You didn’t pass this last time — ~${b.e1} min of fresh questions. 80% passes.`;
+    case 'p': return `Skim topic: a ~${b.e1}-min check. Two-thirds of the marks passes, otherwise it’s parked until week 6.`;
     default: return `No question bank for this topic yet: read ${s.src}, work the examples with solutions covered, then rate yourself.`;
   }
 }
@@ -77,8 +80,8 @@ function buildAndShow(){
     const chips = s ? modChip(s.mod) + pickBadge(s.pick) : '';
     body.appendChild(el('div','card block-card', `<div class="block-icon">${t.icon}</div><div class="block-body"><div class="lbl">${t.label}</div><div class="card-title" style="font-size:16px">${esc(title)}</div><div style="margin-bottom:.35rem">${chips}</div><div class="small">${describe(b)}</div></div><div class="block-mins">${b.mins}m</div>`));
   });
-  const go = el('button','btn-p','Start lesson →'); go.style.maxWidth = 'none'; go.onclick = startLesson;
-  const again = el('button','btn-s','Change time'); again.style.cssText = 'max-width:none;margin-top:.6rem'; again.onclick = () => show('s-home');
+  const go = el('button','btn-p','Start lesson'); go.onclick = startLesson;
+  const again = el('button','btn-s','Change time'); again.style.marginTop = '8px'; again.onclick = () => show('s-home');
   body.append(go, again);
   show('s-plan');
 }
@@ -118,7 +121,7 @@ async function startLesson(){
   renderSummary(box, summary);
 }
 
-function examQs(secIds, n, day, exclude = []){ return selectQuestions(state, secIds, n, day, exclude); }
+function examQs(secIds, budget, day, exclude = []){ return selectQuestions(state, secIds, budget, day, exclude); }
 async function exam(box, qs, day, opts){
   const res = await runExam(box, qs, {...opts, onAnswer:(q, credit) => {
     recordAnswer(state, q, credit === 1, day);
@@ -126,7 +129,9 @@ async function exam(box, qs, day, opts){
     state.stats.credit = (state.stats.credit || 0) + credit;
     saveState();
   }});
-  return {res, pct: res.length ? res.reduce((s, r) => s + r.credit, 0) / res.length : 0};
+  // Score = marks earned / marks available across the whole mini exam.
+  const got = res.reduce((s, r) => s + r.score, 0), max = res.reduce((s, r) => s + r.marks, 0);
+  return {res, pct: max ? got / max : 0};
 }
 
 function presentCard(box, s, intro){
@@ -138,7 +143,8 @@ function fixCard(box, s, res){
   const missed = res.filter(r => r.credit < 1);
   let html = `<div class="lbl">Fix the gaps</div><div class="card-title">${missed.length ? `Review the ${missed.length} you missed` : 'No gaps — nice!'}</div>`;
   missed.forEach(r => {
-    html += `<div class="miss"><div class="miss-q">${fmt(r.q.text)}</div><div class="miss-a">${fmt(answerText(r.q)).replace(/\n/g,'<br>')}</div><div class="small">${fmt(explainText(r.q))}</div></div>`;
+    const w = toWritten(r.q);
+    html += `<div class="miss"><div class="miss-q"><b>${r.score}/${r.marks}</b> · ${w.html}</div>${r.feedback && r.feedback !== 'Self-marked.' ? `<div class="miss-fb">${fmt(r.feedback)}</div>` : ''}<div class="miss-a">${fmt(w.scheme).replace(/\n/g,'<br>')}</div></div>`;
   });
   card(box, html);
   if(s) presentCard(box, s, 'Now re-read these points (and the matching part of your notes). Redo any worked example you couldn’t do, with the solution covered.');
@@ -151,7 +157,7 @@ async function verdictScreen(box, v, s, pct){
   const V = {
     pass:     ['✅','Passed', `${esc(s.title)} is done. First review in 1 day, then 3, 7, 14…`],
     again:    ['🔁','Not yet', s && !hasQuestions(s.id) ? `It comes back next session — work through the examples again until you can do them without looking.` : `You need 80%. It comes back as a retest next session — that repetition is where the learning happens.`],
-    tomorrow: ['🌙','Learned — prove it tomorrow', `Challenge topics only pass on a later day. Tomorrow’s lesson includes with a closed-book check (80% to pass).`],
+    tomorrow: ['🌙','Learned — prove it tomorrow', `Challenge topics only pass on a later day. Tomorrow’s lesson includes a closed-book check (80% to pass).`],
     deferred: ['📦','Parked until week 6', `Possible topic: not worth more time now. It will return in week 6.`],
   }[v.type];
   box.appendChild(el('div','verdict', `<span class="verdict-icon">${V[0]}</span><div class="verdict-title">${V[1]}</div>${pct !== undefined ? `<div class="score-big">${Math.round(pct*100)}%</div>` : ''}<div class="muted">${V[2]}</div>`));
@@ -161,9 +167,9 @@ async function verdictScreen(box, v, s, pct){
 async function runBlock(box, b, day){
   box.innerHTML = '';
   if(b.kind === 'review'){
-    const n = Math.max(3, Math.round(b.mins / 1.8));
-    let qs = examQs(b.secs, n, day);
-    if(qs.length < n) qs = qs.concat(examQs(b.extra, n - qs.length, day, qs.map(q => q.id)));
+    let qs = examQs(b.secs, b.mins, day);
+    const left = b.mins - examMinutes(qs);
+    if(left >= 3) qs = qs.concat(examQs(b.extra, left, day, qs.map(q => q.id)));
     card(box, `<div class="lbl">🔁 Spaced review · ${b.mins} min</div><div class="card-title">${qs.length} questions from earlier topics</div><div class="muted">No notes, no hints. Weak and overdue topics come up most.</div>`);
     await waitClick(button(box, 'Start →'));
     const {res, pct} = await exam(box, qs, day, {title:'Review'});
@@ -189,34 +195,34 @@ async function runBlock(box, b, day){
   }
   else if(b.kind === 'i'){
     presentCard(box, s, 'Implement topic — <b>test first</b>. Answer before reading anything; you only study what you get wrong.');
-    await waitClick(button(box, `Start mini exam 1 (${b.q1} questions) →`));
-    const qs1 = examQs([s.id], b.q1, day); used = qs1.map(q => q.id);
+    await waitClick(button(box, `Start mini exam 1 (~${b.e1} min)`));
+    const qs1 = examQs([s.id], b.e1, day); used = qs1.map(q => q.id);
     const e1 = await exam(box, qs1, day, {title:'Mini exam 1'});
     if(e1.pct === 1){ pct = 1; }
     else{
       scoreCard(box, 'Mini exam 1', e1.pct);
       fixCard(box, s, e1.res);
-      await waitClick(button(box, `Ready — mini exam 2 (${b.q2} new questions) →`));
-      const e2 = await exam(box, examQs([s.id], b.q2, day, used), day, {title:'Mini exam 2'});
+      await waitClick(button(box, `Ready — mini exam 2 (~${b.e2} min, new questions)`));
+      const e2 = await exam(box, examQs([s.id], b.e2, day, used), day, {title:'Mini exam 2'});
       pct = e2.pct;
     }
   }
   else if(b.kind === 'c1'){
     presentCard(box, s, 'Challenge topic. Read these key points and the matching notes section, working the examples with solutions covered. Then take the mini exam — hints are allowed this time.');
-    await waitClick(button(box, `Start mini exam 1 (${b.q1} questions, hints on) →`));
-    const qs1 = examQs([s.id], b.q1, day); used = qs1.map(q => q.id);
+    await waitClick(button(box, `Start mini exam 1 (~${b.e1} min, hints on)`));
+    const qs1 = examQs([s.id], b.e1, day); used = qs1.map(q => q.id);
     const e1 = await exam(box, qs1, day, {title:'Mini exam 1', hints:true});
     scoreCard(box, 'Mini exam 1', e1.pct);
     fixCard(box, s, e1.res);
-    await waitClick(button(box, `Ready — mini exam 2 (${b.q2} questions, no hints) →`));
-    const e2 = await exam(box, examQs([s.id], b.q2, day, used), day, {title:'Mini exam 2'});
+    await waitClick(button(box, `Ready — mini exam 2 (~${b.e2} min, no hints)`));
+    const e2 = await exam(box, examQs([s.id], b.e2, day, used), day, {title:'Mini exam 2'});
     pct = e2.pct;
   }
   else { // c2, retest, p
     const intro = {c2:'Closed-book check on yesterday’s challenge topic. No hints, no notes.', retest:'Retest — fresh questions on a topic you haven’t passed yet.', p:'Possible topic — a quick check. Skim the key points first if you like.'}[b.kind];
     presentCard(box, s, intro);
-    await waitClick(button(box, `Start (${b.q1} questions) →`));
-    const e = await exam(box, examQs([s.id], b.q1, day), day, {title: BLOCK[b.kind].label});
+    await waitClick(button(box, `Start (~${b.e1} min)`));
+    const e = await exam(box, examQs([s.id], b.e1, day), day, {title: BLOCK[b.kind].label});
     pct = e.pct;
     if(pct < (b.kind === 'p' ? 2/3 : PASS_MARK)){
       scoreCard(box, 'Score', pct); fixCard(box, s, e.res);
@@ -247,7 +253,7 @@ function renderSummary(box, summary){
 function showProgress(){
   const day = today(), body = document.getElementById('progress-body'); body.innerHTML = '';
   const sum = progressSummary(state, day);
-  const colors = {new:'#475569', learning:'#F59E0B', passed:'#34D399', deferred:'#60A5FA', skipped:'#1E293B'};
+  const colors = {new:'#D1D5DB', learning:'#D97706', passed:'#16A34A', deferred:'#2563EB', skipped:'#FFFFFF'};
   body.appendChild(el('div','card', `<div class="lbl">Overall</div><div class="card-title">${sum.done} of ${sum.total} topics passed</div><div class="muted">Expected by today: ${sum.expected}. ${sum.behind ? sum.behind + ' behind.' : 'On track.'}</div>`));
   let bars = '<div class="lbl">By module</div>';
   Object.entries(MODULES).forEach(([k, m]) => {
@@ -256,17 +262,17 @@ function showProgress(){
     bars += `<div class="mod-bar"><div class="mod-bar-name">${m.name.split(',')[0]}</div><div class="mod-bar-bg"><div class="mod-bar-fill" style="width:${100*d/secs.length}%;background:${m.color}"></div></div><div class="mod-bar-n">${d}/${secs.length}</div></div>`;
   });
   body.appendChild(el('div','card', bars));
-  body.appendChild(el('div','legend', Object.entries({new:'Not started', learning:'In progress', passed:'Passed', deferred:'Parked', skipped:'Killed'}).map(([k,t]) => `<span><i class="dot" style="background:${colors[k]};${k==='skipped'?'border:1px solid #475569':''}"></i>${t}</span>`).join('')));
+  body.appendChild(el('div','legend', Object.entries({new:'Not started', learning:'In progress', passed:'Passed', deferred:'Parked', skipped:'Killed'}).map(([k,t]) => `<span><i class="dot" style="background:${colors[k]};${k==='skipped'?'border:1px solid #D1D5DB':''}"></i>${t}</span>`).join('')));
   Object.entries(STREAMS).forEach(([k, name]) => {
     body.appendChild(el('div','stream-lbl', `Stream ${k} — ${name}`));
     SECTIONS.filter(s => MODULES[s.mod].stream === k).forEach(s => {
       const st = secState(state, s.id), last = st.hist[st.hist.length - 1];
       const status = s.pick === 'K' ? 'skipped' : st.status;
       const meta = `W${s.week} · ${PICK_INFO[s.pick].name[0]}${last ? ' · ' + Math.round(last.pct*100) + '%' : ''}${hasQuestions(s.id) ? '' : ' · notes'}`;
-      body.appendChild(el('div','sec-row', `<i class="dot" style="background:${colors[status]};${status==='skipped'?'border:1px solid #475569':''}"></i><div class="sec-name">${modChip(s.mod)}${esc(s.title)}</div><div class="sec-meta">${meta}</div>`));
+      body.appendChild(el('div','sec-row', `<i class="dot" style="background:${colors[status]};${status==='skipped'?'border:1px solid #D1D5DB':''}"></i><div class="sec-name">${modChip(s.mod)}${esc(s.title)}</div><div class="sec-meta">${meta}</div>`));
     });
   });
-  const reset = el('button','btn-s','Reset all progress'); reset.style.cssText = 'max-width:none;margin-top:1.5rem;color:#FCA5A5';
+  const reset = el('button','btn-s','Reset all progress'); reset.style.cssText = 'margin-top:24px;color:#DC2626';
   reset.onclick = () => { if(confirm('Reset ALL progress? This cannot be undone.')){ state = {sec:{}, qdata:{}, stats:{answered:0, credit:0, minutes:0, sessions:0}}; saveState(); goHome(); } };
   body.appendChild(reset);
   show('s-progress');
@@ -275,26 +281,72 @@ function showProgress(){
 // ---------------------------------------------------------------- free practice
 function showPractice(){
   const body = document.getElementById('practice-body'); body.innerHTML = '';
-  body.appendChild(el('div','card', '<div class="card-title">Pick a module</div><div class="muted">10 questions, weighted towards what you haven’t seen or got wrong. Doesn’t change your plan, but does count towards question history.</div>'));
+  body.appendChild(el('div','card', '<div class="card-title">Pick a module</div><div class="muted">About 15 minutes of written questions, weighted towards what you haven’t seen or got wrong. Doesn’t change your plan, but does count towards question history.</div>'));
   Object.entries(MODULES).forEach(([k, m]) => {
     const n = QUESTIONS.filter(q => SECTION_BY_ID[q.sec].mod === k).length;
     const b = el('button','btn-s self-btn', `${modChip(k)} ${m.name} <span class="small">· ${n} questions</span>`);
-    b.style.maxWidth = 'none';
     if(!n){ b.disabled = true; b.style.opacity = .45; }
     b.onclick = () => practice(k);
     body.appendChild(b);
   });
+  const nPast = QUESTIONS.filter(q => q.type === 'written').length;
+  body.appendChild(el('div','card', `<div class="card-title" style="margin-top:4px">Past-paper question</div><div class="muted">One full specimen-paper question (${nPast} available), marked against the official mark scheme. Allow 12–20 minutes.</div>`)).style.marginTop = '20px';
+  const pp = el('button','btn-p','Start a past-paper question'); pp.onclick = pastPaper; body.appendChild(pp);
   show('s-practice');
+}
+async function pastPaper(){
+  const day = today(), body = document.getElementById('practice-body');
+  const pool = QUESTIONS.filter(q => q.type === 'written');
+  const q = pickWeighted(pool, pool.map(q => qWeight(state, q, day)), 1)[0];   // unseen / weak first
+  const {pct, res} = await exam(body, [q], day, {title:'Past paper'});
+  body.innerHTML = '';
+  scoreCard(body, 'Past-paper question', pct);
+  fixCard(body, null, res);
+  const again = button(body, 'Another past-paper question'); again.onclick = pastPaper;
+  const back = button(body, 'Home', 'btn-s'); back.onclick = goHome;
 }
 async function practice(modKey){
   const day = today(), body = document.getElementById('practice-body');
   const secs = SECTIONS.filter(s => s.mod === modKey).map(s => s.id);
-  const {pct, res} = await exam(body, examQs(secs, 10, day), day, {title:'Practice'});
+  const {pct, res} = await exam(body, examQs(secs, 15, day), day, {title:'Practice'});
   body.innerHTML = '';
   scoreCard(body, MODULES[modKey].name, pct);
   fixCard(body, null, res);
-  const again = button(body, 'Another 10 →'); again.onclick = () => practice(modKey);
-  const back = button(body, 'Home', 'btn-s'); back.style.maxWidth = 'none'; back.onclick = goHome;
+  const again = button(body, 'Another set'); again.onclick = () => practice(modKey);
+  const back = button(body, 'Home', 'btn-s'); back.onclick = goHome;
+}
+
+// ---------------------------------------------------------------- settings (Gemini key)
+function showSettings(){
+  const body = document.getElementById('settings-body'), g = geminiSettings();
+  body.innerHTML = `
+    <div class="card-title">Gemini marking</div>
+    <p class="muted" style="margin-bottom:16px">Add a Gemini API key and your written answers are marked against the mark scheme, with feedback. Without one you mark yourself against the scheme.</p>
+    <div class="field"><label for="g-key">API key</label>
+      <input class="text-input" id="g-key" type="password" autocomplete="off" placeholder="AIza…" value="${esc(g.key || '')}"></div>
+    <div class="field"><label for="g-model">Model</label>
+      <select id="g-model">${g.model ? `<option>${esc(g.model)}</option>` : '<option value="">Save a key to load models</option>'}</select></div>
+    <button class="btn-p" id="g-save">Save and check key</button>
+    <div class="small" id="g-msg" style="margin:10px 0 16px"></div>
+    <button class="btn-s" id="g-clear">Remove key</button>
+    <p class="note" style="margin-top:20px">Get a free key at <a href="https://aistudio.google.com/apikey" target="_blank" rel="noopener">aistudio.google.com/apikey</a>. The key is stored only in this browser on this device — it is not synced with your username — and is sent only to Google. Anyone using this device and browser could read it.</p>`;
+  const msg = document.getElementById('g-msg'), sel = document.getElementById('g-model');
+  sel.onchange = () => { const cur = geminiSettings(); if(cur.key){ saveGeminiSettings({...cur, model: sel.value}); } };
+  document.getElementById('g-save').onclick = async () => {
+    const key = document.getElementById('g-key').value.trim();
+    if(!key){ msg.textContent = 'Paste a key first.'; return; }
+    msg.innerHTML = '<span class="spinner"></span>Checking key…';
+    try{
+      const models = await listGeminiModels(key);
+      if(!models.length) throw new Error('No Gemini models available for this key.');
+      const keep = models.includes(g.model) ? g.model : models[0];
+      sel.innerHTML = models.map(m => `<option${m === keep ? ' selected' : ''}>${esc(m)}</option>`).join('');
+      saveGeminiSettings({key, model: keep});
+      msg.textContent = `Key works. Using ${keep} — change it above if you like.`;
+    }catch(e){ msg.textContent = 'That key didn’t work: ' + e.message; }
+  };
+  document.getElementById('g-clear').onclick = () => { localStorage.removeItem(GEMINI_STORE); showSettings(); };
+  show('s-settings');
 }
 
 // ---------------------------------------------------------------- Firebase sync
@@ -310,8 +362,8 @@ function pushData(){
   if(!db || !currentUser) return;
   clearTimeout(pushTimer);
   pushTimer = setTimeout(async () => {
-    try{ await db.collection('users_msp').doc(currentUser).set({s2: JSON.stringify(state), updated: firebase.firestore.FieldValue.serverTimestamp()}, {merge:true}); setSyncStatus('☁ Synced · @' + currentUser, 'ok'); }
-    catch(e){ console.warn('Push failed', e); setSyncStatus('☁ Offline', 'err'); }
+    try{ await db.collection('users_msp').doc(currentUser).set({s2: JSON.stringify(state), updated: firebase.firestore.FieldValue.serverTimestamp()}, {merge:true}); setSyncStatus('Synced · @' + currentUser, 'ok'); }
+    catch(e){ console.warn('Push failed', e); setSyncStatus('Offline', 'err'); }
   }, 800);
 }
 // Merge remote progress into local: keep whichever record of each topic/question has more history.
@@ -325,13 +377,13 @@ function mergeState(remote){
 async function connectUser(username){
   if(!db) return;
   currentUser = username; localStorage.setItem('s2_username', username);
-  showStatusRow(); setSyncStatus('☁ Syncing…', 'loading');
+  showStatusRow(); setSyncStatus('Syncing…', 'loading');
   try{
     const snap = await db.collection('users_msp').doc(username).get();
     if(snap.exists && snap.data().s2){ mergeState(JSON.parse(snap.data().s2)); try{ localStorage.setItem(STORE_KEY, JSON.stringify(state)); }catch(e){} }
-    setSyncStatus('☁ Synced · @' + username, 'ok');
+    setSyncStatus('Synced · @' + username, 'ok');
     pushData(); renderHome();
-  }catch(e){ console.warn('Sync failed', e); setSyncStatus('☁ Offline', 'err'); }
+  }catch(e){ console.warn('Sync failed', e); setSyncStatus('Offline', 'err'); }
 }
 window.syncLogin = async function(){
   const input = document.getElementById('sync-username-input');

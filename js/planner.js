@@ -6,16 +6,24 @@
 //   state.qdata[id] = {seen, last, hist:[bool]}
 // ================================================================
 const REVIEW_GAPS = [1, 3, 7, 14, 30];        // days until next review, by stage
-const MIN_PER_Q = {mc:1.5, tf:2.5, gap:3};
+// Written answers: marks per question, and roughly 1.2 exam-minutes per mark plus writing overhead.
+function questionMarks(q){
+  if(q.type === 'written') return q.marks;
+  if(q.type === 'mc') return 2;
+  if(q.type === 'tf') return q.statements.length;
+  return q.steps.reduce((n, st) => n + (st.answer2 !== undefined ? 2 : 1), 0);
+}
+function questionMinutes(q){ return Math.max(2, Math.round(1.2*questionMarks(q) + 1)); }
 
 // Block templates. Each kind has a full and a short variant (used when time is tight).
 const BLOCK = {
   review: {icon:'🔁', label:'Spaced review'},
-  i:      {icon:'⚡', label:'Test first',          v:[{mins:22, q1:4, q2:4}, {mins:14, q1:3, q2:3}]},
-  c1:     {icon:'🧗', label:'Challenge · learn',    v:[{mins:40, q1:5, q2:5}, {mins:28, q1:4, q2:4}]},
-  c2:     {icon:'🔒', label:'Challenge · prove it', v:[{mins:15, q1:6}, {mins:10, q1:4}]},
-  p:      {icon:'👀', label:'Quick check',          v:[{mins:6, q1:3}]},
-  retest: {icon:'🎯', label:'Retest',               v:[{mins:12, q1:5}, {mins:8, q1:3}]},
+// e1/e2: minutes of exam questions in mini exam 1 / 2 (the rest is reading and fixing gaps).
+  i:      {icon:'⚡', label:'Test first',          v:[{mins:25, e1:9, e2:9}, {mins:15, e1:5, e2:5}]},
+  c1:     {icon:'🧗', label:'Challenge · learn',    v:[{mins:45, e1:14, e2:14}, {mins:30, e1:9, e2:9}]},
+  c2:     {icon:'🔒', label:'Challenge · prove it', v:[{mins:20, e1:16}, {mins:12, e1:9}]},
+  p:      {icon:'👀', label:'Quick check',          v:[{mins:7, e1:5}]},
+  retest: {icon:'🎯', label:'Retest',               v:[{mins:15, e1:12}, {mins:9, e1:7}]},
   notesI: {icon:'📖', label:'Study from notes',     v:[{mins:25}, {mins:15}]},
   notesC: {icon:'📖', label:'Study from notes',     v:[{mins:45}, {mins:30}]},
 };
@@ -75,11 +83,22 @@ function pickWeighted(items, weights, n, rand = Math.random){
   }
   return out;
 }
-function selectQuestions(state, secIds, n, day, exclude = [], rand){
+// Weighted pick of questions filling about `budget` exam-minutes (always at least one question).
+function selectQuestions(state, secIds, budget, day, exclude = [], rand = Math.random){
   const pool = QUESTIONS.filter(q => secIds.includes(q.sec) && !exclude.includes(q.id));
-  return pickWeighted(pool, pool.map(q => qWeight(state, q, day)), n, rand);
+  const order = pickWeighted(pool, pool.map(q => qWeight(state, q, day)), pool.length, rand);
+  const out = []; let used = 0;
+  for(const q of order){
+    const m = questionMinutes(q);
+    if(used + m > budget) continue;
+    out.push(q); used += m;
+    if(used >= budget - 1) break;
+  }
+  // Nothing fits (tiny budget): fall back to the quickest question available.
+  if(!out.length && order.length) out.push(order.reduce((a, q) => questionMinutes(q) < questionMinutes(a) ? q : a));
+  return out;
 }
-function examMinutes(qs){ return qs.reduce((s,q) => s + (MIN_PER_Q[q.type] || 2), 0); }
+function examMinutes(qs){ return qs.reduce((s,q) => s + questionMinutes(q), 0); }
 
 // ---------------------------------------------------------------- lesson builder
 function buildLesson(state, minutes, day){
@@ -190,4 +209,4 @@ function finishBlock(state, block, result, day){
   }
 }
 
-if(typeof module !== 'undefined') module.exports = {buildLesson, finishBlock, recordAnswer, selectQuestions, progressSummary, dayNum, todayStr, planWeek, secState, examMinutes, BLOCK};
+if(typeof module !== 'undefined') module.exports = {buildLesson, finishBlock, recordAnswer, selectQuestions, progressSummary, dayNum, todayStr, planWeek, secState, examMinutes, questionMarks, questionMinutes, BLOCK};

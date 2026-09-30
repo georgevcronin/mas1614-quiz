@@ -13,12 +13,12 @@ const PASS_MARK = 0.8;
 const STATS_URL = 'https://matthewalexanderfisher.github.io/NCL-MAS2901/content/main/';
 
 const MODULES = {
-  PROB: {code:'MAS2909', name:'Probability',                 short:'Prob',  stream:'A', color:'#F472B6'},
-  STAT: {code:'MAS2901', name:'Statistical Inference',       short:'Stats', stream:'A', color:'#FB7185'},
-  LA:   {code:'MAS2701', name:'Linear Algebra',              short:'LA',    stream:'B', color:'#60A5FA'},
-  CA:   {code:'MAS2702', name:'Complex Analysis',            short:'CA',    stream:'B', color:'#A78BFA'},
-  VC:   {code:'MSP2801', name:'Vector Calculus',             short:'VC',    stream:'C', color:'#34D399'},
-  DE:   {code:'MSP2802', name:'Differential Equations, Waves & Transforms', short:'DE', stream:'C', color:'#FBBF24'},
+  PROB: {code:'MAS2909', name:'Probability',                 short:'Prob',  stream:'A', color:'#DB2777'},
+  STAT: {code:'MAS2901', name:'Statistical Inference',       short:'Stats', stream:'A', color:'#E11D48'},
+  LA:   {code:'MAS2701', name:'Linear Algebra',              short:'LA',    stream:'B', color:'#2563EB'},
+  CA:   {code:'MAS2702', name:'Complex Analysis',            short:'CA',    stream:'B', color:'#7C3AED'},
+  VC:   {code:'MSP2801', name:'Vector Calculus',             short:'VC',    stream:'C', color:'#059669'},
+  DE:   {code:'MSP2802', name:'Differential Equations, Waves & Transforms', short:'DE', stream:'C', color:'#B45309'},
 };
 
 const STREAMS = {A:'Stats', B:'Pure', C:'Applied'};
@@ -151,10 +151,10 @@ const SECTIONS = [
 
 const SECTION_BY_ID = Object.fromEntries(SECTIONS.map(s => [s.id, s]));
 const PICK_INFO = {
-  I:{name:'Implement', color:'#34D399', desc:'Quick win — test first, read only what you miss'},
-  C:{name:'Challenge', color:'#F59E0B', desc:'Hard & essential — learn today, prove it tomorrow'},
-  P:{name:'Possible',  color:'#60A5FA', desc:'Skim — quick 3-question check'},
-  K:{name:'Kill',      color:'#64748B', desc:'Skipped — non-examinable / low payoff'},
+  I:{name:'Implement', color:'#16A34A', desc:'Quick win — test first, read only what you miss'},
+  C:{name:'Challenge', color:'#B45309', desc:'Hard & essential — learn today, prove it tomorrow'},
+  P:{name:'Possible',  color:'#2563EB', desc:'Skim — quick 3-question check'},
+  K:{name:'Kill',      color:'#6B7280', desc:'Skipped — non-examinable / low payoff'},
 };
 
 // Question bank — question files push into this.
