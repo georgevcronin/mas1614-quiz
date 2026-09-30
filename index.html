@@ -7,6 +7,9 @@
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <meta name="theme-color" content="#0F172A">
 <title>Study Planner</title>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.16.9/katex.min.css">
+<script defer src="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.16.9/katex.min.js"></script>
+<script defer src="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.16.9/contrib/auto-render.min.js" onload="renderAllMath()"></script>
 <style>
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
 html{height:100%;overflow:hidden}
@@ -122,6 +125,10 @@ a{color:#6B9FE4}
 .miss-q{font-size:13.5px;color:#F1F5F9;line-height:1.55;margin-bottom:.25rem}
 .miss-a{font-size:13px;color:#6EE7B7;line-height:1.55;margin-bottom:.2rem}
 
+.katex{font-size:1.05em}
+.katex-display{margin:.5em 0;overflow-x:auto;overflow-y:hidden;padding:2px 0}
+.opt .katex-display{margin:.2em 0}
+
 /* Verdict */
 .verdict{text-align:center;padding:2rem 1rem 1rem}
 .verdict-icon{font-size:64px;display:block;margin-bottom:.75rem}
@@ -206,7 +213,9 @@ a{color:#6B9FE4}
 <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore-compat.js"></script>
 <script src="js/curriculum.js"></script>
+<script src="js/keypoints.js"></script>
 <script src="js/questions/week1.js"></script>
+<script src="js/questions/de-specimen.js"></script>
 <script src="js/planner.js"></script>
 <script src="js/quiz.js"></script>
 <script src="js/app.js"></script>

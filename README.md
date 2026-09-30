@@ -16,10 +16,15 @@ with instant feedback.
 | File | What it holds |
 |---|---|
 | `js/curriculum.js` | Plan start date, modules, every section with its week, stream, PICK category, source and key points |
-| `js/questions/week1.js` | Question bank for week 1 (add `week2.js` etc. and a `<script>` tag in `index.html`) |
+| `js/keypoints.js` | Key points per section (LaTeX) |
+| `js/questions/week1.js` | Week 1 question bank (add `week2.js` etc. and a `<script>` tag in `index.html`) |
+| `js/questions/de-specimen.js` | MSP2802 questions built from Specimen Papers 1–3, tagged e.g. "(SP1 A3)" |
 | `js/planner.js` | Lesson builder, spaced-review scheduling, pass/fail rules (no DOM) |
 | `js/quiz.js` | Mini-exam engine: multiple choice, true/false, step-by-step gap fill |
 | `js/app.js` | Screens, lesson runner, local storage and Firebase sync |
+
+All maths is LaTeX (`\( … \)` inline, `\[ … \]` display), typeset in the browser by KaTeX.
+Question strings use `String.raw` template literals so backslashes need no escaping.
 
 Topics without questions yet are scheduled as "study from notes" blocks with a self-rating.
 

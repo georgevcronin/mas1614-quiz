@@ -4,11 +4,23 @@
 // credit is 0..1 (true/false and gap questions give partial credit).
 // ================================================================
 const esc = s => String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
-// Escape, then render maths shorthand: x_{ab} / x_a → subscript, x^{ab} / x^a → superscript.
-const fmt = s => esc(s)
-  .replace(/_\{([^{}]*)\}/g, '<sub>$1</sub>').replace(/\^\{([^{}]*)\}/g, '<sup>$1</sup>')
-  .replace(/([A-Za-zα-ω)])_([A-Za-z0-9α-ω]+)/g, '$1<sub>$2</sub>')
-  .replace(/\^([0-9A-Za-z∞−-]+)/g, '<sup>$1</sup>');
+// Text is HTML-escaped; LaTeX between \( \) or \[ \] is typeset by KaTeX (see renderMath).
+const fmt = esc;
+const MATH_OPTS = {delimiters:[{left:'\\[', right:'\\]', display:true}, {left:'\\(', right:'\\)', display:false}], throwOnError:false};
+function renderMath(node){ if(node && window.renderMathInElement) window.renderMathInElement(node, MATH_OPTS); }
+function renderAllMath(){ renderMath(document.body); }
+// Re-typeset whenever new content is added (batched to one pass per frame).
+let mathQueued = false;
+if(typeof MutationObserver !== 'undefined') new MutationObserver(() => {
+  if(mathQueued) return; mathQueued = true;
+  requestAnimationFrame(() => { mathQueued = false; renderAllMath(); });
+}).observe(document.documentElement, {childList:true, subtree:true});
+// LaTeX (or plain text) used to display a gap answer.
+function showAns(show, ans){
+  const s = show || firstAns(ans);
+  if(!show) return s;
+  return /\\\(|\\\[/.test(s) ? s : '\\(' + s + '\\)';
+}
 
 function el(tag, cls, html){
   const e = document.createElement(tag);
@@ -16,6 +28,7 @@ function el(tag, cls, html){
   if(html !== undefined) e.innerHTML = html;
   return e;
 }
+const firstAns = a => Array.isArray(a) ? a[0] : a;
 function waitClick(btn){ return new Promise(r => btn.addEventListener('click', r, {once:true})); }
 
 // ---------------------------------------------------------------- answer checking
@@ -45,7 +58,6 @@ function checkAnswer(input, accepted, tol){
     return Math.abs(x - y) <= (tol ?? Math.max(1e-9, 1e-3*Math.abs(y)));
   });
 }
-const firstAns = a => Array.isArray(a) ? a[0] : a;
 
 // ---------------------------------------------------------------- exam loop
 async function runExam(box, questions, opts = {}){
@@ -137,13 +149,13 @@ function askGap(box, q, opts){
       if(st.answer2 !== undefined) ctx.append(mk(), txt(st.after2));
       row.appendChild(ctx);
       const why = el('div','gap-why', fmt(st.why || '')); why.style.display = 'none';
-      [st.answer, st.answer2].forEach((ans, k) => {
+      [[st.answer, st.show], [st.answer2, st.show2]].forEach(([ans, show], k) => {
         if(ans === undefined) return;
         const line = el('div','gap-in'), inp = el('input','gap-input'), chk = el('button','gap-check','Check');
-        inp.placeholder = k ? 'Second blank…' : 'Answer…';
+        inp.placeholder = k ? 'Second blank…' : 'Answer (e.g. 1/24, 3pi/2, sqrt(2))';
         inp.autocomplete = 'off'; inp.autocapitalize = 'off'; inp.spellcheck = false;
         line.append(inp, chk); row.appendChild(line);
-        blanks.push({inp, chk, ans, tol: st.tol, span: spans[k], why});
+        blanks.push({inp, chk, ans, show, tol: st.tol, span: spans[k], why});
       });
       row.appendChild(why); box.appendChild(row);
     });
@@ -156,7 +168,7 @@ function askGap(box, q, opts){
         b.inp.disabled = b.chk.disabled = true;
         b.inp.className = 'gap-input ' + (ok ? 'ok' : 'bad');
         b.chk.textContent = ok ? '✓' : '✗';
-        b.span.textContent = firstAns(b.ans);
+        b.span.innerHTML = esc(showAns(b.show, b.ans));
         b.span.className = 'gap-blank ' + (ok ? 'ok' : 'bad');
         b.why.style.display = 'block';
         done++; if(ok) right++;
@@ -174,7 +186,7 @@ function askGap(box, q, opts){
 function answerText(q){
   if(q.type === 'mc') return q.opts[q.ans];
   if(q.type === 'tf') return q.statements.map(s => (s.ans ? 'TRUE: ' : 'FALSE: ') + s.s).join('\n');
-  return q.steps.map(s => (s.before || '') + firstAns(s.answer) + (s.after || '') + (s.answer2 !== undefined ? firstAns(s.answer2) + (s.after2 || '') : '')).join('\n');
+  return q.steps.map(s => (s.before || '') + showAns(s.show, s.answer) + (s.after || '') + (s.answer2 !== undefined ? showAns(s.show2, s.answer2) + (s.after2 || '') : '')).join('\n');
 }
 function explainText(q){
   if(q.type === 'mc') return q.why || '';
@@ -182,4 +194,4 @@ function explainText(q){
   return q.steps.map(s => s.why || '').join(' ');
 }
 
-if(typeof module !== 'undefined') module.exports = {checkAnswer, evalNum, normAns};
+if(typeof module !== 'undefined') module.exports = {checkAnswer, evalNum, normAns, showAns};
