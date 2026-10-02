@@ -327,6 +327,7 @@ function showSettings(){
       <select id="g-model">${g.model ? `<option>${esc(g.model)}</option>` : '<option value="">Save a key to load models</option>'}</select></div>
     <button class="btn-p" id="g-save">Save and check key</button>
     <div class="small" id="g-msg" style="margin:10px 0 16px"></div>
+    <button class="btn-s" id="g-link" style="margin-bottom:8px">Copy one-tap setup link</button>
     <button class="btn-s" id="g-clear">Remove key</button>
     <p class="note" style="margin-top:20px">Get a free key at <a href="https://aistudio.google.com/apikey" target="_blank" rel="noopener">aistudio.google.com/apikey</a>. The key is stored only in this browser on this device — it is not synced with your username — and is sent only to Google. Anyone using this device and browser could read it.</p>`;
   const msg = document.getElementById('g-msg'), sel = document.getElementById('g-model');
@@ -345,6 +346,14 @@ function showSettings(){
     }catch(e){ msg.textContent = 'That key didn’t work: ' + e.message; }
   };
   document.getElementById('g-clear').onclick = () => { localStorage.removeItem(GEMINI_STORE); showSettings(); };
+  // A link that sets this key on another device. It is built here and never stored in the repo.
+  document.getElementById('g-link').onclick = async () => {
+    const cur = geminiSettings();
+    if(!cur.key){ msg.textContent = 'Save a key first.'; return; }
+    const link = location.origin + location.pathname + '#key=' + encodeURIComponent(cur.key) + (cur.model ? '&model=' + encodeURIComponent(cur.model) : '');
+    try{ await navigator.clipboard.writeText(link); msg.textContent = 'Setup link copied. Keep it private (e.g. in your notes) and open it once on each device.'; }
+    catch(e){ prompt('Copy this setup link and keep it private:', link); }
+  };
   show('s-settings');
 }
 
@@ -401,6 +410,28 @@ function initFirebase(){
   }catch(e){ console.warn('Firebase init failed:', e); showLoginRow(); }
 }
 
+// ---------------------------------------------------------------- one-tap key setup
+// Opening the site as …/#key=AIza…(&model=…) saves the key on this device, then removes it from the address bar.
+async function keyFromLink(){
+  const h = new URLSearchParams(location.hash.slice(1));
+  const key = (h.get('key') || '').trim();
+  if(!key) return;
+  history.replaceState(null, '', location.pathname + location.search);
+  const st = document.getElementById('mark-status');
+  st.textContent = 'Setting up Gemini from your link…';
+  try{
+    const models = await listGeminiModels(key);
+    const want = h.get('model');
+    saveGeminiSettings({key, model: models.includes(want) ? want : models[0]});
+    renderHome();
+  }catch(e){
+    renderHome();   // keep whatever key was already saved
+    st.textContent = 'Setup link: that key didn’t work — ' + e.message;
+  }
+}
+
 // ---------------------------------------------------------------- init
+keyFromLink();
+window.addEventListener('hashchange', keyFromLink);   // link opened while the site is already open
 renderHome();
 initFirebase();
