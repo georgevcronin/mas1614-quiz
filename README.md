@@ -18,8 +18,9 @@ Settings) or self-marked against the mark scheme.
 |---|---|
 | `js/curriculum.js` | Plan start date, modules, every section with its week, stream, PICK category, source and key points |
 | `js/keypoints.js` | Key points per section (LaTeX) |
-| `js/questions/week1.js` | Week 1 question bank (add `week2.js` etc. and a `<script>` tag in `index.html`) |
-| `js/questions/de-specimen.js` | MSP2802 short questions built from Specimen Papers 1–3, tagged e.g. "(SP1 A3)" |
+| `js/questions/week1.js` | Week 1 questions: Probability, Stats Ch2–3, Linear Algebra §1.1–1.7, Vector Calculus Ch1–2 |
+| `js/questions/de-short.js` | MSP2802 short questions built from Specimen Papers 1–3, tagged e.g. "(SP1 A3)" |
+| `js/questions/ca.js` | MAS2702 Complex Analysis questions (all 18 sections) and key points |
 | `js/questions/de-written.js` | The specimen-paper questions themselves, with marks and mark schemes |
 | `js/planner.js` | Lesson builder, spaced-review scheduling, pass/fail rules (no DOM) |
 | `js/quiz.js` | Written mini-exam engine: every question answered in writing (typed or photo) |
@@ -27,7 +28,8 @@ Settings) or self-marked against the mark scheme.
 | `js/app.js` | Screens, lesson runner, local storage and Firebase sync |
 
 All maths is LaTeX (`\( … \)` inline, `\[ … \]` display), typeset in the browser by KaTeX.
-Question strings use `String.raw` template literals so backslashes need no escaping.
+Every question is a short written exam question — `sq(id, section, marks, question, mark scheme, parts?)` —
+with no multiple choice. Strings use `String.raw` template literals so backslashes need no escaping.
 
 Topics without questions yet are scheduled as "study from notes" blocks with a self-rating.
 

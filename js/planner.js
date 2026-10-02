@@ -7,25 +7,20 @@
 // ================================================================
 const REVIEW_GAPS = [1, 3, 7, 14, 30];        // days until next review, by stage
 // Written answers: marks per question, and roughly 1.2 exam-minutes per mark plus writing overhead.
-function questionMarks(q){
-  if(q.type === 'written') return q.marks;
-  if(q.type === 'mc') return 2;
-  if(q.type === 'tf') return q.statements.length;
-  return q.steps.reduce((n, st) => n + (st.answer2 !== undefined ? 2 : 1), 0);
-}
+function questionMarks(q){ return q.marks; }
 function questionMinutes(q){ return Math.max(2, Math.round(1.2*questionMarks(q) + 1)); }
 
 // Block templates. Each kind has a full and a short variant (used when time is tight).
 const BLOCK = {
-  review: {icon:'🔁', label:'Spaced review'},
+  review: {label:'Spaced review'},
 // e1/e2: minutes of exam questions in mini exam 1 / 2 (the rest is reading and fixing gaps).
-  i:      {icon:'⚡', label:'Test first',          v:[{mins:25, e1:9, e2:9}, {mins:15, e1:5, e2:5}]},
-  c1:     {icon:'🧗', label:'Challenge · learn',    v:[{mins:45, e1:14, e2:14}, {mins:30, e1:9, e2:9}]},
-  c2:     {icon:'🔒', label:'Challenge · prove it', v:[{mins:20, e1:16}, {mins:12, e1:9}]},
-  p:      {icon:'👀', label:'Quick check',          v:[{mins:7, e1:5}]},
-  retest: {icon:'🎯', label:'Retest',               v:[{mins:15, e1:12}, {mins:9, e1:7}]},
-  notesI: {icon:'📖', label:'Study from notes',     v:[{mins:25}, {mins:15}]},
-  notesC: {icon:'📖', label:'Study from notes',     v:[{mins:45}, {mins:30}]},
+  i:      {label:'Test first',          v:[{mins:25, e1:9, e2:9}, {mins:15, e1:5, e2:5}]},
+  c1:     {label:'Challenge · learn',    v:[{mins:45, e1:14, e2:14}, {mins:30, e1:9, e2:9}]},
+  c2:     {label:'Challenge · prove it', v:[{mins:20, e1:16}, {mins:12, e1:9}]},
+  p:      {label:'Quick check',          v:[{mins:7, e1:5}]},
+  retest: {label:'Retest',               v:[{mins:15, e1:12}, {mins:9, e1:7}]},
+  notesI: {label:'Study from notes',     v:[{mins:25}, {mins:15}]},
+  notesC: {label:'Study from notes',     v:[{mins:45}, {mins:30}]},
 };
 
 function dayNum(dateStr){

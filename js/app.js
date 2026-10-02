@@ -18,8 +18,8 @@ function today(){ return dayNum(todayStr()); }
 function show(id){ document.querySelectorAll('.scr').forEach(s => s.classList.remove('on')); document.getElementById(id).classList.add('on'); }
 function goHome(){ renderHome(); show('s-home'); }
 
-function modChip(modKey){ const m = MODULES[modKey]; return `<span class="mod-chip" style="background:${m.color}14;color:${m.color}">${m.short}</span>`; }
-function pickBadge(p){ const i = PICK_INFO[p]; return `<span class="pick-badge" style="color:${i.color};border-color:${i.color}55">${i.name}</span>`; }
+function modChip(modKey){ return `<span class="tag">${MODULES[modKey].name.split(',')[0]}</span>`; }
+function pickBadge(p){ return `<span class="tag">${PICK_INFO[p].name}</span>`; }
 
 // ---------------------------------------------------------------- home
 function renderHome(){
@@ -74,11 +74,11 @@ function buildAndShow(){
     show('s-plan'); return;
   }
   body.appendChild(el('div','total-row', `<span>${lesson.blocks.length} block${lesson.blocks.length > 1 ? 's' : ''}</span><span>≈ ${lesson.total} of ${chosenMins} min</span>`));
-  lesson.blocks.forEach(b => {
+  lesson.blocks.forEach((b, i) => {
     const t = BLOCK[b.kind], s = b.sec && SECTION_BY_ID[b.sec];
     const title = s ? s.title : `${b.secs.length} topic${b.secs.length > 1 ? 's' : ''} due`;
-    const chips = s ? modChip(s.mod) + pickBadge(s.pick) : '';
-    body.appendChild(el('div','card block-card', `<div class="block-icon">${t.icon}</div><div class="block-body"><div class="lbl">${t.label}</div><div class="card-title" style="font-size:16px">${esc(title)}</div><div style="margin-bottom:.35rem">${chips}</div><div class="small">${describe(b)}</div></div><div class="block-mins">${b.mins}m</div>`));
+    const tags = s ? modChip(s.mod) + ' · ' + pickBadge(s.pick) : '';
+    body.appendChild(el('div','plan-row', `<div class="plan-n">${i + 1}</div><div class="block-body"><div class="lbl">${t.label}${tags ? ' · ' + tags : ''}</div><div class="card-title">${esc(title)}</div><div class="small">${describe(b)}</div></div><div class="block-mins">${b.mins} min</div>`));
   });
   const go = el('button','btn-p','Start lesson'); go.onclick = startLesson;
   const again = el('button','btn-s','Change time'); again.style.marginTop = '8px'; again.onclick = () => show('s-home');
@@ -134,10 +134,10 @@ async function exam(box, qs, day, opts){
   return {res, pct: max ? got / max : 0};
 }
 
-function presentCard(box, s, intro){
-  const keys = s.key.length ? '<ul class="keys">' + s.key.map(k => `<li>${fmt(k)}</li>`).join('') + '</ul>' : '';
+function presentCard(box, s, intro, showKeys = true){
+  const keys = showKeys && s.key.length ? '<ul class="keys">' + s.key.map(k => `<li>${fmt(k)}</li>`).join('') + '</ul>' : '';
   const link = s.url ? `<div style="margin-top:.6rem"><a href="${s.url}" target="_blank" rel="noopener">Open the online notes ↗</a></div>` : '';
-  card(box, `<div class="lbl">${modChip(s.mod)} ${pickBadge(s.pick)}</div><div class="card-title">${esc(s.title)}</div>${intro ? `<div class="muted" style="margin-bottom:.4rem">${intro}</div>` : ''}${keys}<div class="small" style="margin-top:.5rem">📚 ${esc(s.src)}</div>${link}`);
+  card(box, `<div class="lbl">${modChip(s.mod)} · ${pickBadge(s.pick)}</div><div class="card-title">${esc(s.title)}</div>${intro ? `<div class="muted" style="margin-bottom:.4rem">${intro}</div>` : ''}${keys}<div class="small" style="margin-top:.5rem">Source: ${esc(s.src)}</div>${link}`);
 }
 function fixCard(box, s, res){
   const missed = res.filter(r => r.credit < 1);
@@ -155,12 +155,12 @@ function scoreCard(box, label, pct){
 async function verdictScreen(box, v, s, pct){
   box.innerHTML = '';
   const V = {
-    pass:     ['✅','Passed', `${esc(s.title)} is done. First review in 1 day, then 3, 7, 14…`],
-    again:    ['🔁','Not yet', s && !hasQuestions(s.id) ? `It comes back next session — work through the examples again until you can do them without looking.` : `You need 80%. It comes back as a retest next session — that repetition is where the learning happens.`],
-    tomorrow: ['🌙','Learned — prove it tomorrow', `Challenge topics only pass on a later day. Tomorrow’s lesson includes a closed-book check (80% to pass).`],
-    deferred: ['📦','Parked until week 6', `Possible topic: not worth more time now. It will return in week 6.`],
+    pass:     ['','Passed', `${esc(s.title)} is done. First review in 1 day, then 3, 7, 14…`],
+    again:    ['','Not yet', s && !hasQuestions(s.id) ? `It comes back next session — work through the examples again until you can do them without looking.` : `You need 80%. It comes back as a retest next session — that repetition is where the learning happens.`],
+    tomorrow: ['','Learned — prove it tomorrow', `Challenge topics only pass on a later day. Tomorrow’s lesson includes a closed-book check (80% to pass).`],
+    deferred: ['','Parked until week 6', `Possible topic: not worth more time now. It will return in week 6.`],
   }[v.type];
-  box.appendChild(el('div','verdict', `<span class="verdict-icon">${V[0]}</span><div class="verdict-title">${V[1]}</div>${pct !== undefined ? `<div class="score-big">${Math.round(pct*100)}%</div>` : ''}<div class="muted">${V[2]}</div>`));
+  box.appendChild(el('div','verdict', `<div class="verdict-title">${V[1]}</div>${pct !== undefined ? `<div class="score-big">${Math.round(pct*100)}%</div>` : ''}<div class="muted">${V[2]}</div>`));
   await waitClick(button(box, 'Continue →'));
 }
 
@@ -170,7 +170,7 @@ async function runBlock(box, b, day){
     let qs = examQs(b.secs, b.mins, day);
     const left = b.mins - examMinutes(qs);
     if(left >= 3) qs = qs.concat(examQs(b.extra, left, day, qs.map(q => q.id)));
-    card(box, `<div class="lbl">🔁 Spaced review · ${b.mins} min</div><div class="card-title">${qs.length} questions from earlier topics</div><div class="muted">No notes, no hints. Weak and overdue topics come up most.</div>`);
+    card(box, `<div class="lbl">Spaced review · ${b.mins} min</div><div class="card-title">${qs.length} questions from earlier topics</div><div class="muted">No notes, no hints. Weak and overdue topics come up most.</div>`);
     await waitClick(button(box, 'Start →'));
     const {res, pct} = await exam(box, qs, day, {title:'Review'});
     const bySec = {};
@@ -189,12 +189,12 @@ async function runBlock(box, b, day){
   if(b.kind === 'notesI' || b.kind === 'notesC'){
     presentCard(box, s, `Read this section of your notes. For every worked example: cover the solution, attempt it, then compare. (~${b.mins} min)`);
     card(box, `<div class="lbl">When you’ve finished</div><div class="card-title">Could you do the worked examples without looking?</div>`);
-    const opts = [['✅ Yes — all of them', 1], ['🟡 Some of them', 0.5], ['❌ Not really', 0]];
+    const opts = [['Yes — all of them', 1], ['Some of them', 0.5], ['Not really', 0]];
     const btns = opts.map(([t]) => button(box, t, 'btn-s self-btn'));
     pct = await new Promise(r => btns.forEach((bt, i) => bt.onclick = () => r(opts[i][1])));
   }
   else if(b.kind === 'i'){
-    presentCard(box, s, 'Implement topic — <b>test first</b>. Answer before reading anything; you only study what you get wrong.');
+    presentCard(box, s, 'Implement topic — <b>test first</b>. Answer before reading anything; the key points come afterwards, for what you got wrong.', false);
     await waitClick(button(box, `Start mini exam 1 (~${b.e1} min)`));
     const qs1 = examQs([s.id], b.e1, day); used = qs1.map(q => q.id);
     const e1 = await exam(box, qs1, day, {title:'Mini exam 1'});
@@ -237,14 +237,13 @@ async function runBlock(box, b, day){
 function renderSummary(box, summary){
   box.innerHTML = '';
   const mins = Math.round((Date.now() - runStart)/60000);
-  let html = `<div class="verdict"><span class="verdict-icon">🎉</span><div class="verdict-title">Lesson complete</div><div class="muted">${mins} min · ${summary.length} block${summary.length > 1 ? 's' : ''}</div></div>`;
+  let html = `<div class="verdict"><div class="verdict-title">Lesson complete</div><div class="muted">${mins} min · ${summary.length} block${summary.length > 1 ? 's' : ''}</div></div>`;
   box.appendChild(el('div','', html));
-  const icons = {pass:'✅', again:'🔁', tomorrow:'🌙', deferred:'📦', review:'🔁'};
   summary.forEach(({b, verdict}) => {
     const s = b.sec && SECTION_BY_ID[b.sec];
     const what = s ? esc(s.title) : 'Spaced review';
     const res = verdict.type === 'review' ? Math.round(verdict.pct*100) + '%' : {pass:'Passed', again:'Retest next time', tomorrow:'Check tomorrow', deferred:'Week 6'}[verdict.type];
-    card(box, `<div class="block-card"><div class="block-icon">${icons[verdict.type]}</div><div class="block-body"><div class="card-title" style="font-size:15px">${what}</div><div class="small">${res}</div></div></div>`);
+    box.appendChild(el('div','plan-row', `<div class="block-body"><div class="card-title">${what}</div></div><div class="block-mins">${res}</div>`));
   });
   const h = button(box, 'Home'); h.onclick = goHome;
 }
@@ -269,7 +268,7 @@ function showProgress(){
       const st = secState(state, s.id), last = st.hist[st.hist.length - 1];
       const status = s.pick === 'K' ? 'skipped' : st.status;
       const meta = `W${s.week} · ${PICK_INFO[s.pick].name[0]}${last ? ' · ' + Math.round(last.pct*100) + '%' : ''}${hasQuestions(s.id) ? '' : ' · notes'}`;
-      body.appendChild(el('div','sec-row', `<i class="dot" style="background:${colors[status]};${status==='skipped'?'border:1px solid #D1D5DB':''}"></i><div class="sec-name">${modChip(s.mod)}${esc(s.title)}</div><div class="sec-meta">${meta}</div>`));
+      body.appendChild(el('div','sec-row', `<i class="dot" style="background:${colors[status]};${status==='skipped'?'border:1px solid #D1D5DB':''}"></i><div class="sec-name">${esc(s.title)}</div><div class="sec-meta">${meta}</div>`));
     });
   });
   const reset = el('button','btn-s','Reset all progress'); reset.style.cssText = 'margin-top:24px;color:#DC2626';
@@ -284,19 +283,19 @@ function showPractice(){
   body.appendChild(el('div','card', '<div class="card-title">Pick a module</div><div class="muted">About 15 minutes of written questions, weighted towards what you haven’t seen or got wrong. Doesn’t change your plan, but does count towards question history.</div>'));
   Object.entries(MODULES).forEach(([k, m]) => {
     const n = QUESTIONS.filter(q => SECTION_BY_ID[q.sec].mod === k).length;
-    const b = el('button','btn-s self-btn', `${modChip(k)} ${m.name} <span class="small">· ${n} questions</span>`);
+    const b = el('button','btn-s self-btn', `${m.name} <span class="small">· ${n} questions</span>`);
     if(!n){ b.disabled = true; b.style.opacity = .45; }
     b.onclick = () => practice(k);
     body.appendChild(b);
   });
-  const nPast = QUESTIONS.filter(q => q.type === 'written').length;
+  const nPast = QUESTIONS.filter(q => q.past).length;
   body.appendChild(el('div','card', `<div class="card-title" style="margin-top:4px">Past-paper question</div><div class="muted">One full specimen-paper question (${nPast} available), marked against the official mark scheme. Allow 12–20 minutes.</div>`)).style.marginTop = '20px';
   const pp = el('button','btn-p','Start a past-paper question'); pp.onclick = pastPaper; body.appendChild(pp);
   show('s-practice');
 }
 async function pastPaper(){
   const day = today(), body = document.getElementById('practice-body');
-  const pool = QUESTIONS.filter(q => q.type === 'written');
+  const pool = QUESTIONS.filter(q => q.past);
   const q = pickWeighted(pool, pool.map(q => qWeight(state, q, day)), 1)[0];   // unseen / weak first
   const {pct, res} = await exam(body, [q], day, {title:'Past paper'});
   body.innerHTML = '';

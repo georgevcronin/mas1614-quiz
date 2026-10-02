@@ -7,7 +7,7 @@
 const L = String.raw;
 let n = {};
 const id = s => s + '-w' + String(n[s] = (n[s] || 0) + 1).padStart(2, '0');
-const wq = (sec, text, marks, scheme, parts) => QUESTIONS.push({id:id(sec), sec, type:'written', text, marks, scheme, parts});
+const wq = (sec, text, marks, scheme, parts) => QUESTIONS.push({id:id(sec), sec, type:'written', past:true, text, marks, scheme, parts});
 
 // ---------------------------------------------------------------- Specimen Paper 1
 wq('de-1b', L`(SP1 A1) For each equation, classify the point \(x=0\) and explain whether you expect two independent power series solutions. You may assume any indicial roots are separated by an integer.`, 10,

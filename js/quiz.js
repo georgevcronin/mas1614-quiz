@@ -23,50 +23,20 @@ function el(tag, cls, html){
   if(html !== undefined) e.innerHTML = html;
   return e;
 }
-const firstAns = a => Array.isArray(a) ? a[0] : a;
 function waitClick(btn){ return new Promise(r => btn.addEventListener('click', r, {once:true})); }
-// Display form of a gap answer: its LaTeX "show" if given, else the plain answer.
-function showAns(show, ans){
-  if(!show) return firstAns(ans);
-  return /\\\(|\\\[/.test(show) ? show : '\\(' + show + '\\)';
-}
 
-// ---------------------------------------------------------------- question → written form
-// Returns {html, plain, marks, scheme, module, topic}. `plain` and `scheme` go to the marker.
+// ---------------------------------------------------------------- question → display form
+// Every question is a short written exam question: {text, marks, scheme, parts?}.
+// Returns {html, plain, marks, scheme, module, topic, instr}; `plain` and `scheme` go to the marker.
 function toWritten(q){
-  const sec = SECTION_BY_ID[q.sec], base = {module: MODULES[sec.mod].name, topic: sec.title};
-  const list = items => '<ol class="q-parts" type="a">' + items.map(t => `<li>${fmt(t)}</li>`).join('') + '</ol>';
-  const plainList = items => items.map((t, i) => `(${'abcdefgh'[i]}) ${t}`).join('\n');
-  if(q.type === 'written'){
-    return {...base, marks: q.marks, scheme: q.scheme, plain: q.text + (q.parts ? '\n' + plainList(q.parts) : ''),
-      html: fmt(q.text) + (q.parts ? list(q.parts) : ''), instr: 'Show your working.'};
-  }
-  if(q.type === 'mc'){
-    const correct = q.opts[q.ans];
-    // "Which …" questions need the candidates to make sense; everything else is asked open.
-    const needs = /\bwhich\b/i.test(q.text);
-    return {...base, marks: 2,
-      html: fmt(q.text) + (needs ? list(q.opts.map((o, i) => o).sort(() => Math.random() - .5)) : ''),
-      plain: q.text + (needs ? '\n' + plainList(q.opts) : ''),
-      instr: needs ? 'Say which is correct and justify it — briefly explain why.' : 'Give your answer with a brief justification.',
-      scheme: `Correct answer: ${correct}\nJustification: ${q.why || ''}\n[1 mark for the correct answer, 1 mark for a valid justification]`};
-  }
-  if(q.type === 'tf'){
-    return {...base, marks: q.statements.length,
-      html: fmt(q.text) + list(q.statements.map(s => s.s)),
-      plain: q.text + '\n' + plainList(q.statements.map(s => s.s)),
-      instr: 'For each statement, say true or false and justify it in a sentence.',
-      scheme: q.statements.map((s, i) => `(${'abcdefgh'[i]}) ${s.ans ? 'TRUE' : 'FALSE'} — ${s.why}`).join('\n') + '\n[1 mark each: correct verdict with a valid reason]'};
-  }
-  // gap: each blank becomes one part of a structured question
-  const blank = '\\(\\underline{\\qquad}\\)';
-  const parts = q.steps.map(st => (st.before || '') + blank + (st.after || '') + (st.answer2 !== undefined ? blank + (st.after2 || '') : ''));
-  const marks = q.steps.reduce((n, st) => n + (st.answer2 !== undefined ? 2 : 1), 0);
-  return {...base, marks,
-    html: fmt(q.text) + list(parts),
-    plain: q.text + '\n' + plainList(parts),
-    instr: 'Fill in each blank, showing your working.',
-    scheme: q.steps.map((st, i) => `(${'abcdefgh'[i]}) ${showAns(st.show, st.answer)}${st.answer2 !== undefined ? ' and ' + showAns(st.show2, st.answer2) : ''} — ${st.why || ''}`).join('\n') + '\n[1 mark per blank]'};
+  const sec = SECTION_BY_ID[q.sec];
+  const parts = q.parts || [];
+  return {
+    module: MODULES[sec.mod].name, topic: sec.title, marks: q.marks, scheme: q.scheme,
+    html: fmt(q.text) + (parts.length ? '<ol class="q-parts" type="a">' + parts.map(t => `<li>${fmt(t)}</li>`).join('') + '</ol>' : ''),
+    plain: q.text + (parts.length ? '\n' + parts.map((t, i) => `(${'abcdefgh'[i]}) ${t}`).join('\n') : ''),
+    instr: 'Show your working.',
+  };
 }
 
 // ---------------------------------------------------------------- exam loop
@@ -100,7 +70,7 @@ function askWritten(box, q, w, opts){
     const ta = el('textarea','answer-box'); ta.placeholder = 'Your answer and working…'; ta.spellcheck = false;
     const pv = el('div','preview');
     const tools = el('div','answer-tools');
-    const photoBtn = el('button','tool-btn','📷 Add photo of working');
+    const photoBtn = el('button','tool-btn','Add photo of working');
     const file = el('input'); file.type = 'file'; file.accept = 'image/*'; file.style.display = 'none';
     let image = null;
     photoBtn.onclick = () => file.click();
@@ -110,7 +80,7 @@ function askWritten(box, q, w, opts){
         image = await photoToDataUrl(file.files[0]);
         tools.querySelectorAll('.photo-thumb').forEach(t => t.remove());
         const th = el('img','photo-thumb'); th.src = image; tools.appendChild(th);
-        photoBtn.textContent = '📷 Replace photo';
+        photoBtn.textContent = 'Replace photo';
       }catch(e){ alert(e.message); }
     };
     tools.append(photoBtn, file);
@@ -178,4 +148,3 @@ function revealAndSelfMark(box, w, score, answer, blank){
   });
 }
 
-if(typeof module !== 'undefined') module.exports = {showAns};
