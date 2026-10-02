@@ -1,7 +1,7 @@
 // ================================================================
 // QUIZ ENGINE — written mini exams.
 // Every question is answered in writing (typed and/or a photo of working),
-// then marked by Gemini against its mark scheme, or self-marked if no key is set.
+// then marked by Gemini or Groq against its mark scheme, or self-marked if no key is set.
 // runExam(container, questions, {title, hints, onAnswer}) → Promise<[{q, credit, score, marks, feedback}]>
 // ================================================================
 const esc = s => String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
@@ -95,7 +95,7 @@ function askWritten(box, q, w, opts){
         if(window.renderMathInElement) window.renderMathInElement(pv, {delimiters:[{left:'$$', right:'$$', display:true}, {left:'$', right:'$', display:false}], throwOnError:false});
       }, 300);
     });
-    const submit = el('button','go-btn', geminiReady() ? 'Submit for marking' : 'Submit and see the answer');
+    const submit = el('button','go-btn', markerReady() ? 'Submit for marking' : 'Submit and see the answer');
     const skip = el('button','btn-s','I don’t know — show me the answer'); skip.style.marginBottom = '16px';
     box.append(ta, pv, tools, hint, submit, skip);
     ta.focus();
@@ -105,17 +105,17 @@ function askWritten(box, q, w, opts){
       if(!blank && !answer.trim() && !image){ ta.focus(); ta.placeholder = 'Write an answer (or add a photo) first…'; return; }
       ta.disabled = true; submit.remove(); skip.remove(); photoBtn.disabled = true;
       if(blank) return resolve(await revealAndSelfMark(box, w, 0, '', true));
-      if(geminiReady()){
-        const wait = el('div','small', '<span class="spinner"></span>Marking with Gemini…'); box.appendChild(wait);
+      if(markerReady()){
+        const wait = el('div','small', `<span class="spinner"></span>Marking with ${activeMarker().provider.name}…`); box.appendChild(wait);
         try{
-          const m = await markWithGemini(w, answer, image);
+          const m = await markAnswer(w, answer, image);
           wait.remove();
           showResult(box, m.score, w.marks, m.feedback);
           showScheme(box, w);
           return resolve({score: m.score, marks: w.marks, feedback: m.feedback, answer});
         }catch(e){
           wait.remove();
-          box.appendChild(el('div','result bad', `<div class="result-body">Couldn’t mark with Gemini: ${esc(e.message)}. Mark yourself below.</div>`));
+          box.appendChild(el('div','result bad', `<div class="result-body">Couldn’t mark with ${activeMarker().provider.name}: ${esc(e.message)}. Mark yourself below.</div>`));
         }
       }
       resolve(await revealAndSelfMark(box, w, null, answer, false));

@@ -34,9 +34,9 @@ function renderHome(){
   if(sum.week === PLAN_WEEKS && day >= 35){ tr.className = 'track ok'; tr.textContent = 'Week 6: consolidation — lessons are mixed review and mocks'; }
   else if(sum.behind > 0){ tr.className = 'track behind'; tr.textContent = `${sum.behind} topic${sum.behind > 1 ? 's' : ''} behind schedule — longer sessions will catch you up`; }
   else { tr.className = 'track ok'; tr.textContent = 'On track'; }
-  const g = geminiSettings();
-  document.getElementById('mark-dot').className = 'dotx' + (geminiReady() ? ' on' : '');
-  document.getElementById('mark-status').textContent = geminiReady() ? `Marking: Gemini (${g.model})` : 'Marking: self-mark — add a Gemini key in Settings';
+  const mk = activeMarker();
+  document.getElementById('mark-dot').className = 'dotx' + (mk ? ' on' : '');
+  document.getElementById('mark-status').textContent = mk ? `Marking: ${mk.provider.name} (${mk.cfg.model})` : 'Marking: self-mark — add a Gemini or Groq key in Settings';
   const chips = document.getElementById('chips'); chips.innerHTML = '';
   TIME_CHIPS.forEach(m => {
     const c = el('button', 'chip' + (m === chosenMins ? ' on' : ''), m < 60 ? m + ' min' : (m/60) + (m === 60 ? ' hour' : ' hours'));
@@ -315,40 +315,47 @@ async function practice(modKey){
   const back = button(body, 'Home', 'btn-s'); back.onclick = goHome;
 }
 
-// ---------------------------------------------------------------- settings (Gemini key)
-function showSettings(){
-  const body = document.getElementById('settings-body'), g = geminiSettings();
+// ---------------------------------------------------------------- settings (AI marking keys)
+function showSettings(tab){
+  const body = document.getElementById('settings-body'), st = markerSettings();
+  const id = tab || st.provider, P = PROVIDERS[id], cfg = st[id] || {};
+  const active = markerReady() && st.provider === id;
   body.innerHTML = `
-    <div class="card-title">Gemini marking</div>
-    <p class="muted" style="margin-bottom:16px">Add a Gemini API key and your written answers are marked against the mark scheme, with feedback. Without one you mark yourself against the scheme.</p>
-    <div class="field"><label for="g-key">API key</label>
-      <input class="text-input" id="g-key" type="password" autocomplete="off" placeholder="AIza…" value="${esc(g.key || '')}"></div>
+    <div class="card-title">AI marking</div>
+    <p class="muted" style="margin-bottom:16px">Add a Gemini or Groq API key and your written answers are marked against the mark scheme, with feedback. Without one you mark yourself against the scheme.</p>
+    <div class="chips" style="grid-template-columns:1fr 1fr;margin-bottom:16px">
+      ${Object.entries(PROVIDERS).map(([k, p]) => `<button class="chip${k === id ? ' on' : ''}" data-p="${k}">${p.name}${st.provider === k && markerReady() ? ' · in use' : ''}</button>`).join('')}
+    </div>
+    <div class="field"><label for="g-key">${P.name} API key</label>
+      <input class="text-input" id="g-key" type="password" autocomplete="off" placeholder="${P.keyHint}" value="${esc(cfg.key || '')}"></div>
     <div class="field"><label for="g-model">Model</label>
-      <select id="g-model">${g.model ? `<option>${esc(g.model)}</option>` : '<option value="">Save a key to load models</option>'}</select></div>
-    <button class="btn-p" id="g-save">Save and check key</button>
-    <div class="small" id="g-msg" style="margin:10px 0 16px"></div>
+      <select id="g-model">${(cfg.models || (cfg.model ? [cfg.model] : [])).map(m => `<option${m === cfg.model ? ' selected' : ''}>${esc(m)}</option>`).join('') || '<option value="">Save a key to load models</option>'}</select></div>
+    <button class="btn-p" id="g-save">${active ? 'Save and check key' : `Save, check and use ${P.name}`}</button>
+    <div class="small" id="g-msg" style="margin:10px 0 16px">${cfg.key && !active ? `This key is saved but ${PROVIDERS[st.provider].name} is in use. Press the button above to switch.` : ''}</div>
     <button class="btn-s" id="g-link" style="margin-bottom:8px">Copy one-tap setup link</button>
-    <button class="btn-s" id="g-clear">Remove key</button>
-    <p class="note" style="margin-top:20px">Get a free key at <a href="https://aistudio.google.com/apikey" target="_blank" rel="noopener">aistudio.google.com/apikey</a>. The key is stored only in this browser on this device — it is not synced with your username — and is sent only to Google. Anyone using this device and browser could read it.</p>`;
+    <button class="btn-s" id="g-clear">Remove ${P.name} key</button>
+    <p class="note" style="margin-top:20px">Get a free key at <a href="${P.keyUrl}" target="_blank" rel="noopener">${P.keyUrl.replace('https://','')}</a>.${id === 'groq' ? ' Photos of working need a Groq model that reads images (e.g. a Llama 4 model); otherwise type your answer.' : ''} Keys are stored only in this browser on this device — not synced with your username — and are sent only to ${P.name}. Anyone using this device and browser could read them.</p>`;
   const msg = document.getElementById('g-msg'), sel = document.getElementById('g-model');
-  sel.onchange = () => { const cur = geminiSettings(); if(cur.key){ saveGeminiSettings({...cur, model: sel.value}); } };
+  body.querySelectorAll('[data-p]').forEach(b => b.onclick = () => showSettings(b.dataset.p));
+  sel.onchange = () => { const cur = markerSettings(); if(cur[id] && cur[id].key){ cur[id].model = sel.value; saveMarkerSettings(cur); renderHome(); } };
   document.getElementById('g-save').onclick = async () => {
     const key = document.getElementById('g-key').value.trim();
     if(!key){ msg.textContent = 'Paste a key first.'; return; }
     msg.innerHTML = '<span class="spinner"></span>Checking key…';
     try{
-      const models = await listGeminiModels(key);
-      if(!models.length) throw new Error('No Gemini models available for this key.');
-      const keep = models.includes(g.model) ? g.model : models[0];
-      sel.innerHTML = models.map(m => `<option${m === keep ? ' selected' : ''}>${esc(m)}</option>`).join('');
-      saveGeminiSettings({key, model: keep});
-      msg.textContent = `Key works. Using ${keep} — change it above if you like.`;
+      await connectMarker(id, key, cfg.model);
+      showSettings(id);
+      document.getElementById('g-msg').textContent = `Key works. Marking with ${P.name} (${markerSettings()[id].model}) — change the model above if you like.`;
     }catch(e){ msg.textContent = 'That key didn’t work: ' + e.message; }
   };
-  document.getElementById('g-clear').onclick = () => { localStorage.removeItem(GEMINI_STORE); showSettings(); };
+  document.getElementById('g-clear').onclick = () => {
+    const cur = markerSettings(); cur[id] = {};
+    if(cur.provider === id){ const other = Object.keys(PROVIDERS).find(k => cur[k] && cur[k].key); if(other) cur.provider = other; }
+    saveMarkerSettings(cur); showSettings(id);
+  };
   // A link that sets this key on another device. It is built here and never stored in the repo.
   document.getElementById('g-link').onclick = async () => {
-    const cur = geminiSettings();
+    const cur = markerSettings()[id] || {};
     if(!cur.key){ msg.textContent = 'Save a key first.'; return; }
     const link = location.origin + location.pathname + '#key=' + encodeURIComponent(cur.key) + (cur.model ? '&model=' + encodeURIComponent(cur.model) : '');
     try{ await navigator.clipboard.writeText(link); msg.textContent = 'Setup link copied. Keep it private (e.g. in your notes) and open it once on each device.'; }
@@ -411,18 +418,18 @@ function initFirebase(){
 }
 
 // ---------------------------------------------------------------- one-tap key setup
-// Opening the site as …/#key=AIza…(&model=…) saves the key on this device, then removes it from the address bar.
+// Opening the site as …/#key=<Gemini AIza… or Groq gsk_… key>(&model=…) saves the key on this
+// device and switches marking to that provider, then removes it from the address bar.
 async function keyFromLink(){
   const h = new URLSearchParams(location.hash.slice(1));
   const key = (h.get('key') || '').trim();
   if(!key) return;
   history.replaceState(null, '', location.pathname + location.search);
   const st = document.getElementById('mark-status');
-  st.textContent = 'Setting up Gemini from your link…';
+  const id = PROVIDERS[h.get('provider')] ? h.get('provider') : providerForKey(key);
+  st.textContent = `Setting up ${PROVIDERS[id].name} from your link…`;
   try{
-    const models = await listGeminiModels(key);
-    const want = h.get('model');
-    saveGeminiSettings({key, model: models.includes(want) ? want : models[0]});
+    await connectMarker(id, key, h.get('model'));
     renderHome();
   }catch(e){
     renderHome();   // keep whatever key was already saved
